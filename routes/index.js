@@ -9,7 +9,12 @@ const f404Route = require('./f404');
 module.exports = () => { 
         
     router.get('/', (request, response) => { 
-        response.render('layout', { pageTitle: 'Welcome', template: 'index'});
+        response.render('layout', 
+        { 
+            pageTitle: response.locals.siteName, 
+            template: 'index', 
+        });
+        
     });
      
     
@@ -29,7 +34,11 @@ module.exports = () => {
         
     router.get('*', (request, response) => {
 
-        response.status(404).render('layout', { pageTitle: 'Sorry We Could Not Find What You Are Looking For', template: 'f404'});;
+        response.status(404).render('layout', 
+        { 
+            pageTitle: 'Sorry We Could Not Find What You Are Looking For', 
+            template: 'f404',
+        });
     
     });
 
