@@ -1,6 +1,4 @@
 const express = require('express');
-
-
 const { faker } = require('@faker-js/faker');
 const path = require('path');
 
@@ -16,7 +14,7 @@ const PORT = 8888;
 app.set('trust proxy', 1);
 app.use(cookieSession({
     name: 'session',
-    keys: [faker.internet.password(100),faker.internet.password(100)],
+    keys: [faker.internet.password(50),faker.internet.password(50)],
 }))
 
 
@@ -27,11 +25,13 @@ app.use(express.static(path.join(__dirname, `./${template_folder}`)));
 app.locals.siteName = 'Bash Balloons Decor';
 //setting global variables to be used by the whole app: 
 app.use((request, response, next) => { 
-    response.locals.someVariable = 'hello';
+    response.locals.siteName = 'Bash Balloons Decor';
+    response.locals.pageTitle= 'All Your Party Rentals and Decoration Needs';
     return next();
 });
 
 app.use('/',routes());
+
 
 app.listen(PORT, () => {
     console.log(`Express server listening on port ${PORT}`);
