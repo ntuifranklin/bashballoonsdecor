@@ -54,3 +54,4 @@ CREATE TABLE FinancialTransactions (
     Description TEXT,
     FOREIGN KEY (RentalID) REFERENCES Rentals(RentalID)
 );
+

@@ -9,6 +9,7 @@ const template_folder = 'static_template';
 const routes = require('./routes');
 const { response } = require('express');
 
+
 const app = express();
 const PORT = 8888;
 app.set('trust proxy', 1);
