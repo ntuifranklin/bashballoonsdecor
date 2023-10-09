@@ -25,14 +25,7 @@
 <header>
 	<div class="container">
 	  <div class="top-bar">
-		<p>Free Shipping on $149 or more. $9.50 Flat Rate up to $149. <span>exclusions apply</span></p>
-		<div class="ordering">
-		  <a href="#">Ordering</a>
-		  <div class="line"></div>
-		  <a href="#">Shipping</a>
-		  <div class="line"></div>
-		  <a href="#">Returns</a>
-		</div>
+		
 	  </div>
 	  <div class="center-ber">
 		<div class="logo">
@@ -40,36 +33,22 @@
 			<img alt="logo" src="assets/img/logo.png">
 		  </a>
 		</div>
+		
+		<ul class="social-media ">
+			<li><a href="<%= facebookLink %>"><i class="fa-brands fa-facebook-f"></i></a></li>
+			<li><a href="<%= instagramLink %>"><i class="fa-brands fa-instagram"></i></a></li>
+			<li><a href="<%= twitterLink %>"><i class="fa-brands fa-twitter"></i></a></li>
+			<li><a href="<%= youtubeLink %>"><i class="fa-brands fa-youtube"></i></a></li>
+			<li><a href="<%= mediumLink %>"><i class="fa-brands fa-medium"></i></a></li>
+	   
+		  </ul>
 		<form>
 		  <input type="text" name="Search" placeholder="Search Our Bloon Selection">
 		  <button><i class="fa-solid fa-magnifying-glass"></i></button>
 		</form>
-		<%=
 		
-		/*
-		<!-- 
-			
-			<ul class="social-media col-">
-				<li><a href="https://www.facebook.com/BashBalloonDecorDeliveryInc"><i class="fa-brands fa-facebook-f"></i></a></li>
-				<li><a href="https://www.instagram.com/asong_nic/"><i class="fa-brands fa-instagram"></i></a></li>
-				<li><a href="https://twitter.com/asong_nic"><i class="fa-brands fa-twitter"></i></a></li>
-				<li><a href="https://www.youtube.com/@bashballoonsdecor2333"><i class="fa-brands fa-youtube"></i></a></li>
-				<li><a href="https://medium.com/@citation.bashballoonsdecor"><i class="fa-brands fa-medium"></i></a></li>
-			</ul>
-
-
-		-->
-		*/
-
-		%>
 		<div class="login-bar d-flex">
-		  <div>
-			<a class="d-flex" href="/login">Log In
-			  <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
-					  <path d="M15.364 11.636C14.3837 10.6558 13.217 9.93013 11.9439 9.49085C13.3074 8.55179 14.2031 6.9802 14.2031 5.20312C14.2031 2.33413 11.869 0 9 0C6.131 0 3.79688 2.33413 3.79688 5.20312C3.79688 6.9802 4.69262 8.55179 6.05609 9.49085C4.78308 9.93013 3.61631 10.6558 2.63605 11.636C0.936176 13.3359 0 15.596 0 18H1.40625C1.40625 13.8128 4.81279 10.4062 9 10.4062C13.1872 10.4062 16.5938 13.8128 16.5938 18H18C18 15.596 17.0638 13.3359 15.364 11.636ZM9 9C6.90641 9 5.20312 7.29675 5.20312 5.20312C5.20312 3.1095 6.90641 1.40625 9 1.40625C11.0936 1.40625 12.7969 3.1095 12.7969 5.20312C12.7969 7.29675 11.0936 9 9 9Z" fill="#fff"></path>
-				  </svg>
-			  </a>
-		  </div>
+		 
 		  <div class="donation">
   
 				  <a href="JavaScript:void(0)" class="pr-cart">
@@ -148,7 +127,7 @@
 		</div>
 		<div class="bar-menu">
 			<i class="fa-solid fa-bars"></i>
-		  </div>
+		</div>
 	  </div>
 	</div>
 	<div class="nav-bar">
@@ -212,13 +191,33 @@
 						<a href="/contact">Contact</a>
 					  </li>
 		  </ul>
-		  <a class="phone" href="callto:<%= customerServiceNumber %>">
+		  
+			<a class="phone" href="callto:<%= customerServiceNumber %>">
+				<i>
+					<svg height="112" viewBox="0 0 24 24" width="112" xmlns="http://www.w3.org/2000/svg">
+						<g clip-rule="evenodd" fill="rgb(255255,255)" fill-rule="evenodd">
+							<path d="m7 2.75c-.41421 0-.75.33579-.75.75v17c0 .4142.33579.75.75.75h10c.4142 0 .75-.3358.75-.75v-17c0-.41421-.3358-.75-.75-.75zm-2.25.75c0-1.24264 1.00736-2.25 2.25-2.25h10c1.2426 0 2.25 1.00736 2.25 2.25v17c0 1.2426-1.0074 2.25-2.25 2.25h-10c-1.24264 0-2.25-1.0074-2.25-2.25z"></path><path d="m10.25 5c0-.41421.3358-.75.75-.75h2c.4142 0 .75.33579.75.75s-.3358.75-.75.75h-2c-.4142 0-.75-.33579-.75-.75z"></path><path d="m9.25 19c0-.4142.33579-.75.75-.75h4c.4142 0 .75.3358.75.75s-.3358.75-.75.75h-4c-.41421 0-.75-.3358-.75-.75z">
+
+							</path>
+						</g>
+					</svg>
+			  	</i>
+				<%= customerServiceNumber %> 
+			</a>
+			<br/>
 			
-			<i>
-			  <svg height="112" viewBox="0 0 24 24" width="112" xmlns="http://www.w3.org/2000/svg"><g clip-rule="evenodd" fill="rgb(255255,255)" fill-rule="evenodd"><path d="m7 2.75c-.41421 0-.75.33579-.75.75v17c0 .4142.33579.75.75.75h10c.4142 0 .75-.3358.75-.75v-17c0-.41421-.3358-.75-.75-.75zm-2.25.75c0-1.24264 1.00736-2.25 2.25-2.25h10c1.2426 0 2.25 1.00736 2.25 2.25v17c0 1.2426-1.0074 2.25-2.25 2.25h-10c-1.24264 0-2.25-1.0074-2.25-2.25z"></path><path d="m10.25 5c0-.41421.3358-.75.75-.75h2c.4142 0 .75.33579.75.75s-.3358.75-.75.75h-2c-.4142 0-.75-.33579-.75-.75z"></path><path d="m9.25 19c0-.4142.33579-.75.75-.75h4c.4142 0 .75.3358.75.75s-.3358.75-.75.75h-4c-.41421 0-.75-.3358-.75-.75z"></path></g></svg>
-			</i> 
-			<%= customerServiceNumber %> 
-		  </a> 
+			<a class="phone" href="callto:<%= customerServiceNumberExtra %>">
+				<i>
+					<svg height="112" viewBox="0 0 24 24" width="112" xmlns="http://www.w3.org/2000/svg">
+						<g clip-rule="evenodd" fill="rgb(255255,255)" fill-rule="evenodd">
+							<path d="m7 2.75c-.41421 0-.75.33579-.75.75v17c0 .4142.33579.75.75.75h10c.4142 0 .75-.3358.75-.75v-17c0-.41421-.3358-.75-.75-.75zm-2.25.75c0-1.24264 1.00736-2.25 2.25-2.25h10c1.2426 0 2.25 1.00736 2.25 2.25v17c0 1.2426-1.0074 2.25-2.25 2.25h-10c-1.24264 0-2.25-1.0074-2.25-2.25z"></path>
+							<path d="m10.25 5c0-.41421.3358-.75.75-.75h2c.4142 0 .75.33579.75.75s-.3358.75-.75.75h-2c-.4142 0-.75-.33579-.75-.75z"></path>
+							<path d="m9.25 19c0-.4142.33579-.75.75-.75h4c.4142 0 .75.3358.75.75s-.3358.75-.75.75h-4c-.41421 0-.75-.3358-.75-.75z"></path>
+						</g>
+				</svg>
+				</i>
+				<%= customerServiceNumberExtra %> 
+			</a>
 			
 		</nav>
 	  </div>
@@ -252,7 +251,7 @@
   
 			<ul class="sub-menu">
   
-			  <li><a href="o/">occasion decoration</a></li>
+			  <li><a href="/">occasion decoration</a></li>
 			  <li><a href="/">occasion details</a></li>
   
 			</ul>
@@ -283,7 +282,7 @@
   
 			</ul>
   
-			<a href="JavaScript:void(0)" id="res-cross"></a>
+			
 	</div>
   </header>
 
