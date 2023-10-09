@@ -41,7 +41,7 @@
 			  </li>
 			  <li>
 				<i class="fa-solid fa-angle-right"></i>
-				<a href="/product-listl">Number balloons</a>
+				<a href="/products-list">Number balloons</a>
 			  </li>
 			  <li>
 				<i class="fa-solid fa-angle-right"></i>
@@ -101,7 +101,8 @@
 					</svg>
 			  	</i>
 				<%= customerServiceNumber %> 
-			</a> | 
+			</a>
+			<br/>
 			
 			<a class="phone" href="callto:<%= customerServiceNumberExtra %>">
 				<i>
@@ -183,9 +184,10 @@
 					   style="fill:none;stroke:#f6ff00;stroke-width:30;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
 					   id="path2306" /></g></g></g></g></svg>
 		  </i>
+
 		  <div>
-			<p>24/7 Live Chat</p>
-			<p>Chat with us anytime</p>
+			<p>Live Chat</p>
+			<p>Chat with us 5 days a week</p>
 		  </div>
 		</div>
 		<div class="d-flex">
@@ -226,7 +228,7 @@
 		  </i>
 		  <div>
 			<p> <%= companyAddress %> </p>
-			<span><a href="https://maps.app.goo.gl/Eu3xfxj9pmF2Pkdc7">Get Directions </span>
+			<span><a href="<%= googleMapsLink %>">Get Directions </span>
 			
 			</a>
 		  </div>
@@ -241,11 +243,11 @@
 		  <p><span>© 2021 - <%= (new Date()).getFullYear() %> </span> <%= siteName %> </p>
 		</div>
 		<ul class="social-media ">
-		<li><a href="https://medium.com/@citation.bashballoonsdecor"><i class="fa-brands fa-medium"></i></a></li>
-		  <li><a href="https://www.facebook.com/BashBalloonDecorDeliveryInc"><i class="fa-brands fa-facebook-f"></i></a></li>
-		  <li><a href="https://www.instagram.com/asong_nic/"><i class="fa-brands fa-instagram"></i></a></li>
-		  <li><a href="https://twitter.com/asong_nic"><i class="fa-brands fa-twitter"></i></a></li>
-		  <li><a href="https://www.youtube.com/@bashballoonsdecor2333"><i class="fa-brands fa-youtube"></i></a></li>
+		  <li><a href="<%= mediumLink %>"><i class="fa-brands fa-medium"></i></a></li>
+		  <li><a href="<%= facebookLink %>"><i class="fa-brands fa-facebook-f"></i></a></li>
+		  <li><a href="<%= instagramLink %>"><i class="fa-brands fa-instagram"></i></a></li>
+		  <li><a href="<%= twitterLink %>"><i class="fa-brands fa-twitter"></i></a></li>
+		  <li><a href="<%= youtubeLink %>"><i class="fa-brands fa-youtube"></i></a></li>
 		 
 		</ul>
 	  </div>
