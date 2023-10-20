@@ -3,7 +3,6 @@ const sqlite3 = require('sqlite3').verbose();
 
 // open the database
 function getPackageItems (packageid = '') {
-   
     let db = new sqlite3.Database('./database/sqlitefile/mvp_database.db', sqlite3.OPEN_READWRITE, (err) => {
         if (err) {
           throw(err.message);
@@ -33,15 +32,8 @@ function getPackageItems (packageid = '') {
               }
               console.log('Close the database connection.');
           });
-            
-            
         }
       });
-
 }
-
-
-
-
 
 exports.getPackageItems = getPackageItems
