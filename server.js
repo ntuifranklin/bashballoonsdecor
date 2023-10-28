@@ -15,7 +15,7 @@ const PORT = 8888;
 app.set('trust proxy', 1);
 app.use(cookieSession({
     name: 'session',
-    keys: [faker.internet.password(50),faker.internet.password(50)],
+    keys: [faker.internet.password(16),faker.internet.password(16)],
 }))
 
 
@@ -35,7 +35,7 @@ app.locals.facebookLink = 'https://www.facebook.com/BashBalloonDecorDeliveryInc'
 app.locals.instagramLink = 'https://www.instagram.com/bashballoons_decor/';
 app.locals.twitterLink = 'https://twitter.com/asong_nic';
 app.locals.youtubeLink = 'https://www.youtube.com/@bashballoonsdecor2333';
-app.locals.googleMapsLink ='https://www.google.com/maps/place/7823+Parston+Dr+k,+Forestville,+MD+20747/@38.8469751,-76.8808755,15.84z/data=!4m10!1m2!2m1!1s+%09%09%09++7823+Parston+Dr+K,+Suite+E+%26+F,+Forestville+MD,+20747+!3m6!1s0x89b7be6074b9eddb:0x446d2f9aaed5368c!8m2!3d38.8461893!4d-76.8706054!15sCjU3ODIzIFBhcnN0b24gRHIgSywgU3VpdGUgRSAmIEYsIEZvcmVzdHZpbGxlIE1ELCAyMDc0N5IBCnN1YnByZW1pc2XgAQA!16s%2Fg%2F11qzd9h31x?entry=ttu';
+app.locals.googleMapsLink ='https://maps.app.goo.gl/6GXT9YBSDnazZXwZ7';
 
 //app.locals.companyAddress = 'Hollow Log Dr, Upper Marlboro, MD 20774';
 //setting global variables to be used by the whole app: 
