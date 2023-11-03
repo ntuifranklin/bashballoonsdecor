@@ -3,16 +3,26 @@
 var mysql = require('mysql');
 
 
+require('dotenv').config();
+/*
+
+export DATABASE_NAME='bashballoonsdecor'
+export DATABASE_HOST='localhost'
+export DATABASE_USER='spacehawk'
+export DATABASE_PASSWORD='jQTH3jhzeaweS65dDedfCASlsvg='
+*/
+
+
 // open the database
 async function getPackageItems (packageid = '') {
 
     return new Promise((resolve, reject) => {
                 
       var con = mysql.createConnection({
-        host: "localhost",
-        user: "spacehawk",
-        password: "jQTH3jhzeaweS65dDedfCASlsvg=",
-        database: "bashballoonsdecor"
+        host: process.env.DATABASE_HOST,
+        user: process.env.DATABASE_USER,
+        password: process.env.DATABASE_PASSWORD,
+        database: process.env.DATABASE_NAME
       });
 
        con.connect(function(err) {
