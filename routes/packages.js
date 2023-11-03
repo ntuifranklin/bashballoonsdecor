@@ -6,17 +6,6 @@ const router = express.Router();
 
 var packagesid = ['d09745340cebd03c6e0a','ab7adb97a1f89a92527a','bfcd68043040f450b8e7'];
 
-async function getPackage(packageId){
-    return await databaseAccessor.getPackageItems(packageid=packageId).
-    then(response => {
-        const theResponse = response;
-        return theResponse;
-    }).
-    catch(err => {
-        return Error(err);
-    });
-}
-
 try {
    
     module.exports = () => {
