@@ -40,8 +40,42 @@ async function getPackageItems (packageid = '') {
           resolve(result) ;
         });
       });
+      
+   
     });
 
 }
 
-exports.getPackageItems = getPackageItems
+exports.getPackageItems = getPackageItems ;
+
+
+async function getIndividualItems () {
+
+  return new Promise((resolve, reject) => {
+              
+    var con = mysql.createConnection({
+      host: process.env.DATABASE_HOST,
+      user: process.env.DATABASE_USER,
+      password: process.env.DATABASE_PASSWORD,
+      database: process.env.DATABASE_NAME
+    });
+
+     con.connect(function(err) {
+      if (err) reject(err);
+      selectsql = `SELECT *
+                    FROM IndividualItems
+                  `;
+      con.query(selectsql, function (err, result, fields) {
+        if (err) reject(err);
+        
+        resolve(result) ;
+      });
+    });
+
+    
+  });
+
+}
+
+exports.getIndividualItems = getIndividualItems
+

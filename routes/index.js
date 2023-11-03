@@ -7,6 +7,8 @@ const cartRoute = require('./cart');
 const packagesRoute = require('./packages');
 const productListRoute = require('./product-list');
 const contactRoute = require('./contact');
+const productDetailsRoute = require('./product-details');
+
 
 const databaseAccessor = require('../database/controllers/database.js');
 
@@ -38,7 +40,7 @@ module.exports = () => {
     });
     
     
-    router.get('/packages', async (request, response) => { 
+    router.get(['/packages','/packages-list','/packageslist','/packageslists'], async (request, response) => { 
         
         var packagesid = ['d09745340cebd03c6e0a','ab7adb97a1f89a92527a','bfcd68043040f450b8e7'];
 
@@ -63,11 +65,23 @@ module.exports = () => {
         
     });
     
-      
-    router.get(['/product-list','/products-list'], (request, response) => { 
+    router.get('/', async (request, response) => { 
         
-        response.render('layout', { pageTitle: 'Available Products', template: 'product-list'});
-
+    });
+      
+    router.get(['/product-list','/products-list'], async(request, response) => { 
+        const list_of_items = await databaseAccessor.getIndividualItems();
+        
+        response.render('layout', { 
+            pageTitle: 'Individual Items | Individual Products', 
+            template: 'product-list',
+            list_of_items : list_of_items,
+            category: 'Individual Party Rental Items',
+        }); 
+    });
+    
+    router.get(['/product-details','/individual-item-details','/item-details','items-details'], (request, response) => { 
+        response.render('layout', { pageTitle: 'Details of Product with title BlaBlaBla', template: 'product-details'});
     });
     
     router.get(['/contact','/contactus'], (request, response) => { 
@@ -82,6 +96,7 @@ module.exports = () => {
     router.use('/packages', packagesRoute());
     router.use(['/product-list','/products-list'], productListRoute());
     router.use(['/contact','/contactus'], contactRoute());
+    router.use(['/product-details','/productdetails','/individual-items-details'], productDetailsRoute());
         
     router.get('/*', (request, response) => {
 

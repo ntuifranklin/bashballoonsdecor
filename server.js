@@ -24,6 +24,7 @@ app.set('views', path.join(__dirname, './views'));
 app.use(express.static(path.join(__dirname, `./${template_folder}`)));
 
 app.locals.siteName = process.env.SITENAME;
+app.locals.miniSiteName = process.env.MINI_SITENAME;
 app.locals.pageTitle = process.env.PAGETITLE;
 app.locals.companyAddress= process.env.COMPANY_ADDRESS;
 app.locals.customerServiceNumber = process.env.CUSTOMER_SERVICE_NUMBER;
