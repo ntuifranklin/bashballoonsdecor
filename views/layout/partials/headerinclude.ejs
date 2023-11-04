@@ -115,9 +115,9 @@
   
 						<div class="cart-btns d-flex align-items-center justify-content-between">
   
-						  <a class="font-bold" href="JavaScript:void">View Cart</a>
+						  <a class="font-bold" href="/cart">View Cart</a>
   
-						  <a class="font-bold theme-bg-clr text-white checkout" href="JavaScript:void">Checkout</a>
+						  <a class="font-bold theme-bg-clr text-white checkout" href="/checkout">Checkout</a>
   
 						</div>
   
@@ -147,14 +147,16 @@
 						-->
 					  </li>
 					  <li class="navbar-dropdown menu-item-children">
-						<a href="javascript:void(0)">Balloons</a>
+						<a href="javascript:void(0)">Party Rental Individual Items</a>
 						<div class="dropdown">
-						  <a href="/products-list">product list</a>
-						  <!-- <a href="/products/productid">product details</a> -->
-						  <a href="/cart">shop cart</a>
-						  <a href="/checkout">cart checkout</a>
+						  <a href="/products-list">Party Rental Individual Items List</a>
+						  <% /* <a href="/products/productid">Product details</a> */ %>
+						  <a href="/cart">Shopping Cart</a>
+						  <a href="/checkout">Cart Checkout</a>
 						</div>
 					  </li>
+					  <% 
+					  /*
 					  <li class="navbar-dropdown menu-item-children">
 						<a href="javascript:void(0)">occasion</a>
 						<div class="dropdown">
@@ -162,13 +164,16 @@
 						  <a href="/occasiondetails">occasion details</a>
 						</div>
 					  </li>
+					  */
+					  %>
 					  <li class="navbar-dropdown">
-						<a href="/packages">Packages</a>
+						<a href="/packages">Party Rental Packages</a>
 					  </li>
-					<!--
+					
 						
 					  
-
+					  <%
+					  /*
 					  <li class="navbar-dropdown menu-item-children">
 						<a href="javascript:void(0)">pages</a>
 						<div class="dropdown">
@@ -184,9 +189,10 @@
 						  <a href="/">our blog</a>
 						  <a href="/">blog details</a>
 						</div>
-					  </li> 
-
-					  -->
+					  </li>
+					  */ 
+					  %>
+					  
 					  <li class="navbar-dropdown">
 						<a href="/contact">Contact</a>
 					  </li>
@@ -229,56 +235,63 @@
 		  </a>
 		</div>
 		  <ul>
-  
-			<li class="menu-item-has-children"><a href="JavaScript:void(0)">Home</a>
+
+			<li class="menu-item-has-children"><a href="/">Home</a>
+			<%
+			  /*
 			  <ul class="sub-menu">
   
 				<li><a href="/">home 1</a></li>
 				<li><a href="/">home 2</a></li>
 			  </ul>
+			  */
+			%>
 			</li>
-			<li class="menu-item-has-children"><a href="JavaScript:void(0)">Balloons</a>
+			<li class="menu-item-has-children"><a href="JavaScript:void(0)">Party Rental Individual Items</a>
 			  <ul class="sub-menu">
-				<li><a href="/products-list">product list</a></li>
-				<li> <a href="/product-list">product details</a></li>
-				<li><a href="/cart">shop cart</a></li>
-				<li><a href="/checkout">cart checkout</a></li>
+				<li><a href="/products-list">Party Rental Individual Items List</a></li>
+				<% /*<li> <a href="/product-details">product details</a></li>*/ %>
+				<li><a href="/cart">Shopping Cart</a></li>
+				<li><a href="/checkout">Cart Checkout</a></li>
 			  </ul>
 			</li>
   
-			
+			<%
+			/*
 			<li class="menu-item-has-children"><a href="JavaScript:void(0)">occasion</a>
-  
+
 			<ul class="sub-menu">
-  
-			  <li><a href="/">occasion decoration</a></li>
-			  <li><a href="/">occasion details</a></li>
-  
+
+			<li><a href="/">occasion decoration</a></li>
+			<li><a href="/">occasion details</a></li>
+
 			</ul>
-  
+
 			</li>
 			<li><a href="/packages">Seasonal & Holidays</a></li>
 			<li class="menu-item-has-children"><a href="JavaScript:void(0)">News</a>
-  
+
 			<ul class="sub-menu">
-			  <li><a href="/blog">our blog</a></li>
-			 <li><a href="/blog-details">blog details</a></li>
+			<li><a href="/blog">our blog</a></li>
+			<li><a href="/blog-details">blog details</a></li>
 			
 			</ul>
-  
+
 			</li>
 			<li class="menu-item-has-children"><a href="JavaScript:void(0)">pages</a>
-  
+
 			<ul class="sub-menu">
-  
-			 <li><a href="/">about</a></li>
-			 <li><a href="/login">login</a></li>
-			 <li><a href="/404">404</a></li>
+
+			<li><a href="/">about</a></li>
+			<li><a href="/login">login</a></li>
+			<li><a href="/404">404</a></li>
 			</ul>
-  
+
 			</li>
+			*/
+			%>
   
-			<li><a href="/contact">contacts</a></li>
+			<li><a href="/contact">Contacts</a></li>
   
 			</ul>
   
