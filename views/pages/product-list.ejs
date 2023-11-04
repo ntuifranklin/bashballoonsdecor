@@ -162,12 +162,13 @@
       <!-- BEGIN ITEMS LISTING -->
       <div class="col-lg-8">
         <div class="products">
-          <h6>Items 1-<%= list_of_items.length %>   <% /* of 6133 */ %> </h6>
+          <h6>Items 1-<%= list_of_items.length %> of <%= list_of_items.length %>  <% /* of 6133 */ %> </h6>
 
-          <%
-            /*
-              Filtering by options of the listing
+        
               <div class="sort-by d-flex align-items-center">
+              <%
+              /*
+                Filtering by options of the listing
                 <span>Sort By</span><select class="nice-select Advice">
                     <option>Recently Added</option>
                     <option>Select Topic 1</option>
@@ -175,6 +176,9 @@
                     <option>Select Topic 3</option>
                     <option>Select Topic 4</option>
                 </select>
+                
+              */
+              %>
                 <div class="nav nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
                   <button class="nav-link active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-home" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">
                     <i>
@@ -194,8 +198,6 @@
                   </button>
               </div>
               </div>
-            */
-          %>
         </div>
         <div class="tab-content" id="v-pills-tabContent">
 
@@ -240,10 +242,12 @@
                     </div>
                   </li>
             <% } %>
-
-
-            <% /*Pagination Gap Below If needed */ %>
             <ul>
+
+
+              <% 
+              /*
+              Pagination Gap Below If needed 
               <div class="pagination-gap three">
                 <ul id="border-pagination">
                   <li class="ps-0"><a href="javascript:void(0)"><i class="fa-solid fa-angle-left"></i></a></li>
@@ -254,6 +258,8 @@
                   <li><a href="javascript:void(0)"><i class="fa-solid fa-angle-right"></i></a></li>
                 </ul>
               </div>
+              */ 
+              %>
             </ul>
           </div>
 
@@ -284,6 +290,11 @@
                 </div>
               <% } %>
               
+
+
+              <% 
+              /* 
+              Pagination 
               <div class="pagination-gap">
                 <ul id="border-pagination">
                   <li class="ps-0"><a href="javascript:void(0)"><i class="fa-solid fa-angle-left"></i></a></li>
@@ -294,6 +305,8 @@
                   <li><a href="javascript:void(0)"><i class="fa-solid fa-angle-right"></i></a></li>
                 </ul>
               </div>
+              */
+              %>
             </div>
           </div>
         </div>
