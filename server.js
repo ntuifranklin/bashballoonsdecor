@@ -11,7 +11,7 @@ const { response } = require('express');
 require('dotenv').config();
 
 const app = express();
-const PORT = 8888;
+const PORT = process.env.SITE_PORT;
 app.set('trust proxy', 1);
 app.use(cookieSession({
     name: 'session',
