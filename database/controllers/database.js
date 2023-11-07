@@ -7,7 +7,7 @@ require('dotenv').config();
 
 
 // open the database
-async function getPackageItems (packageid = '') {
+async function getPackageItems (packageid= '') {
 
     return new Promise((resolve, reject) => {
                 
@@ -20,6 +20,7 @@ async function getPackageItems (packageid = '') {
 
        con.connect(function(err) {
         if (err) reject(err);
+        
         selectsql = `SELECT *
                 FROM package_contains_items pci
                 JOIN package p ON p.packageid = pci.packageid
