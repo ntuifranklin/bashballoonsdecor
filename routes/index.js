@@ -35,8 +35,17 @@ module.exports = () => {
     });
     
     router.get('/cart', (request, response) => { 
-        response.render(
-            'layout', { pageTitle: 'Your Cart Items', template: 'cart'});
+        var userCart ;
+        if (!request.session.userCart) {
+            request.session.userCart = {} ;
+        };
+        userCart = request.session.userCart ;
+        response.render('layout', { pageTitle: 'Your Cart Items', template: 'cart', userCart: userCart});
+    });
+    
+    router.post('/cart', (request, response) => { 
+        
+        response.end();
     });
     
     
@@ -65,9 +74,6 @@ module.exports = () => {
         
     });
     
-    router.get('/', async (request, response) => { 
-        
-    });
       
     router.get(['/product-list','/products-list'], async(request, response) => { 
         const list_of_items = await databaseAccessor.getIndividualItems();

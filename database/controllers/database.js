@@ -4,13 +4,6 @@ var mysql = require('mysql');
 
 
 require('dotenv').config();
-/*
-
-export DATABASE_NAME='bashballoonsdecor'
-export DATABASE_HOST='localhost'
-export DATABASE_USER='spacehawk'
-export DATABASE_PASSWORD='jQTH3jhzeaweS65dDedfCASlsvg='
-*/
 
 
 // open the database

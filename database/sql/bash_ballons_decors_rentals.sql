@@ -1,4 +1,5 @@
 -- Create the database
+
 CREATE DATABASE PartyRentalDB;
 USE PartyRentalDB;
 
