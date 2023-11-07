@@ -1,6 +1,10 @@
 const express = require('express');
 const router = express.Router();
 
+const createError = require('http-errors');
+const bodyParser = require('body-parser');
+
+
 module.exports = () => { 
     
     router.get('/', (request, response) => { 
@@ -14,26 +18,38 @@ module.exports = () => {
     });
 
     router.post('/', (request, response) => {
-       
-       
+         
         if (!request.session.userCart) {
             request.session.userCart = {} ;
         };
-        var userCart = request.session.userCart ;
-        var productID = request.body.productID;
-        if (!userCart["products"]) {
-            userCart["products"] = {
+        
+        var itemUpdateID = request.body.itemUpdateID;
+        var productOrPackage = request.body.updateType ;
+        var keyToUpdate = "";
+        if (productOrPackage == "product")
+            keyToUpdate = "product" ;
+        else 
+            keyToUpdate = "package";
+        console.log(`${itemUpdateID}`);
+        if (!request.session.userCart[keyToUpdate]) {
+            request.session.userCart[keyToUpdate] = {
                 
             }
         }
-        if (!userCart["products"][productID]) {
-            userCart["products"][productID] = {
+        if (!request.session.userCart[keyToUpdate][itemUpdateID]) {
+            request.session.userCart[keyToUpdate][itemUpdateID] = {
+            }
+        }
+        
+        if (request.session.userCart[keyToUpdate][itemUpdateID]) {
+            request.session.userCart[keyToUpdate][itemUpdateID] = {
                 "quantity" : 0
             }
         }
-        userCart["products"][productID]["quantity"] += 1;
+        request.session.userCart[keyToUpdate][itemUpdateID]["quantity"] += 1;
         request.session.save();
-        response.redirect(200, '/product-list');
+        response.end();
+        //response.redirect(200, '/product-list');
     });
      
 

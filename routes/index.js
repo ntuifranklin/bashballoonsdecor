@@ -35,7 +35,7 @@ module.exports = () => {
     });
     
     router.get('/cart', (request, response) => { 
-        var userCart ;
+        var userCart = {} ;
         if (!request.session.userCart) {
             request.session.userCart = {} ;
         };
@@ -43,10 +43,46 @@ module.exports = () => {
         response.render('layout', { pageTitle: 'Your Cart Items', template: 'cart', userCart: userCart});
     });
     
-    router.post('/cart', (request, response) => { 
+    router.post('/cart', (request, response) => {
+        /* Here a post request at assets/js/cart.js 
+         file was sent through a function called updateCart.
+         this function takes two parameters : the itemID (productID or packageid)
+         and the itemType ( product or package ) 
+        */
+        if (!request.session.userCart) {
+            request.session.userCart = {} ;
+        };
         
+        var itemUpdateID = request.body.itemUpdateID;
+        var productOrPackage = request.body.updateType ;
+        var keyToUpdate = "";
+        if (productOrPackage == "product")
+            keyToUpdate = "product" ;
+        else 
+            keyToUpdate = "package";
+        console.log(`${itemUpdateID}`);
+        if (!request.session.userCart[keyToUpdate]) {
+            request.session.userCart[keyToUpdate] = {
+                
+            }
+        }
+        if (!request.session.userCart[keyToUpdate][itemUpdateID]) {
+            request.session.userCart[keyToUpdate][itemUpdateID] = {
+            }
+        }
+        
+        if (request.session.userCart[keyToUpdate][itemUpdateID]) {
+            request.session.userCart[keyToUpdate][itemUpdateID] = {
+                "quantity" : 0
+            }
+        }
+        request.session.userCart[keyToUpdate][itemUpdateID]["quantity"] += 1;
+        request.session.save();
         response.end();
+        //response.redirect(200, '/product-list');
     });
+
+
     
     
     router.get(['/packages','/packages-list','/packageslist','/packageslists'], async (request, response) => { 

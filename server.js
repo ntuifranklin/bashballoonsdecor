@@ -34,7 +34,8 @@ app.use(session({
     secret: faker.internet.password(30),
     resave: true,
     saveUninitialized: false,
-    store: sessionStore
+    store: sessionStore,
+    cookie: {maxAge : 60000000},
 }));
 
 app.set('view engine', 'ejs');
