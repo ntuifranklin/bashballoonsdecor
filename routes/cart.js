@@ -29,7 +29,7 @@ module.exports = () => {
             keyFieldName = process.env.PACKAGE_TABLE_KEY_FIELD_NAME;
         }
             
-        console.log(`ItemID received : ${itemUpdateID}`);
+        //console.log(`product or package ID received : ${itemUpdateID}`);
         if (!request.session.userCart[keyToUpdate]) {
             request.session.userCart[keyToUpdate] = {
                 
@@ -56,7 +56,7 @@ module.exports = () => {
            
             if (itemUpdateID in request.locals.products ) {
                 request.session.userCart[keyToUpdate][itemUpdateID]["productDetails"] = 
-                request.locals.products[itemUpdateID];
+                request.locals.products[itemUpdateID]["productDetails"];
                 request.session.save();
             } else {
                 console.log(`BIG ERROR(THIS SHOULD NOT HAPPEN) : Products ${itemUpdateID} not found in request.locals.products`);
@@ -65,9 +65,10 @@ module.exports = () => {
         } else if (keyToUpdate == "package") {
     
             if (itemUpdateID in request.locals.packages ) {
-                request.session.userCart[keyToUpdate][itemUpdateID]["packageDetails"] = 
-                request.locals.packages[itemUpdateID];
-                request.session.save();
+                
+                    request.session.userCart[keyToUpdate][itemUpdateID]["packageDetails"] = 
+                    request.locals.packages[itemUpdateID];
+                    request.session.save();
             } else {
                 console.log(`BIG ERROR(THIS SHOULD NOT HAPPEN) : Packages ${itemUpdateID} not found in request.locals.packages`);
             } 
@@ -89,7 +90,7 @@ module.exports = () => {
         var userCart = {} ;
         if (request.session.userCart)
             userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
-        console.log('User Cart: ' + JSON.stringify(userCart));
+        console.log('User Cart: ' + JSON.stringify(userCart, null, 4));
         response.render('layout', { pageTitle: 'Your Cart Items', template: 'cart', userCart: userCart});
     });
 

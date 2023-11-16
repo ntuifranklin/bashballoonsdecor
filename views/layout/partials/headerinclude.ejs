@@ -59,11 +59,16 @@
 				  <div class="cart-popup">
   
 					
+					<% var grandTotal = 0 ; %>
+					<% var totalItems = 0 ; %>
 					<% if (Object.keys(userCart).length > 0 ) { %>
 						<ul>
-							<% for ( key in userCart ) { %>
+							<%  if ( "product" in userCart)  { %>
 
-								<% if (key == "product") { %>
+								<% for ( productKey in userCart["product"] ) { %>
+									
+                                    <% var product = JSON.parse(JSON.stringify(userCart["product"][productKey])) ;%>
+                                    <% var productDetails = product["productDetails"] ; %>
 									<li class="d-flex align-items-center position-relative">
 		
 										<div class="p-img light-bg">
@@ -74,17 +79,21 @@
 				
 										<div class="p-data">
 				
-										<h3 class="font-semi-bold">Pastoral Principles Cards</h3>
+										<h3 class="font-semi-bold"><%= productDetails['individItemTitle'] %></h3>
 				
-										<p class="theme-clr font-semi-bold">1 x $25.00</p>
+										<p class="theme-clr font-semi-bold"><%= product['quantity'] %> x $<%= productDetails['individItemUnitCost'] %></p>
 				
 										</div>
 				
 										<a href="JavaScript:void(0)" id="crosss"></a>
 				
 									</li>
-								<% } else if ( key == "package") { %>
+								<% } %>
+							<% } else if ("package" in userCart ) { %>
+								<% for ( packageKey in userCart["package"] ) { %>
 									
+                                    <% var package = JSON.parse(JSON.stringify(userCart["package"][packageKey])); %>
+                                    <% var packageDetails = package["packageDetails"] ; %>
 									<li class="d-flex align-items-center position-relative">
 		
 										<div class="p-img light-bg">
@@ -95,9 +104,9 @@
 				
 										<div class="p-data">
 				
-										<h3 class="font-semi-bold">Pastoral Principles Cards</h3>
+										<h3 class="font-semi-bold"><%= packageDetails[0]['packagedesc'] %></h3>
 				
-										<p class="theme-clr font-semi-bold">1 x $25.00</p>
+										<p class="theme-clr font-semi-bold"><%= package['quantity'] %> x $<%=  packageDetails[0]['packagecost'] %></p>
 				
 										</div>
 				
@@ -115,7 +124,7 @@
 
 						<span class="font-semi-bold">Total:</span>
 
-						<span class="font-semi-bold">$60.00</span>
+						<span class="font-semi-bold">$<%= grandTotal %></span>
 
 						</div>
 
@@ -129,7 +138,7 @@
 
 					<% } else { %>
 							<li>
-								<div class="alert alert-secondary" role="alert">
+								<div class="alert alert-dark" role="alert">
 									<hr>
 									<h4 class="alert-heading">Sorry. Your Cart is Empty!</h4>
 									<hr>
@@ -138,10 +147,6 @@
 							</li>
 							
 					<% } %>
-  
-  
-						
-  
 				  </div>
   
 		  </div>
@@ -156,9 +161,11 @@
 		<nav class="navbar">
 		  <ul class="navbar-links">
 					  <li class="navbar-dropdown menu-item-children">
-						<a href="/"><i>
-						  <img alt="home" src="assets/img/home.png">
-						</i>Home</a>
+						<a href="/">
+							<i>
+						  		<img alt="home" src="assets/img/home.png">
+							</i>Home
+						</a>
 						
 					  </li>
 					  <li class="navbar-dropdown menu-item-children">

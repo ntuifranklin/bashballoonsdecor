@@ -69,6 +69,10 @@ app.locals.list_of_items = null ;
 app.locals.products = null ;
 
 
+var package3000ID = 'd09745340cebd03c6e0a';
+var package3800ID = 'ab7adb97a1f89a92527a';
+var package4900ID = 'bfcd68043040f450b8e7';
+
 app.use(async(request, response, next) => { 
 
     /*
@@ -81,22 +85,38 @@ app.use(async(request, response, next) => {
             
     /* Database data for packages */
     if (app.locals.packages == null) {
-            
+        app.locals.packages = { } ;
+    } ;
+
+    const [package_3000,package_3800,package_4900] = 
+    await Promise.all([
+        databaseAccessor.getDatabaseObject(tableName='package',keyFieldName='packageid', keyFieldValue=package3000ID),
+        databaseAccessor.getDatabaseObject(tableName='package',keyFieldName='packageid', keyFieldValue=package3800ID),
+        databaseAccessor.getDatabaseObject(tableName='package',keyFieldName='packageid', keyFieldValue=package4900ID)
+    ]);
+        
+    app.locals.packages[package3000ID] = JSON.parse(JSON.stringify(package_3000));
+    app.locals.packages[package3800ID] = JSON.parse(JSON.stringify(package_3800));
+    app.locals.packages[package4900ID] = JSON.parse(JSON.stringify(package_4900)); 
+
+    if ( app.locals.packagesAndItems == null) {
+             
         /**
          * Load all packages here so it is available from all over the app
-         * To do : replace the harded coded IDs below by a call to the databse or reading from 
+         * To do : replace the harded coded IDs below by a call to the database or reading from 
          * an environment variable
          */
-        var package3000ID = 'd09745340cebd03c6e0a';
-        var package3800ID = 'ab7adb97a1f89a92527a';
-        var package4900ID = 'bfcd68043040f450b8e7';
-        const package_and_items_3000 = await databaseAccessor.getPackageItems(packageid = package3000ID);
-        const package_and_items_3800 = await databaseAccessor.getPackageItems(packageid = package3800ID);
-        const package_and_items_4900 = await databaseAccessor.getPackageItems(packageid = package4900ID);
+        const[package_and_items_3000,package_and_items_3800,package_and_items_4900] = 
+        await Promise.all([
+            databaseAccessor.getPackageItems(packageid = package3000ID),
+            databaseAccessor.getPackageItems(packageid = package3800ID),
+            databaseAccessor.getPackageItems(packageid = package4900ID)
+        ]);
+        
         app.locals.packagesAndItems = {} ;
-        app.locals.packagesAndItems[package3000ID] = package_and_items_3000 ;
-        app.locals.packagesAndItems[package3800ID] = package_and_items_3800 ;
-        app.locals.packagesAndItems[package4900ID] = package_and_items_4900 ;
+        app.locals.packagesAndItems[package3000ID] = JSON.parse(JSON.stringify(package_and_items_3000)) ;
+        app.locals.packagesAndItems[package3800ID] = JSON.parse(JSON.stringify(package_and_items_3800)) ;
+        app.locals.packagesAndItems[package4900ID] = JSON.parse(JSON.stringify(package_and_items_4900)) ;
         
         //console.log(`Packages and Items : ${JSON.stringify(app.locals.packagesAndItems,null, 4)}`);
         app.locals.packagesArray = [
@@ -105,17 +125,6 @@ app.use(async(request, response, next) => {
             package_and_items_4900,
         ];
         
-        const package_3000 = await databaseAccessor.getDatabaseObject(tableName='package',keyFieldName='packageid', keyFieldValue=package3000ID);
-        const package_3800 = await databaseAccessor.getDatabaseObject(tableName='package',keyFieldName='packageid', keyFieldValue=package3800ID);
-        const package_4900 = await databaseAccessor.getDatabaseObject(tableName='package',keyFieldName='packageid', keyFieldValue=package4900ID);
-        
-        app.locals.packages = { } ;
-        app.locals.packages[package3000ID] = package_3000;
-        app.locals.packages[package3800ID] = package_3800;
-        app.locals.packages[package4900ID] = package_4900;
-        
-        
-       
     }
 
     var list_of_items = null ;
@@ -130,26 +139,23 @@ app.use(async(request, response, next) => {
     list_of_items = app.locals.list_of_items ;
     if (app.locals.products == null) { 
         app.locals.products = {} ;
+    } ;
+    
+    /* now loop through the list_of_items */
+    var index = 0 ;
+    for (index = 0 ; index < list_of_items.length ; index++ ) {
         
-        /* now loop through the list_of_items */
-        var index = 0 ;
-        for (index = 0 ; index < list_of_items.length ; index++ ) {
-            
-            var item = list_of_items[index]; 
-            var itemID = item.individItemID ;
-            if (!(itemID in app.locals.products)) {
-                app.locals.products[itemID] = {
-                } ;
+        var item = list_of_items[index]; 
+        var itemID = item.individItemID ;
+        if (!(itemID in app.locals.products)) {
+            app.locals.products[itemID] = {
             } ;
-
-            if (!("productDetails" in app.locals.products[itemID])) {
-                app.locals.products[itemID] = {
-                    "productDetails" : null,
-                } ;
-            } ;
-            app.locals.products[itemID]["productDetails"] = JSON.parse(JSON.stringify(item));
         } ;
-        
+
+        if (!("productDetails" in app.locals.products[itemID])) {
+            app.locals.products[itemID]["productDetails"] = {} ;
+        } ;
+        app.locals.products[itemID]["productDetails"] = JSON.parse(JSON.stringify(item));
     } ;
 
     /* update  the request.locals */

@@ -111,10 +111,12 @@ MariaDB [bashballoonsdecor]> describe package
 
      con.connect(function(err) {
       if (err) reject(err);
-      selectsql = `SELECT *
+      selectsql = `
+                    SELECT *
                     FROM ${tableName}
                     WHERE ${keyFieldName} = '${keyFieldValue}'
                   `;
+      //console.log(`Running sql in getDatabaseObject : ${selectsql}`);
       con.query(selectsql, function (err, result, fields) {
         if (err) reject(err);
         
