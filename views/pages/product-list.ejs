@@ -234,7 +234,8 @@
                       </ul>
                       <span>SKU-<%= individual_item.individItemID %></span>
                       <div class="add-to-cart two">
-                        <a href="#" class="btn"><span>Add to Cart</span></a>
+                      
+                        <a href="#" class="btn" onclick='updateCart("<%= individual_item.individItemID %>","product")'><span>Add to Cart</span></a>
                         <a href="#" class="heart-wishlist">
                           <i class="fa-regular fa-heart"></i>
                         </a>
@@ -285,6 +286,13 @@
                           <i class="fa-solid fa-star"></i>
                         </div>
                         <h6>$<%= individual_item_box.individItemUnitCost %></h6>
+                      </div>
+                      <div class="add-to-cart two">
+                      
+                        <a href="#" class="btn" onclick="updateCart('<%= individual_item_box.individItemID %>')"><span>Add to Cart</span></a>
+                        <a href="#" class="heart-wishlist">
+                          <i class="fa-regular fa-heart"></i>
+                        </a>
                       </div>
                   </div>
                 </div>

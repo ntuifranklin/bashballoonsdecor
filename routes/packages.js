@@ -1,28 +1,37 @@
 
 const databaseAccessor = require('../database/controllers/database');
-
 const express = require('express');
 const router = express.Router();
-
-var packagesid = ['d09745340cebd03c6e0a','ab7adb97a1f89a92527a','bfcd68043040f450b8e7'];
 
 try {
    
     module.exports = () => {
+        /*
+         * Get the packages from the request.locals.packagesAndItems object
+         */
         
-        router.get('/', async (request, response) => { 
-            const package_and_items_3000 = await databaseAccessor.getPackageItems(packageid = 'd09745340cebd03c6e0a');
-            const package_and_items_3800 = await databaseAccessor.getPackageItems(packageid = 'ab7adb97a1f89a92527a');
-            const package_and_items_4900 = await databaseAccessor.getPackageItems(packageid = 'bfcd68043040f450b8e7');
+        router.get('/', async (request, response) => {
+
+            /* must have been loaded in server.js file  */   
+            var package3000ID = 'd09745340cebd03c6e0a';
+            var package3800ID = 'ab7adb97a1f89a92527a';
+            var package4900ID = 'bfcd68043040f450b8e7';
+            //console.log(`Packages And Items in packages.js: ${JSON.stringify(request.locals.packagesAndItems,null, 4)}`); 
             
-            response.render('layout', { 
+            var package3000 = request.locals.packagesAndItems[package3000ID];
+            var package3800 =  request.locals.packagesAndItems[package3800ID] ;
+            var package4900 = request.locals.packagesAndItems[package4900ID] ;
+            
+            response.render('layout', {
                 pageTitle: 'Packages and Bundles', 
                 template: 'packages',
-                package3000: package_and_items_3000,
-                package3800: package_and_items_3800,
-                package4900: package_and_items_4900,
-            }); 
+                package3000: package3000,
+                package3800: package3800,
+                package4900: package4900,
+            });
+            
         });
+
         return router;
     };
 } catch(err) {

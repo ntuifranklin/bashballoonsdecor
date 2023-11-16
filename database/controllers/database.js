@@ -4,17 +4,10 @@ var mysql = require('mysql');
 
 
 require('dotenv').config();
-/*
-
-export DATABASE_NAME='bashballoonsdecor'
-export DATABASE_HOST='localhost'
-export DATABASE_USER='spacehawk'
-export DATABASE_PASSWORD='jQTH3jhzeaweS65dDedfCASlsvg='
-*/
 
 
 // open the database
-async function getPackageItems (packageid = '') {
+async function getPackageItems (packageid= '') {
 
     return new Promise((resolve, reject) => {
                 
@@ -25,8 +18,9 @@ async function getPackageItems (packageid = '') {
         database: process.env.DATABASE_NAME
       });
 
-       con.connect(function(err) {
+       con.connect( function(err) {
         if (err) reject(err);
+        
         selectsql = `SELECT *
                 FROM package_contains_items pci
                 JOIN package p ON p.packageid = pci.packageid
@@ -51,7 +45,7 @@ exports.getPackageItems = getPackageItems ;
 
 async function getIndividualItems () {
 
-  return new Promise((resolve, reject) => {
+  return await new Promise((resolve, reject) => {
               
     var con = mysql.createConnection({
       host: process.env.DATABASE_HOST,
@@ -78,4 +72,62 @@ async function getIndividualItems () {
 }
 
 exports.getIndividualItems = getIndividualItems
+
+
+async function getDatabaseObject (tableName='IndividualItems', keyFieldName='individItemID', keyFieldValue='') {
+/*
+MariaDB [bashballoonsdecor]> describe IndividualItems ;
++-------------------------+-----------+------+-----+---------+-------+
+| Field                   | Type      | Null | Key | Default | Extra |
++-------------------------+-----------+------+-----+---------+-------+
+| individItemID           | char(10)  | NO   | PRI | NULL    |       |
+| individItemTitle        | char(100) | NO   |     | NULL    |       |
+| individItemDescription  | char(100) | NO   |     | NULL    |       |
+| individItemUnitCost     | float     | NO   |     | NULL    |       |
+| individItemQtyAvailable | int(11)   | NO   |     | NULL    |       |
++-------------------------+-----------+------+-----+---------+-------+
+5 rows in set (0.004 sec)
+
+MariaDB [bashballoonsdecor]> describe package
+    -> ;
++-------------+-------------+------+-----+---------+-------+
+| Field       | Type        | Null | Key | Default | Extra |
++-------------+-------------+------+-----+---------+-------+
+| packageid   | varchar(20) | NO   | PRI | NULL    |       |
+| packagedesc | varchar(22) | YES  |     | NULL    |       |
+| packagecost | smallint(6) | YES  |     | NULL    |       |
++-------------+-------------+------+-----+---------+-------+
+3 rows in set (0.071 sec)
+
+*/
+  return await new Promise((resolve, reject) => {
+              
+    var con = mysql.createConnection({
+      host: process.env.DATABASE_HOST,
+      user: process.env.DATABASE_USER,
+      password: process.env.DATABASE_PASSWORD,
+      database: process.env.DATABASE_NAME
+    });
+
+     con.connect(function(err) {
+      if (err) reject(err);
+      selectsql = `
+                    SELECT *
+                    FROM ${tableName}
+                    WHERE ${keyFieldName} = '${keyFieldValue}'
+                  `;
+      //console.log(`Running sql in getDatabaseObject : ${selectsql}`);
+      con.query(selectsql, function (err, result, fields) {
+        if (err) reject(err);
+        
+        resolve(result) ;
+      });
+    });
+    
+  });
+
+}
+
+exports.getDatabaseObject = getDatabaseObject ;
+
 

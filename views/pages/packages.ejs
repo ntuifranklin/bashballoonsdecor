@@ -32,10 +32,19 @@
                   <% for (var i = 0; i < package.length; i++) { %>
                       <li>  
                         <div class="bol"></div><%= package[i].qtyneeded %> &nbsp; <%= package[i].itemdesc %>
+                         
                       </li>
                   <% } %>
                 </ul>
                 <h5>$<%= package[0].packagecost %></h5>
+              </div>
+                       
+              <div class="add-to-cart two">
+                                
+                <a href="#" class="btn" onclick='updateCart("<%= package[0].packageid %>","package")'><span>Add to Cart</span></a>
+                <a href="#" class="heart-wishlist">
+                  <i class="fa-regular fa-heart"></i>
+                </a>
               </div>
             </div>
           </div>

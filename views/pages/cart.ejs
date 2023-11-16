@@ -15,106 +15,126 @@
   </section>
   <section class="gap">
       <div class="container">
+        <% //console.log(`${JSON.stringify(userCart)}`); %>
+        <% var noKeys = Object.keys(userCart) ; %>
+                
+        <% if(noKeys.length == 0) { %>
+            <div class="alert alert-dark" role="alert">
+                <h4 class="alert-heading">Your Cart is Empty!</h4>
+                <p>Looks like you haven't added any items to your cart yet.</p>
+                <hr>
+                <p class="mb-0">Please add some items to your cart.</p>
+            </div>
+        <% } else { %>
           <div class="row">
             <form class="woocommerce-cart-form">
               <div class="row">
                 <div class="col-lg-8">
                   <div style="overflow-x:auto;overflow-y: hidden;">
-                    <table class="shop_table table-responsive">
-                          <thead>
-                              <tr>
-                                  <th class="product-name">Product Detail</th>
-                                  <th class="product-price">Each Price</th>
-                                  <th class="product-quantity">Quantity</th>
-                                  <th class="product-subtotal">Total Price</th>
-                                  <th></th>
-                              </tr>
-                          </thead>
-                          <tbody>
-                              <tr class="product">
-                                  <td class="product-name">
-                                      <img alt="img" src="https://via.placeholder.com/70x70">
-                                      <div>
-                                          <span>Red Heart Balloon Decoration</span>
-                                          <p>Size: 8x</p>
-                                          <p>Color: Pink</p>
-                                          <p>SKU: 25-0458</p>
-                                      </div>
-                                  </td>
-                                  <td class="product-price">
-                                      <span class="woocommerce-Price-amount"><bdi><span class="woocommerce-Price-currencySymbol">$</span>18.61</bdi>
-                                      </span>          
-                                  </td>
-                                  <td class="product-quantity">
-                                      <input type="number" class="input-text" value="1" min="1" >
-                                  </td>
-                                  <td class="product-subtotal">
-                                      <span class="woocommerce-Price-amount"><bdi><span class="woocommerce-Price-currencySymbol">$</span>18.61</bdi></span>
-                                  </td>
-                                  <td class="product-remove">
-                                      <a href="#"><i class="fa-regular fa-circle-xmark"></i></a>
-                                  </td>
-                              </tr>
-                              <tr class="product">
-                                  <td class="product-name">
-                                      <img alt="img" src="https://via.placeholder.com/70x70">
-                                      <div>
-                                          <span>Red Heart Balloon Decoration</span>
-                                          <p>Size: 8x</p>
-                                          <p>Color: Pink</p>
-                                          <p>SKU: 25-0458</p>
-                                      </div>
-                                  </td>
-                                  <td class="product-price">
-                                      <span class="woocommerce-Price-amount"><bdi><span class="woocommerce-Price-currencySymbol">$</span>18.61</bdi>
-                                      </span>          
-                                  </td>
-                                  <td class="product-quantity">
-                                      <input type="number" class="input-text" value="1" min="1" >
-                                  </td>
-                                  <td class="product-subtotal">
-                                      <span class="woocommerce-Price-amount"><bdi><span class="woocommerce-Price-currencySymbol">$</span>18.61</bdi></span>
-                                  </td>
-                                  <td class="product-remove">
-                                      <a href="#"><i class="fa-regular fa-circle-xmark"></i></a>
-                                  </td>
-                              </tr>
-                              <tr class="product">
-                                  <td class="product-name">
-                                      <img alt="img" src="https://via.placeholder.com/70x70">
-                                      <div>
-                                          <span>Red Heart Balloon Decoration</span>
-                                          <p>Size: 8x</p>
-                                          <p>Color: Pink</p>
-                                          <p>SKU: 25-0458</p>
-                                      </div>
-                                  </td>
-                                  <td class="product-price">
-                                      <span class="woocommerce-Price-amount"><bdi><span class="woocommerce-Price-currencySymbol">$</span>18.61</bdi>
-                                      </span>          
-                                  </td>
-                                  <td class="product-quantity">
-                                      <input type="number" class="input-text" value="1" min="1" >
-                                  </td>
-                                  <td class="product-subtotal">
-                                      <span class="woocommerce-Price-amount"><bdi><span class="woocommerce-Price-currencySymbol">$</span>18.61</bdi></span>
-                                  </td>
-                                  <td class="product-remove">
-                                      <a href="#"><i class="fa-regular fa-circle-xmark"></i></a>
-                                  </td>
-                              </tr>
-                          </tbody>
-                          <tfoot>
-                             <tr>
-                                <td colspan="4">
-                                   <div class="d-flex align-items-center justify-content-between">
-                                      <h4>03 items</h4>
-                                      <h5>$46.61</h5>
-                                   </div>
-                                </td>
-                             </tr>
-                      </tfoot>
-                    </table>
+                        <table class="shop_table table-responsive">
+                            <thead>
+                                <tr>
+                                    <th class="product-name">Product Detail</th>
+                                    <th class="product-price">Unit Price</th>
+                                    <th class="product-quantity">Quantity</th>
+                                    <th class="product-subtotal">Total Price</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <% var grandTotal = 0 ; %>
+                            <% var totalItems = 0 ; %>
+                            <%  if ("product" in userCart ) { %>
+                                <% for( productKey in userCart["product"])  { %>
+                                    <% var product = JSON.parse(JSON.stringify(userCart["product"][productKey])) ;%>
+                                    <% var productDetails = product["productDetails"] ; %>
+                                    <tr class="product">
+                                        <td class="product-name">
+                                            <img alt="img" src="https://via.placeholder.com/70x70">
+                                            <div>
+                                                <span><%= productDetails.individItemTitle %></span>
+                                                <p><%= productDetails.individItemDescription %></p>
+                                                
+                                                <p>SKU: <%= productKey %></p>
+                                            </div>
+                                        </td>
+                                        <td class="product-price">
+                                            <span class="woocommerce-Price-amount">
+                                                <bdi>
+                                                    <span class="woocommerce-Price-currencySymbol">$</span><%= productDetails.individItemUnitCost %>
+                                                </bdi>
+                                                </span>          
+                                        </td>
+                                        <td class="product-quantity">
+                                            Quantity<input type="number" class="input-text" value="<%= product.quantity %>" min="1" >
+                                        </td>
+                                        <% totalItems += product.quantity ; %>
+                                        <% var productSubTotal = product.quantity * productDetails.individItemUnitCost %>
+                                        <td class="product-subtotal">
+                                            <span class="woocommerce-Price-amount">
+                                                <bdi>
+                                                    <span class="woocommerce-Price-currencySymbol">$</span><%= productSubTotal %>
+                                                </bdi>
+                                            </span>
+                                        </td>
+                                        <% grandTotal += productSubTotal ; %>
+                                        <td class="product-remove">
+                                            <a href="#"><i class="fa-regular fa-circle-xmark"></i></a>
+                                        </td>
+                                    </tr>
+                                <% } %>
+                            <% } else if ("package" in userCart) { %>
+                                <% for ( packageKey in userCart["package"])  { %>
+                                    <% var package = JSON.parse(JSON.stringify(userCart["package"][packageKey])); %>
+                                    <% var packageDetails = package["packageDetails"] ; %>
+                                        <tr class="product">
+                                            <td class="product-name">
+                                                <img alt="img" src="https://via.placeholder.com/70x70">
+                                                <div>
+                                                    <span><%= packageDetails[0]["packagedesc"] %></span>
+                                                    <p><%= packageDetails[0]["packagedesc"] %></p>   
+                                                    <p>SKU: <%= packageKey %></p>
+                                                </div>
+                                            </td>
+                                            <td class="product-price">
+                                                <span class="woocommerce-Price-amount">
+                                                    <bdi>
+                                                        <span class="woocommerce-Price-currencySymbol">$</span><%= packageDetails[0]["packagecost"] %>
+                                                    </bdi>
+                                                </span>          
+                                            </td>
+                                            <td class="product-quantity">
+                                                Quantity
+                                                <input type="number" class="input-text" value="<%= package['quantity'] %>" min="1" >
+                                            </td>
+                                            <% totalItems += package.quantity ; %>
+                                            <% var packageSubTotal = package['quantity'] * packageDetails[0]["packagecost"] %>
+                                            <td class="product-subtotal">
+                                                <span class="woocommerce-Price-amount">
+                                                    <bdi>
+                                                        <span class="woocommerce-Price-currencySymbol">$</span><%= packageSubTotal %>
+                                                    </bdi>
+                                                </span>
+                                            </td>
+                                            <% grandTotal += packageSubTotal ; %>
+                                            <td class="product-remove">
+                                                <a href="#"><i class="fa-regular fa-circle-xmark"></i></a>
+                                            </td>
+                                        </tr>
+                                <% } %>
+                        <% } %>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="4">
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <h4><%= totalItems %> items</h4>
+                                            <h5>$<%= grandTotal %></h5>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
                   </div>
                 </div>
                 <div class="col-lg-4">
@@ -135,7 +155,7 @@
                                           <td>
                                               <span class="woocommerce-Price-amount">
                                               <bdi>
-                                                  <span class="woocommerce-Price-currencySymbol">$</span>250.00
+                                                  <span class="woocommerce-Price-currencySymbol">$</span><%= grandTotal %>
                                               </bdi>
                                               </span>
                                           </td>
@@ -153,7 +173,7 @@
                                           <td>
                                               <span class="woocommerce-Price-amount">
                                               <bdi>
-                                                  <span>$</span>250.00
+                                                  <span>$</span><%= grandTotal %>
                                               </bdi>
                                               </span>
                                           </td>
@@ -172,5 +192,6 @@
               </div>
             </form>
           </div>
+        <% } %>
       </div>
   </section>
