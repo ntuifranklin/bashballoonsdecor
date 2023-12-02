@@ -35,7 +35,7 @@ app.use(session({
     resave: true,
     saveUninitialized: false,
     store: sessionStore,
-    cookie: {maxAge : 60000000},
+    cookie: {maxAge : 6000000},
 }));
 
 app.set('view engine', 'ejs');
