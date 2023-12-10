@@ -35,7 +35,7 @@ app.use(session({
     resave: true,
     saveUninitialized: false,
     store: sessionStore,
-    cookie: {maxAge : 6000000},
+    cookie: {maxAge : 60000000},
 }));
 
 app.set('view engine', 'ejs');
@@ -88,12 +88,11 @@ app.use(async(request, response, next) => {
         app.locals.packages = { } ;
     } ;
 
-    const [package_3000,package_3800,package_4900] = 
-    await Promise.all([
-        databaseAccessor.getDatabaseObject(tableName='package',keyFieldName='packageid', keyFieldValue=package3000ID),
-        databaseAccessor.getDatabaseObject(tableName='package',keyFieldName='packageid', keyFieldValue=package3800ID),
-        databaseAccessor.getDatabaseObject(tableName='package',keyFieldName='packageid', keyFieldValue=package4900ID)
-    ]);
+    
+
+    const package_3000 = await databaseAccessor.getDatabaseObject(tableName='package',keyFieldName='packageid', keyFieldValue=package3000ID);
+    const package_3800 = await databaseAccessor.getDatabaseObject(tableName='package',keyFieldName='packageid', keyFieldValue=package3800ID);
+    const package_4900 = await databaseAccessor.getDatabaseObject(tableName='package',keyFieldName='packageid', keyFieldValue=package4900ID);
         
     app.locals.packages[package3000ID] = JSON.parse(JSON.stringify(package_3000));
     app.locals.packages[package3800ID] = JSON.parse(JSON.stringify(package_3800));
@@ -106,12 +105,10 @@ app.use(async(request, response, next) => {
          * To do : replace the harded coded IDs below by a call to the database or reading from 
          * an environment variable
          */
-        const[package_and_items_3000,package_and_items_3800,package_and_items_4900] = 
-        await Promise.all([
-            databaseAccessor.getPackageItems(packageid = package3000ID),
-            databaseAccessor.getPackageItems(packageid = package3800ID),
-            databaseAccessor.getPackageItems(packageid = package4900ID)
-        ]);
+        
+        const package_and_items_3000 = await databaseAccessor.getPackageItems(packageid = package3000ID);
+        const package_and_items_3800 = await databaseAccessor.getPackageItems(packageid = package3800ID);
+        const package_and_items_4900 = await databaseAccessor.getPackageItems(packageid = package4900ID);
         
         app.locals.packagesAndItems = {} ;
         app.locals.packagesAndItems[package3000ID] = JSON.parse(JSON.stringify(package_and_items_3000)) ;
@@ -133,7 +130,7 @@ app.use(async(request, response, next) => {
         /* get individual items */
         list_of_items = await databaseAccessor.getIndividualItems();
         app.locals.list_of_items = list_of_items ;
-        //console.log(`List of items  : ${JSON.stringify(list_of_items,null, 4)}`);
+        console.log(`List of items  : ${JSON.stringify(list_of_items,null, 4)}`);
 
     };
     list_of_items = app.locals.list_of_items ;
