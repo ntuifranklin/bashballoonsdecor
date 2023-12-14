@@ -73,39 +73,34 @@ var package3000ID = process.env.PACKAGE3000ID;
 var package3800ID = process.env.PACKAGE3800ID;
 var package4900ID = process.env.PACKAGE4900ID;
 
+const allpackages = require(process.env.PACKAGES_ONLY_FILE);
+
 const [
     package_3000,
     package_3800,
-    package_4900
+    package_4900,
 ] = [
-    getDatabaseObject(tableName='package',keyFieldName='packageid', keyFieldValue=package3000ID),
-    getDatabaseObject(tableName='package',keyFieldName='packageid', keyFieldValue=package3800ID),
-    getDatabaseObject(tableName='package',keyFieldName='packageid', keyFieldValue=package4900ID)
+    allpackages["package_3000"],
+    allpackages["package_3800"],
+    allpackages["package_4900"],
 ];
-    
+
 const [
     package_and_items_3000,
     package_and_items_3800,
     package_and_items_4900
 ] = [
-    getPackageItems(packageid = package3000ID),
-    getPackageItems(packageid = package3800ID),
-    getPackageItems(packageid = package4900ID)
+    require(process.env.PACKAGE_AND_ITEMS_3000_FILE),
+    require(process.env.PACKAGE_AND_ITEMS_3800_FILE),
+    require(process.env.PACKAGE_AND_ITEMS_4900_FILE),
 ];
-
-package_and_items_3000.then((result) => { console.log(`package_and_items_3000 : ${JSON.stringify(result,null, 4)}`) });
-package_and_items_3800.then((result) => { console.log(`package_and_items_3800 : ${JSON.stringify(result,null, 4)}`) });  
-package_and_items_4900.then((result) => { console.log(`package_and_items_4900 : ${JSON.stringify(result,null, 4)}`) });
-
-
-var list_of_items = null ;
-list_of_items = getIndividualItems();
-
+/*
+console.log(`package_and_items_3000 : ${JSON.stringify(package_and_items_3000,null, 4)}`) ;
+console.log(`package_and_items_3800 : ${JSON.stringify(package_and_items_3800,null, 4)}`) ;
+console.log(`package_and_items_4900 : ${JSON.stringify(package_and_items_4900,null, 4)}`) ;
+*/
 /* Database data for packages */
 app.locals.packages = { } ;
-
-
-
 app.locals.packages[package3000ID] = JSON.parse(JSON.stringify(package_3000));
 app.locals.packages[package3800ID] = JSON.parse(JSON.stringify(package_3800));
 app.locals.packages[package4900ID] = JSON.parse(JSON.stringify(package_4900)); 
@@ -131,11 +126,13 @@ app.locals.packagesArray = [
 
 /* get individual items */
     
-app.locals.list_of_items = list_of_items ;
-console.log(`List of items  : ${JSON.stringify(list_of_items,null, 4)}`);
+//console.log(`${process.env.INDIVIDUAL_ITEMS_ONLY_FILE}`);
+const list_of_items = require(process.env.INDIVIDUAL_ITEMS_ONLY_FILE);
+//console.log(`list_of_items : ${JSON.stringify(list_of_items,null, 4)}`) ;
 
-/* now loop through the list_of_items */
-list_of_items = app.locals.list_of_items ;
+app.locals.list_of_items = list_of_items ;
+//console.log(`List of items  : ${JSON.stringify(list_of_items,null, 4)}`);
+
 app.locals.products = {} ;
 
 /* now loop through the list_of_items */
