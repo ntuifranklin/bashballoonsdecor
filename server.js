@@ -11,6 +11,7 @@ const template_folder = 'static_template';
 const routes = require('./routes');
 const { response } = require('express');
 
+const {getDatabaseObject,getIndividualItems,getPackageItems} = require('./database/controllers/database');
 const app = express();
 
 var mysql = require('mysql');
@@ -19,14 +20,13 @@ const MySQLStore = require('express-mysql-session')(session);
 require('dotenv').config();
 
 const {session_database_options} = require('./sessionmanagement/session') ;
-const PORT = process.env.SITE_PORT;
+const PORT = process.env.TEST_SITE_PORT;
 app.set('trust proxy', 1);
 
 const cookieParser = require('cookie-parser');
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
-const databaseAccessor = require('./database/controllers/database.js');
 
 const session_mysql_connection = mysql.createConnection(session_database_options);
 const sessionStore = new MySQLStore(session_database_options, session_mysql_connection);
@@ -35,7 +35,7 @@ app.use(session({
     resave: true,
     saveUninitialized: false,
     store: sessionStore,
-    cookie: {maxAge : 60000000},
+    cookie: {maxAge : process.env.SESSION_MAXIMUM_TIME_IN_MILLI_SECONDS},
 }));
 
 app.set('view engine', 'ejs');
@@ -69,22 +69,92 @@ app.locals.list_of_items = null ;
 app.locals.products = null ;
 
 
-var package3000ID = 'd09745340cebd03c6e0a';
-var package3800ID = 'ab7adb97a1f89a92527a';
-var package4900ID = 'bfcd68043040f450b8e7';
+var package3000ID = process.env.PACKAGE3000ID;
+var package3800ID = process.env.PACKAGE3800ID;
+var package4900ID = process.env.PACKAGE4900ID;
 
-const package_3000 = await databaseAccessor.getDatabaseObject(tableName='package',keyFieldName='packageid', keyFieldValue=package3000ID);
-const package_3800 = await databaseAccessor.getDatabaseObject(tableName='package',keyFieldName='packageid', keyFieldValue=package3800ID);
-const package_4900 = await databaseAccessor.getDatabaseObject(tableName='package',keyFieldName='packageid', keyFieldValue=package4900ID);
+const [
+    package_3000,
+    package_3800,
+    package_4900
+] = [
+    getDatabaseObject(tableName='package',keyFieldName='packageid', keyFieldValue=package3000ID),
+    getDatabaseObject(tableName='package',keyFieldName='packageid', keyFieldValue=package3800ID),
+    getDatabaseObject(tableName='package',keyFieldName='packageid', keyFieldValue=package4900ID)
+];
     
-
-const package_and_items_3000 = await databaseAccessor.getPackageItems(packageid = package3000ID);
-const package_and_items_3800 = await databaseAccessor.getPackageItems(packageid = package3800ID);
-const package_and_items_4900 = await databaseAccessor.getPackageItems(packageid = package4900ID);
+const [
+    package_and_items_3000,
+    package_and_items_3800,
+    package_and_items_4900
+] = [
+    getPackageItems(packageid = package3000ID),
+    getPackageItems(packageid = package3800ID),
+    getPackageItems(packageid = package4900ID)
+];
 
 var list_of_items = null ;
-list_of_items = await databaseAccessor.getIndividualItems();
-app.use(async(request, response, next) => { 
+list_of_items = getIndividualItems();
+
+/* Database data for packages */
+app.locals.packages = { } ;
+
+
+
+app.locals.packages[package3000ID] = JSON.parse(JSON.stringify(package_3000));
+app.locals.packages[package3800ID] = JSON.parse(JSON.stringify(package_3800));
+app.locals.packages[package4900ID] = JSON.parse(JSON.stringify(package_4900)); 
+
+/**
+     * Load all packages here so it is available from all over the app
+     * To do : replace the harded coded IDs below by a call to the database or reading from 
+     * an environment variable
+     */
+    
+app.locals.packagesAndItems = {} ;
+app.locals.packagesAndItems[package3000ID] = JSON.parse(JSON.stringify(package_and_items_3000)) ;
+app.locals.packagesAndItems[package3800ID] = JSON.parse(JSON.stringify(package_and_items_3800)) ;
+app.locals.packagesAndItems[package4900ID] = JSON.parse(JSON.stringify(package_and_items_4900)) ;
+
+//console.log(`Packages and Items : ${JSON.stringify(app.locals.packagesAndItems,null, 4)}`);
+app.locals.packagesArray = [
+    package_and_items_3000,
+    package_and_items_3800,
+    package_and_items_4900,
+];
+
+
+/* get individual items */
+    
+app.locals.list_of_items = list_of_items ;
+console.log(`List of items  : ${JSON.stringify(list_of_items,null, 4)}`);
+
+/* now loop through the list_of_items */
+list_of_items = app.locals.list_of_items ;
+app.locals.products = {} ;
+
+/* now loop through the list_of_items */
+var index = 0 ;
+for (index = 0 ; index < list_of_items.length ; index++ ) {
+    
+    var item = list_of_items[index]; 
+    var itemID = item.individItemID ;
+    if (!(itemID in app.locals.products)) {
+        app.locals.products[itemID] = {
+        } ;
+    } ;
+
+    if (!("productDetails" in app.locals.products[itemID])) {
+        app.locals.products[itemID]["productDetails"] = {} ;
+    } ;
+    app.locals.products[itemID]["productDetails"] = JSON.parse(JSON.stringify(item));
+} ;
+
+
+
+
+
+app.use((request, response, next) => { 
 
     /*
         Load user cart here so that it is accessible from all over the app
@@ -94,69 +164,6 @@ app.use(async(request, response, next) => {
         userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
     app.locals.userCart = userCart;
             
-    /* Database data for packages */
-    if (app.locals.packages == null) {
-        app.locals.packages = { } ;
-    } ;
-
-    
-
-    app.locals.packages[package3000ID] = JSON.parse(JSON.stringify(package_3000));
-    app.locals.packages[package3800ID] = JSON.parse(JSON.stringify(package_3800));
-    app.locals.packages[package4900ID] = JSON.parse(JSON.stringify(package_4900)); 
-
-    if ( app.locals.packagesAndItems == null) {
-             
-        /**
-         * Load all packages here so it is available from all over the app
-         * To do : replace the harded coded IDs below by a call to the database or reading from 
-         * an environment variable
-         */
-        
-        app.locals.packagesAndItems = {} ;
-        app.locals.packagesAndItems[package3000ID] = JSON.parse(JSON.stringify(package_and_items_3000)) ;
-        app.locals.packagesAndItems[package3800ID] = JSON.parse(JSON.stringify(package_and_items_3800)) ;
-        app.locals.packagesAndItems[package4900ID] = JSON.parse(JSON.stringify(package_and_items_4900)) ;
-        
-        //console.log(`Packages and Items : ${JSON.stringify(app.locals.packagesAndItems,null, 4)}`);
-        app.locals.packagesArray = [
-            package_and_items_3000,
-            package_and_items_3800,
-            package_and_items_4900,
-        ];
-        
-    }
-
-    if (app.locals.list_of_items == null) {
-            
-        /* get individual items */
-       
-        app.locals.list_of_items = list_of_items ;
-        console.log(`List of items  : ${JSON.stringify(list_of_items,null, 4)}`);
-
-    };
-    list_of_items = app.locals.list_of_items ;
-    if (app.locals.products == null) { 
-        app.locals.products = {} ;
-    } ;
-    
-    /* now loop through the list_of_items */
-    var index = 0 ;
-    for (index = 0 ; index < list_of_items.length ; index++ ) {
-        
-        var item = list_of_items[index]; 
-        var itemID = item.individItemID ;
-        if (!(itemID in app.locals.products)) {
-            app.locals.products[itemID] = {
-            } ;
-        } ;
-
-        if (!("productDetails" in app.locals.products[itemID])) {
-            app.locals.products[itemID]["productDetails"] = {} ;
-        } ;
-        app.locals.products[itemID]["productDetails"] = JSON.parse(JSON.stringify(item));
-    } ;
-
     /* update  the request.locals */
     request.locals = app.locals ;
 
@@ -166,6 +173,6 @@ app.use(async(request, response, next) => {
 app.use('/',routes());
 
 
-app.listen(PORT, () => {
+app.listen(PORT,'0.0.0.0', () => {
     console.log(`Express server listening on port ${PORT}`);
 });
