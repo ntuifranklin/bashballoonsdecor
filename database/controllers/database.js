@@ -32,8 +32,9 @@ async function getPackageItems (packageid= '') {
           if (err) reject(err);
           
           resolve(result) ;
-          con.end();
+          
         });
+        con.end();
       });
       
    
@@ -64,9 +65,9 @@ async function getIndividualItems () {
         if (err) reject(err);
         
         resolve(result) ;
-        con.end();
+        
       });
-      
+      con.end();
     });
 
     
@@ -124,8 +125,9 @@ MariaDB [bashballoonsdecor]> describe package
         if (err) reject(err);
         
         resolve(result) ;
-        con.end();
+       
       });
+      con.end();
     });
     
   });
@@ -133,5 +135,4 @@ MariaDB [bashballoonsdecor]> describe package
 }
 
 exports.getDatabaseObject = getDatabaseObject ;
-
 

@@ -93,6 +93,11 @@ const [
     getPackageItems(packageid = package4900ID)
 ];
 
+package_and_items_3000.then((result) => { console.log(`package_and_items_3000 : ${JSON.stringify(result,null, 4)}`) });
+package_and_items_3800.then((result) => { console.log(`package_and_items_3800 : ${JSON.stringify(result,null, 4)}`) });  
+package_and_items_4900.then((result) => { console.log(`package_and_items_4900 : ${JSON.stringify(result,null, 4)}`) });
+
+
 var list_of_items = null ;
 list_of_items = getIndividualItems();
 
