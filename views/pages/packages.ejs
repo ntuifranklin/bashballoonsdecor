@@ -20,7 +20,8 @@
          
         <% for (var j = 0; j < allpackages.length; j++) { %>
 
-          <% var package = allpackages[j]; %>
+          <% var package = JSON.parse(JSON.stringify(allpackages[j])); %>
+          <% console.log(`package : ${JSON.stringify(package, null, 4)}`); %>
           <div class="col-md-3 col-lg-4">
             <div class="occians-holidays for mt-md-0">
               <figure>

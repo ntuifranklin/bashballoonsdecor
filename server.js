@@ -20,7 +20,7 @@ const MySQLStore = require('express-mysql-session')(session);
 require('dotenv').config();
 
 const {session_database_options} = require('./sessionmanagement/session') ;
-const PORT = process.env.TEST_SITE_PORT;
+const PORT = process.env.SITE_PORT;
 app.set('trust proxy', 1);
 
 const cookieParser = require('cookie-parser');
@@ -35,7 +35,7 @@ app.use(session({
     resave: true,
     saveUninitialized: false,
     store: sessionStore,
-    cookie: {maxAge : process.env.SESSION_MAXIMUM_TIME_IN_MILLI_SECONDS},
+    cookie: {maxAge : Number(process.env.SESSION_MAXIMUM_TIME_IN_MILLI_SECONDS)},
 }));
 
 app.set('view engine', 'ejs');
@@ -66,7 +66,7 @@ app.locals.packagesAndItems = null ; // packages and package items as a JSON obj
 //below enables accessing the packages through an indexd array
 app.locals.packagesArray = null ;
 app.locals.list_of_items = null ;
-app.locals.products = null ;
+app.locals.individualItems = null ;
 
 
 var package3000ID = process.env.PACKAGE3000ID;
@@ -111,7 +111,14 @@ app.locals.packages[package4900ID] = JSON.parse(JSON.stringify(package_4900));
      * an environment variable
      */
     
-app.locals.packagesAndItems = {} ;
+app.locals.packagesAndItems = {
+    [package3000ID] : {
+    },
+    [package3800ID] : {
+    },
+    [package4900ID] : {
+    }
+} ;
 app.locals.packagesAndItems[package3000ID] = JSON.parse(JSON.stringify(package_and_items_3000)) ;
 app.locals.packagesAndItems[package3800ID] = JSON.parse(JSON.stringify(package_and_items_3800)) ;
 app.locals.packagesAndItems[package4900ID] = JSON.parse(JSON.stringify(package_and_items_4900)) ;
@@ -133,23 +140,20 @@ const list_of_items = require(process.env.INDIVIDUAL_ITEMS_ONLY_FILE);
 app.locals.list_of_items = list_of_items ;
 //console.log(`List of items  : ${JSON.stringify(list_of_items,null, 4)}`);
 
-app.locals.products = {} ;
+app.locals.individualItems = {} ;
 
 /* now loop through the list_of_items */
 var index = 0 ;
 for (index = 0 ; index < list_of_items.length ; index++ ) {
     
     var item = list_of_items[index]; 
-    var itemID = item.individItemID ;
-    if (!(itemID in app.locals.products)) {
-        app.locals.products[itemID] = {
+    var itemID = String(item.individItemID) ;
+    if (!(itemID in app.locals.individualItems)) {
+        app.locals.individualItems[itemID] = {
         } ;
     } ;
 
-    if (!("productDetails" in app.locals.products[itemID])) {
-        app.locals.products[itemID]["productDetails"] = {} ;
-    } ;
-    app.locals.products[itemID]["productDetails"] = JSON.parse(JSON.stringify(item));
+    app.locals.individualItems[itemID]["individualItemDetails"] = JSON.parse(JSON.stringify(item));
 } ;
 
 
@@ -165,7 +169,7 @@ app.use((request, response, next) => {
     if (request.session.userCart)
         userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
     app.locals.userCart = userCart;
-            
+    //console.log(`User Cart In server.js: ${JSON.stringify(userCart, null, 4)}`);
     /* update  the request.locals */
     request.locals = app.locals ;
 

@@ -19,10 +19,10 @@ module.exports = () => {
         var keyToUpdate = "";
         var tableName = "";
         var keyFieldName = "";
-        if (productOrPackage == "product")  {
-            keyToUpdate = "product" ;
+        if (productOrPackage == "IndividualItems")  {
+            keyToUpdate = "IndividualItems" ;
             tableName = process.env.PRODUCT_TABLE_NAME;
-            keyFieldName = process.env.PRODUCT_TABLE_KEY_FIELD_NAME;
+            keyFieldName = process.env.INDIVIDUAL_ITEM_TABLE_KEY_FIELD_NAME;
         } else {
             keyToUpdate = "package";
             tableName = process.env.PACKAGE_TABLE_NAME;
@@ -30,17 +30,17 @@ module.exports = () => {
         }
             
         //console.log(`product or package ID received : ${itemUpdateID}`);
-        if (!request.session.userCart[keyToUpdate]) {
+        if (!( keyToUpdate in request.session.userCart)) {
             request.session.userCart[keyToUpdate] = {
                 
             }
         }
-        if (!request.session.userCart[keyToUpdate][itemUpdateID]) {
+        if (!( itemUpdateID in request.session.userCart[keyToUpdate]) ) {
             request.session.userCart[keyToUpdate][itemUpdateID] = {
             }
         }
         
-        if (!request.session.userCart[keyToUpdate][itemUpdateID]["quantity"]) {
+        if (!("quantity" in request.session.userCart[keyToUpdate][itemUpdateID])) {
             request.session.userCart[keyToUpdate][itemUpdateID] = {
                 "quantity" : 0
             }
@@ -52,11 +52,11 @@ module.exports = () => {
             * Second: assign it to the session variable for the corresponding product/package
             * Finally: save the session
             */
-        if (keyToUpdate == "product") {
+        if (keyToUpdate == "IndividualItems") {
            
-            if (itemUpdateID in request.locals.products ) {
-                request.session.userCart[keyToUpdate][itemUpdateID]["productDetails"] = 
-                request.locals.products[itemUpdateID]["productDetails"];
+            if (itemUpdateID in request.locals.individualItems ) {
+                request.session.userCart[keyToUpdate][itemUpdateID]["individualItemDetails"] = 
+                request.locals.individualItems[itemUpdateID]["individualItemDetails"];
                 request.session.save();
             } else {
                 console.log(`BIG ERROR(THIS SHOULD NOT HAPPEN) : Products ${itemUpdateID} not found in request.locals.products`);
@@ -76,10 +76,11 @@ module.exports = () => {
         
         /* update quantity and save session */
         request.session.userCart[keyToUpdate][itemUpdateID]["quantity"] += 1;
-        request.session.save();
+        //console.log(`Updated session ${JSON.stringify(request.session.userCart)}`);
 
         /* update the cart in the locals variable */
-        request.locals.userCart = request.session.userCart ;
+        //request.locals.userCart = JSON.stringify(request.session.userCart) ;
+        request.session.save();
         response.redirect(200, '/product-list');
         response.end();
     });
@@ -90,7 +91,7 @@ module.exports = () => {
         var userCart = {} ;
         if (request.session.userCart)
             userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
-        console.log('User Cart: ' + JSON.stringify(userCart, null, 4));
+        console.log('User Cart in cart.js: ' + JSON.stringify(userCart, null, 4));
         response.render('layout', { pageTitle: 'Your Cart Items', template: 'cart', userCart: userCart});
     });
 
