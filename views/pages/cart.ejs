@@ -15,7 +15,7 @@
   </section>
   <section class="gap">
       <div class="container">
-        <% //console.log(`${JSON.stringify(userCart)}`); %>
+        <% console.log(`Cart in cart.ejs ${JSON.stringify(userCart, null, 4)}`); %>
         <% var noKeys = Object.keys(userCart) ; %>
                 
         <% if(noKeys.length == 0) { %>
@@ -44,62 +44,65 @@
                             <tbody>
                             <% var grandTotal = 0 ; %>
                             <% var totalItems = 0 ; %>
-                            <%  if ("product" in userCart ) { %>
-                                <% for( productKey in userCart["product"])  { %>
-                                    <% var product = JSON.parse(JSON.stringify(userCart["product"][productKey])) ;%>
-                                    <% var productDetails = product["productDetails"] ; %>
+                            <%  if ("IndividualItems" in userCart ) { %>
+                                <% for(var itemKey in userCart["IndividualItems"])  { %>
+                                    <% var individualItem = JSON.parse(JSON.stringify(userCart["IndividualItems"][itemKey])) ;%>
+                                    <% var itemDetails = JSON.parse(JSON.stringify(individualItem["individualItemDetails"])) ; %>
                                     <tr class="product">
                                         <td class="product-name">
                                             <img alt="img" src="https://via.placeholder.com/70x70">
                                             <div>
-                                                <span><%= productDetails.individItemTitle %></span>
-                                                <p><%= productDetails.individItemDescription %></p>
+                                                <span><%= itemDetails.individItemTitle %></span>
+                                                <p><%= itemDetails.individItemDescription %></p>
                                                 
-                                                <p>SKU: <%= productKey %></p>
+                                                <p>SKU: <%= itemKey %></p>
                                             </div>
                                         </td>
                                         <td class="product-price">
                                             <span class="woocommerce-Price-amount">
                                                 <bdi>
-                                                    <span class="woocommerce-Price-currencySymbol">$</span><%= productDetails.individItemUnitCost %>
+                                                    <span class="woocommerce-Price-currencySymbol">$</span><%= itemDetails.individItemUnitCost %>
                                                 </bdi>
                                                 </span>          
                                         </td>
                                         <td class="product-quantity">
-                                            Quantity<input type="number" class="input-text" value="<%= product.quantity %>" min="1" >
+                                            Quantity<input type="number" class="input-text" value="<%= individualItem.quantity %>" min="1" >
                                         </td>
-                                        <% totalItems += product.quantity ; %>
-                                        <% var productSubTotal = product.quantity * productDetails.individItemUnitCost %>
+                                        <% totalItems += individualItem.quantity ; %>
+                                        <% var itemsSubTotal = individualItem.quantity * itemDetails.individItemUnitCost %>
                                         <td class="product-subtotal">
                                             <span class="woocommerce-Price-amount">
                                                 <bdi>
-                                                    <span class="woocommerce-Price-currencySymbol">$</span><%= productSubTotal %>
+                                                    <span class="woocommerce-Price-currencySymbol">$</span><%= itemsSubTotal %>
                                                 </bdi>
                                             </span>
                                         </td>
-                                        <% grandTotal += productSubTotal ; %>
+                                        <% grandTotal += itemsSubTotal ; %>
                                         <td class="product-remove">
                                             <a href="#"><i class="fa-regular fa-circle-xmark"></i></a>
                                         </td>
                                     </tr>
                                 <% } %>
-                            <% } else if ("package" in userCart) { %>
-                                <% for ( packageKey in userCart["package"])  { %>
+                            <% } %>
+                            
+                            <% if ("package" in userCart) { %>
+                                <% console.log("package in userCart cart.ejs"); %>
+                                <% for (var packageKey in userCart["package"])  { %>
                                     <% var package = JSON.parse(JSON.stringify(userCart["package"][packageKey])); %>
-                                    <% var packageDetails = package["packageDetails"] ; %>
+                                    <% var packageDetails = JSON.parse(JSON.stringify(package["packageDetails"])) ; %>
                                         <tr class="product">
                                             <td class="product-name">
                                                 <img alt="img" src="https://via.placeholder.com/70x70">
                                                 <div>
-                                                    <span><%= packageDetails[0]["packagedesc"] %></span>
-                                                    <p><%= packageDetails[0]["packagedesc"] %></p>   
+                                                    <span><%= packageDetails["packagedesc"] %></span>
+                                                    <p><%= packageDetails["packagedesc"] %></p>   
                                                     <p>SKU: <%= packageKey %></p>
                                                 </div>
                                             </td>
                                             <td class="product-price">
                                                 <span class="woocommerce-Price-amount">
                                                     <bdi>
-                                                        <span class="woocommerce-Price-currencySymbol">$</span><%= packageDetails[0]["packagecost"] %>
+                                                        <span class="woocommerce-Price-currencySymbol">$</span><%= packageDetails["packagecost"] %>
                                                     </bdi>
                                                 </span>          
                                             </td>
@@ -108,7 +111,7 @@
                                                 <input type="number" class="input-text" value="<%= package['quantity'] %>" min="1" >
                                             </td>
                                             <% totalItems += package.quantity ; %>
-                                            <% var packageSubTotal = package['quantity'] * packageDetails[0]["packagecost"] %>
+                                            <% var packageSubTotal = package["quantity"] * packageDetails["packagecost"] %>
                                             <td class="product-subtotal">
                                                 <span class="woocommerce-Price-amount">
                                                     <bdi>

@@ -9,7 +9,7 @@ require('dotenv').config();
 // open the database
 async function getPackageItems (packageid= '') {
 
-    return new Promise((resolve, reject) => {
+    return await new Promise(async(resolve, reject) => {
                 
       var con = mysql.createConnection({
         host: process.env.DATABASE_HOST,
@@ -32,7 +32,9 @@ async function getPackageItems (packageid= '') {
           if (err) reject(err);
           
           resolve(result) ;
+          
         });
+        con.end();
       });
       
    
@@ -45,7 +47,7 @@ exports.getPackageItems = getPackageItems ;
 
 async function getIndividualItems () {
 
-  return await new Promise((resolve, reject) => {
+  return await new Promise(async(resolve, reject) => {
               
     var con = mysql.createConnection({
       host: process.env.DATABASE_HOST,
@@ -63,7 +65,9 @@ async function getIndividualItems () {
         if (err) reject(err);
         
         resolve(result) ;
+        
       });
+      con.end();
     });
 
     
@@ -100,7 +104,7 @@ MariaDB [bashballoonsdecor]> describe package
 3 rows in set (0.071 sec)
 
 */
-  return await new Promise((resolve, reject) => {
+  return await new Promise(async(resolve, reject) => {
               
     var con = mysql.createConnection({
       host: process.env.DATABASE_HOST,
@@ -121,7 +125,9 @@ MariaDB [bashballoonsdecor]> describe package
         if (err) reject(err);
         
         resolve(result) ;
+       
       });
+      con.end();
     });
     
   });
@@ -129,5 +135,4 @@ MariaDB [bashballoonsdecor]> describe package
 }
 
 exports.getDatabaseObject = getDatabaseObject ;
-
 

@@ -2,6 +2,7 @@
 const databaseAccessor = require('../database/controllers/database');
 const express = require('express');
 const router = express.Router();
+require('dotenv').config();
 
 try {
    
@@ -12,10 +13,10 @@ try {
         
         router.get('/', async (request, response) => {
 
-            /* must have been loaded in server.js file  */   
-            var package3000ID = 'd09745340cebd03c6e0a';
-            var package3800ID = 'ab7adb97a1f89a92527a';
-            var package4900ID = 'bfcd68043040f450b8e7';
+            /* must have been loaded in server.js file  */  
+            var package3000ID = process.env.PACKAGE3000ID;
+            var package3800ID = process.env.PACKAGE3800ID;
+            var package4900ID = process.env.PACKAGE4900ID;
             //console.log(`Packages And Items in packages.js: ${JSON.stringify(request.locals.packagesAndItems,null, 4)}`); 
             
             var package3000 = request.locals.packagesAndItems[package3000ID];
