@@ -20,7 +20,7 @@ const MySQLStore = require('express-mysql-session')(session);
 require('dotenv').config();
 
 const {session_database_options} = require('./sessionmanagement/session') ;
-const PORT = process.env.SITE_PORT;
+const PORT = process.env.TEST_SITE_PORT;
 app.set('trust proxy', 1);
 
 const cookieParser = require('cookie-parser');
@@ -166,6 +166,7 @@ app.use((request, response, next) => {
         Load user cart here so that it is accessible from all over the app
     */
     var userCart = {} ;
+    //userCart["totalPrice"] = 0.0 ;
     if (request.session.userCart)
         userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
     app.locals.userCart = userCart;

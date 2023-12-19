@@ -1,5 +1,30 @@
 
+<%  //console.log(`user cart in checkout : ${JSON.stringify(userCart, null,4)}`); %>
+<% 
+	//loop through userCart to get the total cost
+	var totalCost = 0.0;
+	if ("package" in userCart) {
+		for (var packageKey in userCart["package"])  { 
+			var package = JSON.parse(JSON.stringify(userCart["package"][packageKey]));
+			var packageDetails = JSON.parse(JSON.stringify(package["packageDetails"])) ;
+			var packageSubTotal = package["quantity"] * packageDetails["packagecost"]
+			totalCost += ( 
+				packageSubTotal
+			);
+		
+		}
+	}
 
+	if ("IndividualItems" in userCart) {
+		for (var itemKey in userCart["IndividualItems"]) {
+			var individualItem = JSON.parse(JSON.stringify(userCart["IndividualItems"][itemKey])) ;
+			var itemDetails = JSON.parse(JSON.stringify(individualItem["individualItemDetails"])) ;
+			totalCost += ( 
+				individualItem.quantity * itemDetails.individItemUnitCost
+			);
+		}
+	}
+%>
 <section class="banner" style="background-image:url(https://via.placeholder.com/1920x300)">
 	<div class="container">
 	  <ol class="breadcrumb">
@@ -16,185 +41,204 @@
   </section>
 	 <section class="gap">
 		<div class="container">
-		  <form class="checkout-meta donate-page">
+		  <% if (userCart == null || totalCost == 0.0 ) { %>
 			  <div class="row">
-				  <div class="col-lg-8">
-					  <h3 class="pb-3">Billing details</h3>
-						  <div class="col-lg-12">
-							  <input type="text" class="input-text " name="billing_name" placeholder="Complete Name">
-							  <input type="email" class="input-text " name="billing_email" placeholder="Email address">
-							  <input type="text" name="Address" placeholder="Street Address">
-							  <!--
-								<select name="billing_country" class="nice-select Advice country_to_state">
-								  <option>Country</option>
-								  <option>Select Topic 1</option>
-								  <option>Select Topic 2</option>
-								  <option>Select Topic 3</option>
-								  <option>Select Topic 4</option>
-							  	</select>
-							   -->
-							  <div class="row">
-							  <div class="col-lg-6">
-								<input type="text" name="City" placeholder="City">
-							  </div>
-							  <div class="col-lg-6">
-								  <select name="billing_country" class="nice-select Advice state province">
-									<option>State</option>
-									<option value="AL">Alabama</option>
-									<option value="AK">Alaska</option>
-									<option value="AZ">Arizona</option>
-									<option value="AR">Arkansas</option>
-									<option value="CA">California</option>
-									<option value="CO">Colorado</option>
-									<option value="CT">Connecticut</option>
-									<option value="DE">Delaware</option>
-									<option value="DC">District Of Columbia</option>
-									<option value="FL">Florida</option>
-									<option value="GA">Georgia</option>
-									<option value="HI">Hawaii</option>
-									<option value="ID">Idaho</option>
-									<option value="IL">Illinois</option>
-									<option value="IN">Indiana</option>
-									<option value="IA">Iowa</option>
-									<option value="KS">Kansas</option>
-									<option value="KY">Kentucky</option>
-									<option value="LA">Louisiana</option>
-									<option value="ME">Maine</option>
-									<option value="MD">Maryland</option>
-									<option value="MA">Massachusetts</option>
-									<option value="MI">Michigan</option>
-									<option value="MN">Minnesota</option>
-									<option value="MS">Mississippi</option>
-									<option value="MO">Missouri</option>
-									<option value="MT">Montana</option>
-									<option value="NE">Nebraska</option>
-									<option value="NV">Nevada</option>
-									<option value="NH">New Hampshire</option>
-									<option value="NJ">New Jersey</option>
-									<option value="NM">New Mexico</option>
-									<option value="NY">New York</option>
-									<option value="NC">North Carolina</option>
-									<option value="ND">North Dakota</option>
-									<option value="OH">Ohio</option>
-									<option value="OK">Oklahoma</option>
-									<option value="OR">Oregon</option>
-									<option value="PA">Pennsylvania</option>
-									<option value="RI">Rhode Island</option>
-									<option value="SC">South Carolina</option>
-									<option value="SD">South Dakota</option>
-									<option value="TN">Tennessee</option>
-									<option value="TX">Texas</option>
-									<option value="UT">Utah</option>
-									<option value="VT">Vermont</option>
-									<option value="VA">Virginia</option>
-									<option value="WA">Washington</option>
-									<option value="WV">West Virginia</option>
-									<option value="WI">Wisconsin</option>
-									<option value="WY">Wyoming</option>
-								  </select>
-							  </div>
-							  <div class="col-lg-6">
-								  <input type="text" name="Postal_Code" placeholder="Postal Code">
-							  </div>
-							  <div class="col-lg-6">
-								  <input type="tel" class="input-text " name="billing_phone"  placeholder="Phone">
-							  </div>
-							  </div>
-							  <!-- 
-							  <div class="ship-address">
-								
-								  <div class="d-flex">
-								  <input type="radio" id="Create" name="Create" value="Create">
-								  <label for="Create">
-									  Create an account for later use
-								  </label>
-								  </div>
-								  <div class="d-flex">
-								  <input type="radio" id="ShipAddress" name="Create" value="ShipAddress">
-								  <label for="ShipAddress">
-										  Deliver to same Address
-								  </label>
-								  </div>
-								
-							  </div>
-							  -->
-						  </div>
-						  <div class="woocommerce-additional-fields">
-							  <textarea name="order_comments" class="input-text " placeholder="Order Note"></textarea>
-						  </div>
-				  </div>
-				  <div class="col-lg-4">
-					  <div class="cart_totals-checkout">
-						  <div class="cart_totals cart-Total">
-								  <h4 class="pt-0">Cart Total</h4>
-								  <table class="shop_table_responsive">
-									  <tbody>
-										  <tr class="cart-subtotal">
-											  <th>Subtotal:</th>
-											  <td>
-												  <span class="woocommerce-Price-amount">
-												  <bdi>
-													  <span class="woocommerce-Price-currencySymbol">$</span>358.00
-												  </bdi>
-												  </span>
-											  </td>
-										  </tr>
-										  <tr class="Shipping">
-											  <th>Shipping:</th>
-											  <td>
-												  <span class="woocommerce-Price-amount amount">
-													  free
-												  </span>
-											   </td>
-										  </tr>
-										  <tr class="Total">
-											  <th>Total:</th>
-											  <td>
-												  <span class="woocommerce-Price-amount">
-												  <bdi>
-													  <span>$</span>358.00
-												  </bdi>
-												  </span>
-											  </td>
-										  </tr>
-									  </tbody>
-								  </table>
-						  </div>
-						  <div class="checkout-side">
-							  <h4>Payment Method</h4>
-							  <ul>
-								<!--
-								  <li>
-									  <input type="radio" id="Bank_Payment" name="Bank_Payment" value="Bank_Payment">
-									  <label for="Bank_Payment">
-											  Bank Payment
-									  </label>
-								  </li>
-								  <li>
-									  <input type="radio" id="Check_Payment" name="Bank_Payment" value="Check_Payment">
-									  <label for="Check_Payment">
-											  Check Payment
-									  </label>
-								  </li>
-								  <li>
-									  <input type="radio" id="PayPal" name="Bank_Payment" value="Check_Payment">
-									  <label for="PayPal">
-											  PayPal
-									  </label>
-								  </li>
-								-->
-								  <li>
-									  <input type="radio" id="Cash on Delivery" name="Bank_Payment" value="Check_Payment">
-									  <label for="Cash on Delivery">
-											  Cash on Delivery
-									  </label>
-								  </li>
-							  </ul>
-							  <button type="submit" class="btn"><span>Place Order</span></button>
-						  </div>
-					  </div>
+				  <div class="col-lg-12">
+					  
+					<div class="alert alert-dark" role="alert">
+						<h4 class="alert-heading">Your Cart is Empty!</h4>
+						<p>Looks like you haven't added any items to your cart yet.</p>
+						<hr>
+						<p class="mb-0">Please add some items to your cart.</p>
+						
+						<ul>
+							<li><a href="/packages" class="link-primary">Affordable Party Packages</a></li>
+							<li><a href="/product-list" class="link-primary">Individual Party Rental Items</a></li>
+						</ul>
+					</div>
 				  </div>
 			  </div>
-		  </form>
+		  <% } else { %>
+			<form class="checkout-meta donate-page" method="POST" action="/checkout">
+				<div class="row">
+					<div class="col-lg-8">
+						<h3 class="pb-3">Billing details</h3>
+							<div class="col-lg-12">
+								<input type="text" class="input-text " name="billing_name" placeholder="Complete Name">
+								<input type="email" class="input-text " name="billing_email" placeholder="Email address">
+								<input type="text" name="Address" placeholder="Street Address">
+								<!--
+									<select name="billing_country" class="nice-select Advice country_to_state">
+									<option>Country</option>
+									<option>Select Topic 1</option>
+									<option>Select Topic 2</option>
+									<option>Select Topic 3</option>
+									<option>Select Topic 4</option>
+									</select>
+								-->
+								<div class="row">
+								<div class="col-lg-6">
+									<input type="text" name="City" placeholder="City">
+								</div>
+								<div class="col-lg-6">
+									<select name="billing_country" class="nice-select Advice state province">
+										<option>State</option>
+										<option value="AL">Alabama</option>
+										<option value="AK">Alaska</option>
+										<option value="AZ">Arizona</option>
+										<option value="AR">Arkansas</option>
+										<option value="CA">California</option>
+										<option value="CO">Colorado</option>
+										<option value="CT">Connecticut</option>
+										<option value="DE">Delaware</option>
+										<option value="DC">District Of Columbia</option>
+										<option value="FL">Florida</option>
+										<option value="GA">Georgia</option>
+										<option value="HI">Hawaii</option>
+										<option value="ID">Idaho</option>
+										<option value="IL">Illinois</option>
+										<option value="IN">Indiana</option>
+										<option value="IA">Iowa</option>
+										<option value="KS">Kansas</option>
+										<option value="KY">Kentucky</option>
+										<option value="LA">Louisiana</option>
+										<option value="ME">Maine</option>
+										<option value="MD">Maryland</option>
+										<option value="MA">Massachusetts</option>
+										<option value="MI">Michigan</option>
+										<option value="MN">Minnesota</option>
+										<option value="MS">Mississippi</option>
+										<option value="MO">Missouri</option>
+										<option value="MT">Montana</option>
+										<option value="NE">Nebraska</option>
+										<option value="NV">Nevada</option>
+										<option value="NH">New Hampshire</option>
+										<option value="NJ">New Jersey</option>
+										<option value="NM">New Mexico</option>
+										<option value="NY">New York</option>
+										<option value="NC">North Carolina</option>
+										<option value="ND">North Dakota</option>
+										<option value="OH">Ohio</option>
+										<option value="OK">Oklahoma</option>
+										<option value="OR">Oregon</option>
+										<option value="PA">Pennsylvania</option>
+										<option value="RI">Rhode Island</option>
+										<option value="SC">South Carolina</option>
+										<option value="SD">South Dakota</option>
+										<option value="TN">Tennessee</option>
+										<option value="TX">Texas</option>
+										<option value="UT">Utah</option>
+										<option value="VT">Vermont</option>
+										<option value="VA">Virginia</option>
+										<option value="WA">Washington</option>
+										<option value="WV">West Virginia</option>
+										<option value="WI">Wisconsin</option>
+										<option value="WY">Wyoming</option>
+									</select>
+								</div>
+								<div class="col-lg-6">
+									<input type="text" name="Postal_Code" placeholder="Postal Code">
+								</div>
+								<div class="col-lg-6">
+									<input type="tel" class="input-text " name="billing_phone"  placeholder="Phone">
+								</div>
+								</div>
+								<!-- 
+								<div class="ship-address">
+									
+									<div class="d-flex">
+									<input type="radio" id="Create" name="Create" value="Create">
+									<label for="Create">
+										Create an account for later use
+									</label>
+									</div>
+									<div class="d-flex">
+									<input type="radio" id="ShipAddress" name="Create" value="ShipAddress">
+									<label for="ShipAddress">
+											Deliver to same Address
+									</label>
+									</div>
+									
+								</div>
+								-->
+							</div>
+							<div class="woocommerce-additional-fields">
+								<textarea name="order_comments" class="input-text " placeholder="Order Note"></textarea>
+							</div>
+					</div>
+					<div class="col-lg-4">
+						<div class="cart_totals-checkout">
+							<div class="cart_totals cart-Total">
+									<h4 class="pt-0">Cart Total</h4>
+									<table class="shop_table_responsive">
+										<tbody>
+											<tr class="cart-subtotal">
+												<th>Subtotal:</th>
+												<td>
+													<span class="woocommerce-Price-amount">
+													<bdi>
+														<span class="woocommerce-Price-currencySymbol">$</span><%= totalCost %>
+													</bdi>
+													</span>
+												</td>
+											</tr>
+											<tr class="Shipping">
+												<th>Shipping:</th>
+												<td>
+													<span class="woocommerce-Price-amount amount">
+														free
+													</span>
+												</td>
+											</tr>
+											<tr class="Total">
+												<th>Total:</th>
+												<td>
+													<span class="woocommerce-Price-amount">
+													<bdi>
+														<span>$</span><%= totalCost %>
+													</bdi>
+													</span>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+							</div>
+							<div class="checkout-side">
+								<h4>Payment Method</h4>
+								<ul>
+									<!--
+									<li>
+										<input type="radio" id="Bank_Payment" name="Bank_Payment" value="Bank_Payment">
+										<label for="Bank_Payment">
+												Bank Payment
+										</label>
+									</li>
+									<li>
+										<input type="radio" id="Check_Payment" name="Bank_Payment" value="Check_Payment">
+										<label for="Check_Payment">
+												Check Payment
+										</label>
+									</li>
+									<li>
+										<input type="radio" id="PayPal" name="Bank_Payment" value="Check_Payment">
+										<label for="PayPal">
+												PayPal
+										</label>
+									</li>
+									-->
+									<li>
+										<input type="radio" id="Cash on Delivery" name="Bank_Payment" value="Check_Payment">
+										<label for="Cash on Delivery">
+												Cash on Delivery
+										</label>
+									</li>
+								</ul>
+								<button type="submit" class="btn"><span>Place Order</span></button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+		  <% } %>
 		</div>
 	 </section>

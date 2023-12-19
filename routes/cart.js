@@ -11,7 +11,8 @@ module.exports = () => {
     router.post('/', (request, response) => {
          
         if (!request.session.userCart) {
-            request.session.userCart = {} ;
+            request.session.userCart = {
+            } ;
         };
         
         var itemUpdateID = new String(request.body.itemUpdateID);
@@ -91,7 +92,7 @@ module.exports = () => {
         var userCart = {} ;
         if (request.session.userCart)
             userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
-        console.log('User Cart in cart.js: ' + JSON.stringify(userCart, null, 4));
+        //console.log('User Cart in cart.js: ' + JSON.stringify(userCart, null, 4));
         response.render('layout', { pageTitle: 'Your Cart Items', template: 'cart', userCart: userCart});
     });
 
