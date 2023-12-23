@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const { v4: uuidv4 } = require('uuid');
 require('dotenv').config();
 var nodemailer = require('nodemailer'); 
 const fs = require('fs');
@@ -29,7 +30,7 @@ module.exports = () => {
           
         // Listen for the 'end' event and log the final string value
         streamJquery.on('end', () => {
-            console.log(`Read jquery file : first 50 chars ${jqueryCode.split(" ").slice(0, 50).join(" ")}`);
+            console.log(`Read jquery file has ${jqueryCode.split(" ").length} chars`);
         });
 
         const cssStream = fs.createReadStream(`${process.env.BOOTSTRAP_CSS_FILE}`, 'utf8');
@@ -37,7 +38,7 @@ module.exports = () => {
             bootstrapCode += dataChunck.toString();
         });
         cssStream.on('end', () => {
-            console.log(`Read css file : first 50 chars ${bootstrapCode.split(" ").slice(0, 50).join(" ")}`);
+            console.log(`Read css file has ${bootstrapCode.split(" ").length} chars`);
         });
 
         orderHtml += `<head>`;
@@ -95,12 +96,27 @@ module.exports = () => {
         var mailOptions = {
             from: `no-reply@bashballoonsrentals.com`,
             to: `asong_nic@yahoo.com, ntuifranklin2005@gmail.com`,
-            subject: `bashballoonsrentals.com of Order Confirmation ${faker.string.uuid()}`,
+            subject: `bashballoonsrentals.com of Order Confirmation ${uuidv4()}`,
             html: `${orderHtml}`
           } ;
+
+        var transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+              user: 'ntuifranklin2005@gmail.com',
+              pass: 'IqC3+ABd4ikmYlOw6mvwQkYkliSw',
+            }
+        });
+        transporter.sendMail(mailOptions, function(error, info) {
+            if (error) {
+              console.log(error);
+            } else {
+              console.log(`Email sent: ${info.response}`);
+            }
+        });
         /* update the cart in the locals variable */
         //request.locals.userCart = JSON.stringify(request.session.userCart) ;
-        request.session.save();
+        //request.session.save();
         response.redirect(200, '/product-list');
         response.end(); 
     });

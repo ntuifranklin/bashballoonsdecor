@@ -31,7 +31,8 @@
     "mysql": "^2.18.1",
     "nodemailer": "^6.9.7",
     "secret-key": "^1.5.1",
-    "sqlite3": "^5.1.6"
+    "sqlite3": "^5.1.6",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "eslint": "^8.19.0",
