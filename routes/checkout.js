@@ -63,7 +63,8 @@ module.exports = () => {
             password: process.env.DATABASE_PASSWORD,
             database: process.env.DATABASE_NAME
             });
-            
+            // con.connect();
+            // Start Transaction
             await con.beginTransaction();
             //generate new order id
             var order_id = await generateUniqueID(con=con, tableName="orders", keyFieldName="order_id") ;
@@ -80,7 +81,6 @@ module.exports = () => {
                 phone, 
                 order_note] ;
             
-            // Start Transaction
             try {
                 // Insert customers
                 await con.batch(
@@ -115,20 +115,24 @@ module.exports = () => {
                             success:null,
                             error: "An error occured while processing your order. Please try again later."
                 });
+                
 
             } ;
             // Commit Changes
 
         } catch (error) {
+
+            console.error("Error loading data, reverting changes: ", error);
             await con.rollback();/* If an error occured, just tell the user something went wrong */
             
+            
             response.render('layout',{ 
-                        pageTitle: 'Checkout', 
-                        template: 'checkout', 
-                        userCart: userCart,
-                        csrfToken: request.csrfToken(),
-                        success: null ,
-                        error: "An error occured while processing your order. Please try again later."
+                pageTitle: 'Checkout', 
+                template: 'checkout', 
+                userCart: userCart,
+                csrfToken: request.csrfToken(),
+                success: null ,
+                error: "An error occured while processing your order. Please try again later."
             });
 
         };
@@ -201,6 +205,7 @@ module.exports = () => {
                             success:null,
                             error: "An error occured while processing your order. Please try again later."
                 });
+                
             } ;
         }
 
@@ -329,7 +334,7 @@ module.exports = () => {
             success: "Your order is currently being processed. You will receive an email confirmation shortly.",
             csrfToken: request.csrfToken()
         });
-        response.end(); 
+
     });
 
     router.get('/', (request, response) => { 
