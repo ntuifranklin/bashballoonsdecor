@@ -48,7 +48,7 @@ module.exports = () => {
         orderHtml += `\t\t\t\t\t<th>Ordered Item</th>\n`;
         orderHtml += `\t\t\t\t\t<th>Quantity</th>\n`;
         orderHtml += `\t\t\t\t\t<th>Unit Cost</th>\n`;
-        orderHtml += `\t\t\t\t\t<th>Sub Total</th>\n`;
+        orderHtml += `\t\t\t\t\t<th>Sub Total in USD</th>\n`;
         orderHtml += `\t\t\t\t</tr>\n`;
         orderHtml += `\t\t\t</thead>\n`;
         orderHtml += `\t\t<tbody>\n`;
@@ -65,7 +65,7 @@ module.exports = () => {
                 orderHtml += `\t\t\t\t<td>${itemDetails.individItemTitle}</td>\n`;
                 orderHtml += `\t\t\t\t<td>${individualItem.quantity}</td>\n`;
                 orderHtml += `\t\t\t\t<td>${itemDetails.individItemUnitCost}</td>\n`;
-                orderHtml += `\t\t\t\t<td>${itemsSubTotal}</td>\n`;
+                orderHtml += `\t\t\t\t<td>$${itemsSubTotal}</td>\n`;
                 orderHtml += `\t\t\t</tr>\n`;
             }
         }
@@ -82,11 +82,20 @@ module.exports = () => {
                 orderHtml += `\t\t\t\t<td>${packageDetails["packagedesc"]}</td>\n`;
                 orderHtml += `\t\t\t\t<td>${package["quantity"]}</td>\n`;
                 orderHtml += `\t\t\t\t<td>${packageDetails["packagecost"]}</td>\n`;
-                orderHtml += `\t\t\t\t<td>${packageSubTotal}</td>\n`;
+                orderHtml += `\t\t\t\t<td>$${packageSubTotal}</td>\n`;
                 orderHtml += `\t\t\t</tr>\n`;
             }
             
         }
+         
+        orderHtml += `\t\t\t<tr>\n`;
+        orderHtml += `\t\t\t\t<td colspan=2>\n`;
+        orderHtml += `\t\t\t\t<b>Grand Total : </b>\n`;
+        orderHtml += `\t\t\t\t</td>\n`;
+        orderHtml += `\t\t\t\t<td>\n`;
+        orderHtml += `\t\t\t\t<b>$${grandTotal}</b>\n`; 
+        orderHtml += `\t\t\t\t</td>\n`;
+        orderHtml += `\t\t\t</tr>\n`;
         
         orderHtml += `\t\t\t\t</tbody>\n`;
         orderHtml += `\t\t\t</table>\n`;
@@ -109,7 +118,7 @@ module.exports = () => {
                 rejectUnauthorized: false
             },
         };
-        console.log(`auth json ${JSON.stringify(authJson, null, 4)}}`);
+        //console.log(`auth json ${JSON.stringify(authJson, null, 4)}}`);
         const transporter = nodemailer.createTransport({
             host: process.env.FORWARD_EMAIL_NET_SMTP_SERVER,
             port: process.env.FORWARD_EMAIL_NET_SMTP_PORT,
