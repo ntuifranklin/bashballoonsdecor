@@ -15,7 +15,7 @@
   </section>
   <section class="gap">
       <div class="container">
-        <% console.log(`Cart in cart.ejs ${JSON.stringify(userCart, null, 4)}`); %>
+        <% //console.log(`Cart in cart.ejs ${JSON.stringify(userCart, null, 4)}`); %>
         <% var noKeys = Object.keys(userCart) ; %>
                 
         <% if(noKeys.length == 0) { %>
@@ -24,6 +24,11 @@
                 <p>Looks like you haven't added any items to your cart yet.</p>
                 <hr>
                 <p class="mb-0">Please add some items to your cart.</p>
+                
+                <ul>
+                    <li><a href="/packages" class="link-primary">Affordable Party Packages</a></li>
+                    <li><a href="/product-list" class="link-primary">Individual Party Rental Items</a></li>
+                </ul>
             </div>
         <% } else { %>
           <div class="row">
@@ -69,7 +74,7 @@
                                             Quantity<input type="number" class="input-text" value="<%= individualItem.quantity %>" min="1" >
                                         </td>
                                         <% totalItems += individualItem.quantity ; %>
-                                        <% var itemsSubTotal = individualItem.quantity * itemDetails.individItemUnitCost %>
+                                        <% var itemsSubTotal = individualItem.quantity * itemDetails.individItemUnitCost ; %>
                                         <td class="product-subtotal">
                                             <span class="woocommerce-Price-amount">
                                                 <bdi>
@@ -86,7 +91,7 @@
                             <% } %>
                             
                             <% if ("package" in userCart) { %>
-                                <% console.log("package in userCart cart.ejs"); %>
+                                <% //console.log("package in userCart cart.ejs"); %>
                                 <% for (var packageKey in userCart["package"])  { %>
                                     <% var package = JSON.parse(JSON.stringify(userCart["package"][packageKey])); %>
                                     <% var packageDetails = JSON.parse(JSON.stringify(package["packageDetails"])) ; %>
@@ -111,7 +116,7 @@
                                                 <input type="number" class="input-text" value="<%= package['quantity'] %>" min="1" >
                                             </td>
                                             <% totalItems += package.quantity ; %>
-                                            <% var packageSubTotal = package["quantity"] * packageDetails["packagecost"] %>
+                                            <% var packageSubTotal = package["quantity"] * packageDetails["packagecost"] ; %>
                                             <td class="product-subtotal">
                                                 <span class="woocommerce-Price-amount">
                                                     <bdi>

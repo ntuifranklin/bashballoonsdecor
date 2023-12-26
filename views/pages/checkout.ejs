@@ -1,5 +1,30 @@
 
+<%  //console.log(`user cart in checkout : ${JSON.stringify(userCart, null,4)}`); %>
+<% 
+	//loop through userCart to get the total cost
+	var totalCost = 0.0;
+	if ("package" in userCart) {
+		for (var packageKey in userCart["package"])  { 
+			var package = JSON.parse(JSON.stringify(userCart["package"][packageKey]));
+			var packageDetails = JSON.parse(JSON.stringify(package["packageDetails"])) ;
+			var packageSubTotal = package["quantity"] * packageDetails["packagecost"]
+			totalCost += ( 
+				packageSubTotal
+			);
+		
+		}
+	}
 
+	if ("IndividualItems" in userCart) {
+		for (var itemKey in userCart["IndividualItems"]) {
+			var individualItem = JSON.parse(JSON.stringify(userCart["IndividualItems"][itemKey])) ;
+			var itemDetails = JSON.parse(JSON.stringify(individualItem["individualItemDetails"])) ;
+			totalCost += ( 
+				individualItem.quantity * itemDetails.individItemUnitCost
+			);
+		}
+	}
+%>
 <section class="banner" style="background-image:url(https://via.placeholder.com/1920x300)">
 	<div class="container">
 	  <ol class="breadcrumb">
@@ -13,32 +38,202 @@
 	  </ol>
 	  <h2>Checkout</h2>
 	</div>
-  </section>
-	 <section class="gap">
-		<div class="container">
-		  <form class="checkout-meta donate-page">
-			  <div class="row">
-				  <div class="col-lg-8">
-					  <h3 class="pb-3">Billing details</h3>
-						  <div class="col-lg-12">
-							  <input type="text" class="input-text " name="billing_name" placeholder="Complete Name">
-							  <input type="email" class="input-text " name="billing_email" placeholder="Email address">
-							  <input type="text" name="Address" placeholder="Street Address">
-							  <!--
-								<select name="billing_country" class="nice-select Advice country_to_state">
-								  <option>Country</option>
-								  <option>Select Topic 1</option>
-								  <option>Select Topic 2</option>
-								  <option>Select Topic 3</option>
-								  <option>Select Topic 4</option>
-							  	</select>
-							   -->
-							  <div class="row">
-							  <div class="col-lg-6">
-								<input type="text" name="City" placeholder="City">
-							  </div>
-							  <div class="col-lg-6">
-								  <select name="billing_country" class="nice-select Advice state province">
+</section>
+
+<section class="gap">
+<div class="container">
+	<% //console.log(`Cart in cart.ejs ${JSON.stringify(userCart, null, 4)}`); %>
+	<% var noKeys = Object.keys(userCart) ; %>
+	<% if ( noKeys.length == 0 ) { %>
+		<div class="row">
+			<div class="col-lg-12">
+				
+			<div class="alert alert-dark" role="alert">
+				<h4 class="alert-heading">Your Cart is Empty!</h4>
+				<p>Looks like you haven't added any items to your cart yet.</p>
+				<hr>
+				<p class="mb-0">Please add some items to your cart.</p>
+				
+				<ul>
+					<li><a href="/packages" class="link-primary">Affordable Party Packages</a></li>
+					<li><a href="/product-list" class="link-primary">Individual Party Rental Items</a></li>
+				</ul>
+			</div>
+			</div>
+		</div>
+	<% } else if ( error != undefined && error != null) { %>
+
+		<div class="row">
+			<div class="col-lg-12">
+				
+			<div class="alert alert-danger" role="alert">
+				<h4 class="alert-heading">Some errors occured while processing your form </h4>
+				<p><%= error %></p>
+				<hr>
+				
+			</div>
+			</div>
+		</div>
+	<% } else if ( success != undefined && success != null) { %>
+		
+		<div class="row">
+			<div class="col-lg-12">
+				
+			<div class="alert alert-success" role="alert">
+				<h4 class="alert-heading">Hoohooo! </h4>
+				<p><%= success %></p>
+				<hr>
+				
+			</div>
+			</div>
+		</div>
+
+	<% } else { %>
+	<form class="checkout-meta donate-page" method="POST" action="/checkout">
+		<!-- Begin listing cart items -->
+		<div class="row">
+			<div class="col-lg-12">
+			<div style="overflow-x:auto;overflow-y: hidden;">
+					<table class="shop_table table-responsive">
+						<thead>
+							<tr>
+								<th class="product-name">Product Detail</th>
+								<th class="product-price">Unit Price</th>
+								<th class="product-quantity">Quantity</th>
+								<th class="product-subtotal">Total Price</th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody>
+						<% var grandTotal = 0 ; %>
+						<% var totalItems = 0 ; %>
+						<%  if ("IndividualItems" in userCart ) { %>
+							<% for(var itemKey in userCart["IndividualItems"])  { %>
+								<% var individualItem = JSON.parse(JSON.stringify(userCart["IndividualItems"][itemKey])) ;%>
+								<% var itemDetails = JSON.parse(JSON.stringify(individualItem["individualItemDetails"])) ; %>
+								<tr class="product">
+									<td class="product-name">
+										<img alt="img" src="https://via.placeholder.com/70x70">
+										<div>
+											<span><%= itemDetails.individItemTitle %></span>
+											<p><%= itemDetails.individItemDescription %></p>
+											
+											<p>SKU: <%= itemKey %></p>
+										</div>
+									</td>
+									<td class="product-price">
+										<span class="woocommerce-Price-amount">
+											<bdi>
+												<span class="woocommerce-Price-currencySymbol">$</span><%= itemDetails.individItemUnitCost %>
+											</bdi>
+											</span>          
+									</td>
+									<td class="product-quantity">
+										Quantity<input type="number" class="input-text" value="<%= individualItem.quantity %>" min="1" >
+									</td>
+									<% totalItems += individualItem.quantity ; %>
+									<% var itemsSubTotal = individualItem.quantity * itemDetails.individItemUnitCost %>
+									<td class="product-subtotal">
+										<span class="woocommerce-Price-amount">
+											<bdi>
+												<span class="woocommerce-Price-currencySymbol">$</span><%= itemsSubTotal %>
+											</bdi>
+										</span>
+									</td>
+									<% grandTotal += itemsSubTotal ; %>
+									<td class="product-remove">
+										<a href="#"><i class="fa-regular fa-circle-xmark"></i></a>
+									</td>
+								</tr>
+							<% } %>
+						<% } %>
+						
+						<% if ("package" in userCart) { %>
+							<% //console.log("package in userCart cart.ejs"); %>
+							<% for (var packageKey in userCart["package"])  { %>
+								<% var package = JSON.parse(JSON.stringify(userCart["package"][packageKey])); %>
+								<% var packageDetails = JSON.parse(JSON.stringify(package["packageDetails"])) ; %>
+									<tr class="product">
+										<td class="product-name">
+											<img alt="img" src="https://via.placeholder.com/70x70">
+											<div>
+												<span><%= packageDetails["packagedesc"] %></span>
+												<p><%= packageDetails["packagedesc"] %></p>   
+												<p>SKU: <%= packageKey %></p>
+											</div>
+										</td>
+										<td class="product-price">
+											<span class="woocommerce-Price-amount">
+												<bdi>
+													<span class="woocommerce-Price-currencySymbol">$</span><%= packageDetails["packagecost"] %>
+												</bdi>
+											</span>          
+										</td>
+										<td class="product-quantity">
+											Quantity
+											<input type="number" class="input-text" value="<%= package['quantity'] %>" min="1" >
+										</td>
+										<% totalItems += package.quantity ; %>
+										<% var packageSubTotal = package["quantity"] * packageDetails["packagecost"] %>
+										<td class="product-subtotal">
+											<span class="woocommerce-Price-amount">
+												<bdi>
+													<span class="woocommerce-Price-currencySymbol">$</span><%= packageSubTotal %>
+												</bdi>
+											</span>
+										</td>
+										<% grandTotal += packageSubTotal ; %>
+										<td class="product-remove">
+											<a href="#"><i class="fa-regular fa-circle-xmark"></i></a>
+										</td>
+									</tr>
+							<% } %>
+					<% } %>
+						</tbody>
+						<tfoot>
+							<tr>
+								<td colspan="4">
+									<div class="d-flex align-items-center justify-content-between">
+										<h4><%= totalItems %> items</h4>
+										<h5>$<%= grandTotal %></h5>
+									</div>
+								</td>
+							</tr>
+						</tfoot>
+					</table>
+			</div>
+			</div>
+		
+		</div>
+		<!-- End listing cart items -->
+
+		<!-- Billing Details -->
+		<div class="row">
+			<div class="col-lg-8">
+				<h3 class="pb-3">Billing details</h3>
+					<div class="col-lg-12">
+						<input type="text" class="input-text " name="completename" placeholder="Complete Name">
+						<input type="email" class="input-text " name="email" placeholder="Email address">
+						<input type="text" name="street_address" placeholder="Street Address">
+						<%
+						/*
+						<!--
+							<select name="billing_country" class="nice-select Advice country_to_state">
+							<option>Country</option>
+							<option>Select Topic 1</option>
+							<option>Select Topic 2</option>
+							<option>Select Topic 3</option>
+							<option>Select Topic 4</option>
+							</select>
+						-->
+						*/
+						%>
+						<div class="row">
+							<div class="col-lg-6">
+								<input type="text" name="city" placeholder="City">
+							</div>
+							<div class="col-lg-6">
+								<select name="state" class="nice-select Advice state province">
 									<option>State</option>
 									<option value="AL">Alabama</option>
 									<option value="AK">Alaska</option>
@@ -91,110 +286,117 @@
 									<option value="WV">West Virginia</option>
 									<option value="WI">Wisconsin</option>
 									<option value="WY">Wyoming</option>
-								  </select>
-							  </div>
-							  <div class="col-lg-6">
-								  <input type="text" name="Postal_Code" placeholder="Postal Code">
-							  </div>
-							  <div class="col-lg-6">
-								  <input type="tel" class="input-text " name="billing_phone"  placeholder="Phone">
-							  </div>
-							  </div>
-							  <!-- 
-							  <div class="ship-address">
-								
-								  <div class="d-flex">
-								  <input type="radio" id="Create" name="Create" value="Create">
-								  <label for="Create">
-									  Create an account for later use
-								  </label>
-								  </div>
-								  <div class="d-flex">
-								  <input type="radio" id="ShipAddress" name="Create" value="ShipAddress">
-								  <label for="ShipAddress">
-										  Deliver to same Address
-								  </label>
-								  </div>
-								
-							  </div>
-							  -->
-						  </div>
-						  <div class="woocommerce-additional-fields">
-							  <textarea name="order_comments" class="input-text " placeholder="Order Note"></textarea>
-						  </div>
-				  </div>
-				  <div class="col-lg-4">
-					  <div class="cart_totals-checkout">
-						  <div class="cart_totals cart-Total">
-								  <h4 class="pt-0">Cart Total</h4>
-								  <table class="shop_table_responsive">
-									  <tbody>
-										  <tr class="cart-subtotal">
-											  <th>Subtotal:</th>
-											  <td>
-												  <span class="woocommerce-Price-amount">
-												  <bdi>
-													  <span class="woocommerce-Price-currencySymbol">$</span>358.00
-												  </bdi>
-												  </span>
-											  </td>
-										  </tr>
-										  <tr class="Shipping">
-											  <th>Shipping:</th>
-											  <td>
-												  <span class="woocommerce-Price-amount amount">
-													  free
-												  </span>
-											   </td>
-										  </tr>
-										  <tr class="Total">
-											  <th>Total:</th>
-											  <td>
-												  <span class="woocommerce-Price-amount">
-												  <bdi>
-													  <span>$</span>358.00
-												  </bdi>
-												  </span>
-											  </td>
-										  </tr>
-									  </tbody>
-								  </table>
-						  </div>
-						  <div class="checkout-side">
-							  <h4>Payment Method</h4>
-							  <ul>
-								<!--
-								  <li>
-									  <input type="radio" id="Bank_Payment" name="Bank_Payment" value="Bank_Payment">
-									  <label for="Bank_Payment">
-											  Bank Payment
-									  </label>
-								  </li>
-								  <li>
-									  <input type="radio" id="Check_Payment" name="Bank_Payment" value="Check_Payment">
-									  <label for="Check_Payment">
-											  Check Payment
-									  </label>
-								  </li>
-								  <li>
-									  <input type="radio" id="PayPal" name="Bank_Payment" value="Check_Payment">
-									  <label for="PayPal">
-											  PayPal
-									  </label>
-								  </li>
-								-->
-								  <li>
-									  <input type="radio" id="Cash on Delivery" name="Bank_Payment" value="Check_Payment">
-									  <label for="Cash on Delivery">
-											  Cash on Delivery
-									  </label>
-								  </li>
-							  </ul>
-							  <button type="submit" class="btn"><span>Place Order</span></button>
-						  </div>
-					  </div>
-				  </div>
-			  </div>
-		  </form>
+								</select>
+							</div>
+							<div class="col-lg-6">
+								<input type="text" name="zipcode" placeholder="Postal Code">
+							</div>
+							<div class="col-lg-6">
+								<input type="tel" class="input-text " name="phone"  placeholder="Phone">
+							</div>
+						</div>
+						<%
+						/*
+						<!-- 
+						<div class="ship-address">
+							
+							<div class="d-flex">
+							<input type="radio" id="Create" name="Create" value="Create">
+							<label for="Create">
+								Create an account for later use
+							</label>
+							</div>
+							<div class="d-flex">
+							<input type="radio" id="ShipAddress" name="Create" value="ShipAddress">
+							<label for="ShipAddress">
+									Deliver to same Address
+							</label>
+							</div>
+							
+						</div>
+						-->
+						*/
+						%>
+					</div>
+					<div class="woocommerce-additional-fields">
+						<textarea name="order_note" class="input-text " placeholder="Order Note"></textarea>
+					</div>
+			</div>
+			<div class="col-lg-4">
+				<div class="cart_totals-checkout">
+					<div class="cart_totals cart-Total">
+							<h4 class="pt-0">Cart Total</h4>
+							<table class="shop_table_responsive">
+								<tbody>
+									<tr class="cart-subtotal">
+										<th>Subtotal:</th>
+										<td>
+											<span class="woocommerce-Price-amount">
+											<bdi>
+												<span class="woocommerce-Price-currencySymbol">$</span><%= grandTotal %>
+											</bdi>
+											</span>
+										</td>
+									</tr>
+									<tr class="Shipping">
+										<th>Shipping:</th>
+										<td>
+											<span class="woocommerce-Price-amount amount">
+												free
+											</span>
+										</td>
+									</tr>
+									<tr class="Total">
+										<th>Total:</th>
+										<td>
+											<span class="woocommerce-Price-amount">
+											<bdi>
+												<span>$</span><%= grandTotal %>
+											</bdi>
+											</span>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+					</div>
+					<div class="checkout-side">
+						<h4>Payment Method</h4>
+						<ul>
+							<!--
+							<li>
+								<input type="radio" id="Bank_Payment" name="Bank_Payment" value="Bank_Payment">
+								<label for="Bank_Payment">
+										Bank Payment
+								</label>
+							</li>
+							<li>
+								<input type="radio" id="Check_Payment" name="Bank_Payment" value="Check_Payment">
+								<label for="Check_Payment">
+										Check Payment
+								</label>
+							</li>
+							<li>
+								<input type="radio" id="PayPal" name="Bank_Payment" value="Check_Payment">
+								<label for="PayPal">
+										PayPal
+								</label>
+							</li>
+							-->
+							<li>
+								<input type="radio" id="Cash on Delivery" name="Bank_Payment" value="Check_Payment">
+								<label for="Cash on Delivery">
+										Cash on Delivery
+								</label>
+							</li>
+						</ul>
+						<button type="submit" class="btn"><span>Place Order</span></button>
+						<input type="hidden" name="_csrf" value='<%= csrfToken %>'>
+					</div>
+				</div>
+			</div>
 		</div>
-	 </section>
+		
+	</form>
+	<% } %>
+</div>
+</section>

@@ -1,10 +1,8 @@
 
 
 var mysql = require('mysql');
-
-
 require('dotenv').config();
-
+const { v4: uuidv4 } = require('uuid');
 
 // open the database
 async function getPackageItems (packageid= '') {
@@ -30,11 +28,11 @@ async function getPackageItems (packageid= '') {
                 `;
         con.query(selectsql, function (err, result, fields) {
           if (err) reject(err);
-          
+          con.end();
           resolve(result) ;
           
         });
-        con.end();
+        //con.end();
       });
       
    
@@ -63,11 +61,11 @@ async function getIndividualItems () {
                   `;
       con.query(selectsql, function (err, result, fields) {
         if (err) reject(err);
-        
+        con.end();
         resolve(result) ;
         
       });
-      con.end();
+      //con.end();
     });
 
     
@@ -123,11 +121,11 @@ MariaDB [bashballoonsdecor]> describe package
       //console.log(`Running sql in getDatabaseObject : ${selectsql}`);
       con.query(selectsql, function (err, result, fields) {
         if (err) reject(err);
-        
+        con.end();
         resolve(result) ;
        
       });
-      con.end();
+      //con.end();
     });
     
   });
@@ -136,3 +134,54 @@ MariaDB [bashballoonsdecor]> describe package
 
 exports.getDatabaseObject = getDatabaseObject ;
 
+/* 
+Takes an already made mysql connection table, and the field of the table, and 
+a value. It counts the rows whose value matches the one given
+*/
+async function countMatchingField(con=null, tableName='IndividualItems', keyFieldName='individItemID', value='') {
+
+  if (con === null) 
+    return await new Promise(async function(resolve,reject) {
+
+        reject(new Error().message = "Connection object is null in function countMatchingField");
+    });
+
+  return await new Promise(async function(resolve,reject){
+    countsql = `
+    SELECT count(*) as ROWCOUNT
+    FROM ${tableName}
+    WHERE ${keyFieldName} = '${value}'
+    `;
+    con.query(countsql, async function (err, result, fields) {
+    if (err) reject(err);
+    resolve(result[0].ROWCOUNT) ;
+    });  
+  });
+  
+} ;
+
+exports.countMatchingField = countMatchingField ;
+
+async function generateUniqueID(con=null, tableName='IndividualItems', keyFieldName='individItemID') { 
+  
+  if (con === null) 
+    return await new Promise(async function(resolve,reject) {
+
+        reject(new Error().message = "Connection object is null in function generateUniqueID");
+    });
+  
+  return await new Promise(async function(resolve,reject) {
+
+    var id = uuidv4().split('-').join('') ;;
+    var count = await countMatchingField(con, tableName, keyFieldName, id) ;
+    while (count > 0) {
+      id = uuidv4().split('-').join('') ;
+      count = await countMatchingField(con, tableName, keyFieldName, id) ;
+    }
+    resolve(id) ;
+
+  });
+
+}
+
+exports.generateUniqueID = generateUniqueID ;
