@@ -185,9 +185,9 @@
 			<div class="col-lg-8">
 				<h3 class="pb-3">Billing details</h3>
 					<div class="col-lg-12">
-						<input type="text" class="input-text " name="billing_name" placeholder="Complete Name">
-						<input type="email" class="input-text " name="billing_email" placeholder="Email address">
-						<input type="text" name="Address" placeholder="Street Address">
+						<input type="text" class="input-text " name="completename" placeholder="Complete Name">
+						<input type="email" class="input-text " name="email" placeholder="Email address">
+						<input type="text" name="street_address" placeholder="Street Address">
 						<%
 						/*
 						<!--
@@ -203,10 +203,10 @@
 						%>
 						<div class="row">
 							<div class="col-lg-6">
-								<input type="text" name="City" placeholder="City">
+								<input type="text" name="city" placeholder="City">
 							</div>
 							<div class="col-lg-6">
-								<select name="billing_country" class="nice-select Advice state province">
+								<select name="state" class="nice-select Advice state province">
 									<option>State</option>
 									<option value="AL">Alabama</option>
 									<option value="AK">Alaska</option>
@@ -262,10 +262,10 @@
 								</select>
 							</div>
 							<div class="col-lg-6">
-								<input type="text" name="Postal_Code" placeholder="Postal Code">
+								<input type="text" name="zipcode" placeholder="Postal Code">
 							</div>
 							<div class="col-lg-6">
-								<input type="tel" class="input-text " name="billing_phone"  placeholder="Phone">
+								<input type="tel" class="input-text " name="phone"  placeholder="Phone">
 							</div>
 						</div>
 						<%
@@ -363,6 +363,7 @@
 							</li>
 						</ul>
 						<button type="submit" class="btn"><span>Place Order</span></button>
+						<input type="hidden" name="_csrf" value='<%= csrfToken %>'>
 					</div>
 				</div>
 			</div>

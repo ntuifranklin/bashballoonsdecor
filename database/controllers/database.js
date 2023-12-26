@@ -1,10 +1,8 @@
 
 
 var mysql = require('mysql');
-
-
 require('dotenv').config();
-
+const { v4: uuidv4 } = require('uuid');
 
 // open the database
 async function getPackageItems (packageid= '') {
@@ -30,11 +28,11 @@ async function getPackageItems (packageid= '') {
                 `;
         con.query(selectsql, function (err, result, fields) {
           if (err) reject(err);
-          
+          con.end();
           resolve(result) ;
           
         });
-        con.end();
+        //con.end();
       });
       
    
@@ -63,11 +61,11 @@ async function getIndividualItems () {
                   `;
       con.query(selectsql, function (err, result, fields) {
         if (err) reject(err);
-        
+        con.end();
         resolve(result) ;
         
       });
-      con.end();
+      //con.end();
     });
 
     
@@ -123,11 +121,11 @@ MariaDB [bashballoonsdecor]> describe package
       //console.log(`Running sql in getDatabaseObject : ${selectsql}`);
       con.query(selectsql, function (err, result, fields) {
         if (err) reject(err);
-        
+        con.end();
         resolve(result) ;
        
       });
-      con.end();
+      //con.end();
     });
     
   });
@@ -135,4 +133,71 @@ MariaDB [bashballoonsdecor]> describe package
 }
 
 exports.getDatabaseObject = getDatabaseObject ;
+
+/* 
+Takes an already made mysql connection table, and the field of the primary key of the table. 
+Generates a unique ID for that field in a transaction and returns the Id generated.
+The step is to generate one, then check if it exists in the table.
+If it does not, generate another one.
+*/
+async function generateUniqueID(con=null, tableName='IndividualItems', keyFieldName='individItemID') {
+
+  if (con === null) 
+    return await new Promise(async function(resolve,reject) {
+
+        reject(new Error().message = "Connection object is null");
+    });
+
+  return await new Promise(async function(resolve,reject){
+      
+
+    con.connect(function(err) {
+      if (err) reject(err);
+      let new_uuid;
+      new_uuid = uuidv4();
+      selectsql = `
+                    SELECT count(*) as IDCOUNT
+                    FROM ${tableName}
+                    WHERE ${keyFieldName} = '${new_uuid}'
+                  `;
+      con.query(selectsql, function (err, result, fields) {
+        if (err) reject(err);
+        resolve(result) ;
+      });
+      
+    });
+  });
+  
+} ;
+
+exports.generateUniqueID = generateUniqueID ;
+
+
+async function insertMultipleRowsIntoTable(con=null, tableName='', data=[]) {
+
+  return new Promise(async function(resolve,reject){
+    try {
+
+      // Start Transaction
+      try {
+         // Add Data in a batch
+         await con.batch(
+            `INSERT INTO ${tableName} VALUES(?)`,
+            data
+         );
+         
+      } catch(err){
+         reject(err);
+      }
+  
+   } catch(err){
+      reject(err);
+     
+   }
+  
+   resolve(1);
+
+  });
+  
+}
 

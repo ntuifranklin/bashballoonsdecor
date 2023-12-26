@@ -2,7 +2,7 @@
 
 function updateCart(productID, updateType){
     
-    console.log(` client side productID : ${productID}`);
+    //console.log(` client side productID : ${productID}`);
     $.post({
         type: "POST",
         url: "/cart",

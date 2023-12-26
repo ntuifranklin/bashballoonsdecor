@@ -2,14 +2,15 @@ const express = require('express');
 const { faker } = require('@faker-js/faker');
 const path = require('path');
 const createError = require('http-errors');
+
 const bodyParser = require('body-parser');
-
-
+var csrf = require('csurf');
+// csrf protection
+var csrfProtection = csrf({ cookie: true });
 const cookieSession = require('cookie-session');
-
 const template_folder = 'static_template';
 const routes = require('./routes');
-const { response } = require('express');
+
 
 const {getDatabaseObject,getIndividualItems,getPackageItems} = require('./database/controllers/database');
 const app = express();
@@ -75,6 +76,13 @@ var package4900ID = process.env.PACKAGE4900ID;
 
 const allpackages = require(process.env.PACKAGES_ONLY_FILE);
 
+
+/* TODO: figure out how to place these json files as a return string from a sql query
+    the issue is that I attempted to use a function that returns the query result as a json object, or 
+    a string, and due to the syntax constraints of promises, I kept having syntax errors: promise must be in a function or
+    top leel module. The solution was to run the query on the command line, and place the result in a json file, which I did
+    However every new package or item added to the database will require a manual update of the json file.
+*/
 const [
     package_3000,
     package_3800,
@@ -157,7 +165,7 @@ for (index = 0 ; index < list_of_items.length ; index++ ) {
 } ;
 
 
-
+app.locals.csrfProtection = csrfProtection ;
 
 
 app.use((request, response, next) => { 
@@ -180,7 +188,7 @@ app.use((request, response, next) => {
 app.use('/',routes());
 
 
-app.listen(PORT,'0.0.0.0', () => {
+app.listen(PORT, () => {
     console.log(`Express server listening on port ${PORT}`);
    
 });

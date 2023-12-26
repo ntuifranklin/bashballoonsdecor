@@ -1,9 +1,17 @@
 const express = require('express');
 const router = express.Router();
 const { v4: uuidv4 } = require('uuid');
+const {generateUniqueID} = require('../database/controllers/database');
 require('dotenv').config();
 var nodemailer = require('nodemailer'); 
 const fs = require('fs');
+
+const bodyParser = require('body-parser');
+var csrf = require('csurf');
+// csrf protection
+var csrfProtection = csrf({ cookie: true });
+const cookieSession = require('cookie-session');
+var parseForm = bodyParser.urlencoded({ extended: true });
 
         
 //read jquery file stream and css stream into a string 
@@ -14,24 +22,40 @@ const bootstrapCode = fs.readFileSync(`${process.env.BOOTSTRAP_CSS_FILE}`).toStr
 module.exports = () => { 
     
         
-    router.post('/', (request, response) => {
+    router.post('/', parseForm, csrfProtection, (request, response) => {
          
         if (request.session.userCart == undefined || Object.keys(request.session.userCart).length === 0 || !request.session.userCart || request.session.userCart == {} || request.session.userCart == null ) {
             response.redirect(200, '/');
             response.end(); 
         };
-        /* Loop throgh the cart and generate an email that will recieve the order */
+
+        /* Get form data first, and sanitize or reject if necessary */
+        const completename = new String(request.body.completename);
+        const email = new String(request.body.email) ;
+        const city = new String(request.body.city) ;
+        const state = new String(request.body.state) ;
+        const zipcode = new String(request.body.zipcode) ;
+        const phone = new String(request.body.phone) ;
+        const street_address = new String(request.body.street_address) ;
+
+        //============================================
+        /* Begin sanitize from data here */
+
+        /* End Sanitize form data  */
+        //============================================
+
+        /* Loop through the cart and:
+            - create arrays that will be inserted into the database in the following order : 
+                * customer
+                * order
+                * order_individual_items if any
+                * order_packages if any
+            - generate an email that will recieve the order */
         var userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
         var totalItems = 0 ;
         
         var grandTotal = 0.0 ;
         var orderHtml = `<html>\n`;
-       /*
-       <div class="container-fluid">
-  ...
-</div>
-       
-       */
 
         orderHtml += `<head>\n`;
         orderHtml += `<title>Order Confirmation</title>\n`;
@@ -157,13 +181,20 @@ module.exports = () => {
         response.end(); 
     });
 
-    router.get('/', (request, response) => { 
+    router.get('/', csrfProtection, (request, response) => { 
         
         var userCart = {} ;
         if (request.session.userCart)
             userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
         //console.log('User Cart in cart.js: ' + JSON.stringify(userCart, null, 4));
-        response.render('layout', { pageTitle: 'Checkout', template: 'checkout', userCart: userCart});
+        response.render('layout', 
+                        { 
+                            pageTitle: 'Checkout', 
+                            template: 'checkout', 
+                            userCart: userCart,
+                            csrfToken: request.csrfToken()
+                        }
+        );
     });
      
 

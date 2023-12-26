@@ -1,14 +1,20 @@
 const express = require('express');
 const router = express.Router();
 
+const bodyParser = require('body-parser');
+var csrf = require('csurf');
+// csrf protection
+var csrfProtection = csrf({ cookie: true });
+const cookieSession = require('cookie-session');
+var parseForm = bodyParser.urlencoded({ extended: true });
+
 require('dotenv').config();
 const createError = require('http-errors');
-const bodyParser = require('body-parser');
 const databaseAccessor = require('../database/controllers/database');
 
 module.exports = () => { 
     
-    router.post('/', (request, response) => {
+    router.post('/', parseForm, csrfProtection, (request, response) => {
          
         if (!request.session.userCart) {
             request.session.userCart = {
@@ -87,13 +93,18 @@ module.exports = () => {
     });
 
 
-    router.get('/', (request, response) => { 
+    router.get('/', csrfProtection,  (request, response) => { 
         
         var userCart = {} ;
         if (request.session.userCart)
             userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
         //console.log('User Cart in cart.js: ' + JSON.stringify(userCart, null, 4));
-        response.render('layout', { pageTitle: 'Your Cart Items', template: 'cart', userCart: userCart});
+        response.render('layout', { 
+            pageTitle: 'Your Cart Items', 
+            template: 'cart', 
+            userCart: userCart,
+            csrfToken: request.csrfToken()
+        });
     });
 
     return router;
