@@ -84,37 +84,6 @@ LOCK TABLES `customers` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `order_individualItems`
---
-
-DROP TABLE IF EXISTS `order_individualItems`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `order_individualItems` (
-  `order_individItemID` char(64) NOT NULL COMMENT 'Primary Key for this individual item order',
-  `order_id` char(64) DEFAULT NULL COMMENT 'References an order in the order table',
-  `individItemID` char(64) DEFAULT NULL COMMENT 'References the individual item in this order',
-  `quantity` int(11) DEFAULT NULL,
-  `individItemUnitSalePrice` decimal(10,2) DEFAULT NULL COMMENT 'The price at which this individual item was sold when the order was being processed, since prices can change.',
-  `subtotal` decimal(10,2) DEFAULT NULL COMMENT 'The sub total for this item x(multiplied by) quantity',
-  PRIMARY KEY (`order_individItemID`),
-  KEY `order_id` (`order_id`),
-  KEY `individItemID` (`individItemID`),
-  CONSTRAINT `order_individualItems_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`order_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `order_individualItems_ibfk_2` FOREIGN KEY (`individItemID`) REFERENCES `IndividualItems` (`individItemID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `order_individualItems`
---
-
-LOCK TABLES `order_individualItems` WRITE;
-/*!40000 ALTER TABLE `order_individualItems` DISABLE KEYS */;
-/*!40000 ALTER TABLE `order_individualItems` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `order_package`
 --
 
@@ -123,11 +92,11 @@ DROP TABLE IF EXISTS `order_package`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `order_package` (
   `order_packageid` char(64) NOT NULL,
-  `order_id` char(64) DEFAULT NULL COMMENT 'References an order in the order table',
-  `packageid` char(64) DEFAULT NULL COMMENT 'References the individual item in this order',
-  `quantity` int(11) DEFAULT NULL,
-  `packageUnitSalePrice` decimal(10,2) DEFAULT NULL COMMENT 'The price at which this package was sold when order was being processed.',
-  `subtotal` decimal(10,2) DEFAULT NULL COMMENT 'The sub total for this package x(multiplied by) quantity',
+  `order_id` char(64) NOT NULL COMMENT 'References an order in the order table',
+  `packageid` char(64) NOT NULL COMMENT 'References the individual item in this order',
+  `quantity` int(11) NOT NULL,
+  `packageUnitSalePrice` decimal(10,2) NOT NULL COMMENT 'The price at which this package was sold when order was being processed.',
+  `subtotal` decimal(10,2) NOT NULL COMMENT 'The sub total for this package x(multiplied by) quantity',
   PRIMARY KEY (`order_packageid`),
   KEY `order_id` (`order_id`),
   KEY `packageid` (`packageid`),
@@ -154,9 +123,9 @@ DROP TABLE IF EXISTS `orders`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `orders` (
   `order_id` char(64) NOT NULL COMMENT 'Primary Key for this order',
-  `customer_id` char(64) DEFAULT NULL,
+  `customer_id` char(64) NOT NULL,
   `order_date` timestamp NULL DEFAULT current_timestamp(),
-  `total_amount` decimal(10,2) DEFAULT NULL,
+  `total_amount` decimal(10,2) NOT NULL,
   `payment_status` enum('pending','completed','failed') DEFAULT NULL,
   `paypal_transaction_id` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`order_id`)
@@ -306,4 +275,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-12-26 17:22:54
+-- Dump completed on 2023-12-26 18:10:20

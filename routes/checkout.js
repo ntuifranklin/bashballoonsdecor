@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
+var mysql = require('mysql');
 const { v4: uuidv4 } = require('uuid');
-const {generateUniqueID} = require('../database/controllers/database');
+const {countMatchingField} = require('../database/controllers/database');
 require('dotenv').config();
 var nodemailer = require('nodemailer'); 
 const fs = require('fs');
@@ -19,15 +20,14 @@ const jqueryCode = fs.readFileSync(`${process.env.BOOTSTRAP_JS_FILE}`).toString(
 const bootstrapCode = fs.readFileSync(`${process.env.BOOTSTRAP_CSS_FILE}`).toString(); ;
 
 
-module.exports = () => { 
-    
-        
-    router.post('/', parseForm, csrfProtection, (request, response) => {
+module.exports = () => {
+    router.post('/', parseForm, csrfProtection, async (request, response) => {
          
         if (request.session.userCart == undefined || Object.keys(request.session.userCart).length === 0 || !request.session.userCart || request.session.userCart == {} || request.session.userCart == null ) {
             response.redirect(200, '/');
             response.end(); 
         };
+
 
         /* Get form data first, and sanitize or reject if necessary */
         const completename = new String(request.body.completename);
@@ -37,7 +37,8 @@ module.exports = () => {
         const zipcode = new String(request.body.zipcode) ;
         const phone = new String(request.body.phone) ;
         const street_address = new String(request.body.street_address) ;
-
+        const order_note = new String(request.body.order_note);
+             
         //============================================
         /* Begin sanitize from data here */
 
@@ -50,7 +51,85 @@ module.exports = () => {
                 * order
                 * order_individual_items if any
                 * order_packages if any
-            - generate an email that will recieve the order */
+            - generate an email that will recieve the order 
+        */
+        
+        var con = mysql.createConnection({
+            host: process.env.DATABASE_HOST,
+            user: process.env.DATABASE_USER,
+            password: process.env.DATABASE_PASSWORD,
+            database: process.env.DATABASE_NAME
+        });
+        await con.beginTransaction();
+        //generate new order id
+        var order_id = await generateUniqueID(con=con, tableName="orders", keyFieldName="order_id") ;
+        //generate new customer id
+        var customer_id = await generateUniqueID(con=con, tableName="customers", keyFieldName="customer_id") ;
+        const customerInsertArray = [
+            customer_id, 
+            completename, 
+            email, 
+            street_address,
+            city, 
+            state, 
+            zipcode, 
+            phone, 
+            order_note] ;
+        try {
+                   
+            
+            // Start Transaction
+            
+
+            try {
+                // Insert customers
+                await con.batch(
+                    "INSERT INTO customers VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                    customerInsertArray
+                );
+
+                
+                var orderInsertArray = [
+                    order_id,
+                    customer_id,
+                    new Date().toISOString().slice(0, 19).replace('T', ' '),
+                    0.0, //total_amount
+                    'pending',//payment_status
+                    '' //paypal_transaction_id
+                ] ;
+                await con.batch(
+                    "INSERT INTO orders VALUES(?, ?, ?, ?, ?, ?)",
+                    orderInsertArray
+                );
+                
+                
+            } catch(err){
+                console.error("Error loading data, reverting changes: ", err);
+                await  con.rollback();
+                /* If an error occured, just tell the user something went wrong */
+                response.render('layout',{ 
+                            pageTitle: 'Checkout', 
+                            template: 'checkout', 
+                            userCart: userCart,
+                            csrfToken: request.csrfToken(),
+                            success:null,
+                            error: "An error occured while processing your order. Please try again later."
+                });
+            } ;
+            // Commit Changes
+
+        } catch (error) {
+            await  con.rollback();/* If an error occured, just tell the user something went wrong */
+            response.render('layout',{ 
+                        pageTitle: 'Checkout', 
+                        template: 'checkout', 
+                        userCart: userCart,
+                        csrfToken: request.csrfToken(),
+                        success: null ,
+                        error: "An error occured while processing your order. Please try again later."
+            });
+
+        };
         var userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
         var totalItems = 0 ;
         
@@ -76,10 +155,11 @@ module.exports = () => {
         orderHtml += `\t\t\t\t</tr>\n`;
         orderHtml += `\t\t\t</thead>\n`;
         orderHtml += `\t\t<tbody>\n`;
-        
+        var individualItemsInsert = [] ;
         if ("IndividualItems" in userCart ) { 
             var allIndividualItems = JSON.parse(JSON.stringify(userCart["IndividualItems"])) ;
             for(var itemKey in allIndividualItems)  {
+                var order_individualItemID = await generateUniqueID(con=con, tableName="order_individualItems", keyFieldName="order_individItemID") ;
                 orderHtml += `\t\t\t<tr>\n`;
                 var individualItem = JSON.parse(JSON.stringify(allIndividualItems[itemKey])) ;
                 var itemDetails = JSON.parse(JSON.stringify(individualItem["individualItemDetails"])) ;
@@ -91,11 +171,41 @@ module.exports = () => {
                 orderHtml += `\t\t\t\t<td>${itemDetails.individItemUnitCost}</td>\n`;
                 orderHtml += `\t\t\t\t<td>$${itemsSubTotal}</td>\n`;
                 orderHtml += `\t\t\t</tr>\n`;
-            }
+                individualItemsInsert.push([
+                    order_individualItemID,
+                    order_id,
+                    itemDetails.individItemID,
+                    individualItem.quantity,
+                    itemDetails.individItemUnitCost,
+                    itemsSubTotal,
+                ]);
+                
+            } ;
+            //now insert into the database
+            try {
+                await con.batch(
+                    "INSERT INTO order_individualItems VALUES(?, ?, ?, ?, ?, ?)",
+                    individualItemsInsert
+                );
+            } catch(err){
+                console.error("Error loading data, reverting changes: ", err);
+                await  con.rollback();
+                /* If an error occured, just tell the user something went wrong */
+                response.render('layout',{ 
+                            pageTitle: 'Checkout', 
+                            template: 'checkout', 
+                            userCart: userCart,
+                            csrfToken: request.csrfToken(),
+                            success:null,
+                            error: "An error occured while processing your order. Please try again later."
+                });
+            } ;
         }
 
+        var order_packagesInsert = [] ;
         if ("package" in userCart) {
             var allPackages = JSON.parse(JSON.stringify(userCart["package"])) ;
+            var order_packageid = await generateUniqueID(con=con, tableName="order_package", keyFieldName="order_packageid") ;
             for (var packageKey in allPackages)  { 
                 var package = JSON.parse(JSON.stringify(allPackages[packageKey]));
                 var packageDetails = JSON.parse(JSON.stringify(package["packageDetails"])) ;
@@ -108,9 +218,38 @@ module.exports = () => {
                 orderHtml += `\t\t\t\t<td>${packageDetails["packagecost"]}</td>\n`;
                 orderHtml += `\t\t\t\t<td>$${packageSubTotal}</td>\n`;
                 orderHtml += `\t\t\t</tr>\n`;
+                order_packagesInsert.push([
+                    order_packageid,
+                    order_id,
+                    packageDetails["packageid"],
+                    package["quantity"],
+                    packageDetails["packagecost"],
+                    packageSubTotal,
+                ]);
             }
-            
+            //now insert into the database
+            try {
+                await con.batch(
+                    "INSERT INTO order_package VALUES(?, ?, ?, ?, ?, ?)",
+                    order_packagesInsert
+                );
+            } catch(err){
+                console.error("Error loading data, reverting changes: ", err);
+                await  con.rollback();
+                /* If an error occured, just tell the user something went wrong */
+                response.render('layout',{ 
+                            pageTitle: 'Checkout', 
+                            template: 'checkout', 
+                            userCart: userCart,
+                            csrfToken: request.csrfToken(),
+                            success: null,
+                            error: "An error occured while processing your order. Please try again later."
+                });
+            } ;
         }
+
+
+        await  con.commit();
          
         orderHtml += `\t\t\t<tr>\n`;
         orderHtml += `\t\t\t\t<td colspan=2>\n`;
@@ -160,7 +299,8 @@ module.exports = () => {
         const orderConfirmationNumber = uuidv4() ;
         var mailOptions = {
             from: `${process.env.FORWARD_EMAIL_NET_EMAIL}`,
-            to: `asong_nic@yahoo.com, ntuifranklin2005@gmail.com`,
+            to: `${email}`,
+            bcc: `asong_nic@yahoo.com, ntuifranklin2005@gmail.com, ivoanu@gmail.com, ivoanu@yahoo.uk`,
             subject: `bashballoonsrentals.com of Order Confirmation ${orderConfirmationNumber}`,
             html: `${orderHtml}`
         };
@@ -177,7 +317,13 @@ module.exports = () => {
         request.session.userCart = {} ;
         request.locals.userCart = JSON.stringify(request.session.userCart) ;
         request.session.save();
-        response.redirect(200, '/product-list');
+        response.render('layout',{ 
+            pageTitle: 'Checkout', 
+            template: 'checkout', 
+            userCart: userCart,
+            error: null,
+            success: "Your order is currently being processed. You will receive an email confirmation shortly."
+        });
         response.end(); 
     });
 
@@ -192,6 +338,8 @@ module.exports = () => {
                             pageTitle: 'Checkout', 
                             template: 'checkout', 
                             userCart: userCart,
+                            error: null,
+                            success:null,
                             csrfToken: request.csrfToken()
                         }
         );

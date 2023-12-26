@@ -4,10 +4,7 @@ const path = require('path');
 const createError = require('http-errors');
 
 const bodyParser = require('body-parser');
-var csrf = require('csurf');
-// csrf protection
-var csrfProtection = csrf({ cookie: true });
-const cookieSession = require('cookie-session');
+
 const template_folder = 'static_template';
 const routes = require('./routes');
 
@@ -165,7 +162,7 @@ for (index = 0 ; index < list_of_items.length ; index++ ) {
 } ;
 
 
-app.locals.csrfProtection = csrfProtection ;
+
 
 
 app.use((request, response, next) => { 

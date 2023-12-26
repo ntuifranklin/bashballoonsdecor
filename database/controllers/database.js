@@ -135,17 +135,15 @@ MariaDB [bashballoonsdecor]> describe package
 exports.getDatabaseObject = getDatabaseObject ;
 
 /* 
-Takes an already made mysql connection table, and the field of the primary key of the table. 
-Generates a unique ID for that field in a transaction and returns the Id generated.
-The step is to generate one, then check if it exists in the table.
-If it does not, generate another one.
+Takes an already made mysql connection table, and the field of the table, and 
+a value. It counts the rows whose value matches the one given
 */
-async function generateUniqueID(con=null, tableName='IndividualItems', keyFieldName='individItemID') {
+async function countMatchingField(con=null, tableName='IndividualItems', keyFieldName='individItemID', value='') {
 
   if (con === null) 
     return await new Promise(async function(resolve,reject) {
 
-        reject(new Error().message = "Connection object is null");
+        reject(new Error().message = "Connection object is null in function countMatchingField");
     });
 
   return await new Promise(async function(resolve,reject){
@@ -153,16 +151,15 @@ async function generateUniqueID(con=null, tableName='IndividualItems', keyFieldN
 
     con.connect(function(err) {
       if (err) reject(err);
-      let new_uuid;
-      new_uuid = uuidv4();
-      selectsql = `
-                    SELECT count(*) as IDCOUNT
+     
+      countsql = `
+                    SELECT count(*) as ROWCOUNT
                     FROM ${tableName}
-                    WHERE ${keyFieldName} = '${new_uuid}'
+                    WHERE ${keyFieldName} = '${value}'
                   `;
-      con.query(selectsql, function (err, result, fields) {
+      con.query(countsql, async function (err, result, fields) {
         if (err) reject(err);
-        resolve(result) ;
+        resolve(result[0].ROWCOUNT) ;
       });
       
     });
@@ -170,34 +167,28 @@ async function generateUniqueID(con=null, tableName='IndividualItems', keyFieldN
   
 } ;
 
-exports.generateUniqueID = generateUniqueID ;
+exports.countMatchingField = countMatchingField ;
 
-
-async function insertMultipleRowsIntoTable(con=null, tableName='', data=[]) {
-
-  return new Promise(async function(resolve,reject){
-    try {
-
-      // Start Transaction
-      try {
-         // Add Data in a batch
-         await con.batch(
-            `INSERT INTO ${tableName} VALUES(?)`,
-            data
-         );
-         
-      } catch(err){
-         reject(err);
-      }
+async function generateUniqueID(con=null, tableName='IndividualItems', keyFieldName='individItemID') { 
   
-   } catch(err){
-      reject(err);
-     
-   }
+  if (con === null) 
+    return await new Promise(async function(resolve,reject) {
+
+        reject(new Error().message = "Connection object is null in function generateUniqueID");
+    });
   
-   resolve(1);
+  return await new Promise(async function(resolve,reject) {
+
+    var id = uuidv4().split('-').join('') ;;
+    var count = await countMatchingField(con, tableName, keyFieldName, id) ;
+    while (count > 0) {
+      id = uuidv4().split('-').join('') ;
+      count = await countMatchingField(con, tableName, keyFieldName, id) ;
+    }
+    resolve(id) ;
 
   });
-  
+
 }
 
+exports.generateUniqueID = generateUniqueID ;

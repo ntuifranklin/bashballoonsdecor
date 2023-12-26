@@ -1,10 +1,20 @@
 const express = require('express');
 const router = express.Router();
 
+
+const bodyParser = require('body-parser');
+var csrf = require('csurf');
+// csrf protection
+var csrfProtection = csrf({ cookie: true });
+const cookieSession = require('cookie-session');
+var parseForm = bodyParser.urlencoded({ extended: true });
 module.exports = () => { 
     
-    router.get('/', (request, response) => { 
-        response.render('layout', { pageTitle: 'Contact Us', template: 'contact'});
+    router.get('/',  csrfProtection, (request, response) => { 
+        response.render('layout', { 
+            pageTitle: 'Contact Us', 
+            template: 'contact',
+            csrfToken: request.csrfToken()});
     });
      
 

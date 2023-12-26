@@ -19,6 +19,9 @@
    <link rel="stylesheet" href="assets/css/responsive.css">
    <!-- color -->
    <link rel="stylesheet" href="assets/css/color.css">
+   <% if ( csrfToken ) { %>
+   	<meta name="csrf-token" content="<%= csrfToken %>">
+   <% } %>
  </head>
 <body>
 <span class="loader"></span>
