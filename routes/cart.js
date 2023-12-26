@@ -3,10 +3,7 @@ const router = express.Router();
 
 const bodyParser = require('body-parser');
 var csrf = require('csurf');
-// csrf protection
-var csrfProtection = csrf({ cookie: true });
-const cookieSession = require('cookie-session');
-var parseForm = bodyParser.urlencoded({ extended: true });
+
 
 require('dotenv').config();
 const createError = require('http-errors');
@@ -14,7 +11,7 @@ const databaseAccessor = require('../database/controllers/database');
 
 module.exports = () => { 
     
-    router.post('/', parseForm, csrfProtection, (request, response) => {
+    router.post('/', (request, response) => {
          
         if (!request.session.userCart) {
             request.session.userCart = {
@@ -93,7 +90,7 @@ module.exports = () => {
     });
 
 
-    router.get('/', csrfProtection,  (request, response) => { 
+    router.get('/', (request, response) => { 
         
         var userCart = {} ;
         if (request.session.userCart)

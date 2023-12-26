@@ -147,22 +147,15 @@ async function countMatchingField(con=null, tableName='IndividualItems', keyFiel
     });
 
   return await new Promise(async function(resolve,reject){
-      
-
-    con.connect(function(err) {
-      if (err) reject(err);
-     
-      countsql = `
-                    SELECT count(*) as ROWCOUNT
-                    FROM ${tableName}
-                    WHERE ${keyFieldName} = '${value}'
-                  `;
-      con.query(countsql, async function (err, result, fields) {
-        if (err) reject(err);
-        resolve(result[0].ROWCOUNT) ;
-      });
-      
-    });
+    countsql = `
+    SELECT count(*) as ROWCOUNT
+    FROM ${tableName}
+    WHERE ${keyFieldName} = '${value}'
+    `;
+    con.query(countsql, async function (err, result, fields) {
+    if (err) reject(err);
+    resolve(result[0].ROWCOUNT) ;
+    });  
   });
   
 } ;

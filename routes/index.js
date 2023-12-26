@@ -20,6 +20,7 @@ module.exports = () => {
         { 
             pageTitle: request.locals.siteName, 
             template: 'index', 
+            csrfToken: request.csrfToken()
         });
         
     });

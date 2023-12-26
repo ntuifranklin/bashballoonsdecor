@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 var mysql = require('mysql');
 const { v4: uuidv4 } = require('uuid');
-const {countMatchingField} = require('../database/controllers/database');
+const {generateUniqueID} = require('../database/controllers/database');
 require('dotenv').config();
 var nodemailer = require('nodemailer'); 
 const fs = require('fs');
@@ -21,13 +21,14 @@ const bootstrapCode = fs.readFileSync(`${process.env.BOOTSTRAP_CSS_FILE}`).toStr
 
 
 module.exports = () => {
-    router.post('/', parseForm, csrfProtection, async (request, response) => {
+    router.post('/', async (request, response) => {
          
         if (request.session.userCart == undefined || Object.keys(request.session.userCart).length === 0 || !request.session.userCart || request.session.userCart == {} || request.session.userCart == null ) {
             response.redirect(200, '/');
             response.end(); 
         };
 
+        var userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
 
         /* Get form data first, and sanitize or reject if necessary */
         const completename = new String(request.body.completename);
@@ -54,33 +55,32 @@ module.exports = () => {
             - generate an email that will recieve the order 
         */
         
-        var con = mysql.createConnection({
+        let con;
+        try {
+            con = mysql.createConnection({
             host: process.env.DATABASE_HOST,
             user: process.env.DATABASE_USER,
             password: process.env.DATABASE_PASSWORD,
             database: process.env.DATABASE_NAME
-        });
-        await con.beginTransaction();
-        //generate new order id
-        var order_id = await generateUniqueID(con=con, tableName="orders", keyFieldName="order_id") ;
-        //generate new customer id
-        var customer_id = await generateUniqueID(con=con, tableName="customers", keyFieldName="customer_id") ;
-        const customerInsertArray = [
-            customer_id, 
-            completename, 
-            email, 
-            street_address,
-            city, 
-            state, 
-            zipcode, 
-            phone, 
-            order_note] ;
-        try {
-                   
+            });
+            
+            await con.beginTransaction();
+            //generate new order id
+            var order_id = await generateUniqueID(con=con, tableName="orders", keyFieldName="order_id") ;
+            //generate new customer id
+            var customer_id = await generateUniqueID(con=con, tableName="customers", keyFieldName="customer_id") ;
+            const customerInsertArray = [
+                customer_id, 
+                completename, 
+                email, 
+                street_address,
+                city, 
+                state, 
+                zipcode, 
+                phone, 
+                order_note] ;
             
             // Start Transaction
-            
-
             try {
                 // Insert customers
                 await con.batch(
@@ -105,7 +105,7 @@ module.exports = () => {
                 
             } catch(err){
                 console.error("Error loading data, reverting changes: ", err);
-                await  con.rollback();
+                con.rollback();
                 /* If an error occured, just tell the user something went wrong */
                 response.render('layout',{ 
                             pageTitle: 'Checkout', 
@@ -115,11 +115,13 @@ module.exports = () => {
                             success:null,
                             error: "An error occured while processing your order. Please try again later."
                 });
+
             } ;
             // Commit Changes
 
         } catch (error) {
-            await  con.rollback();/* If an error occured, just tell the user something went wrong */
+            await con.rollback();/* If an error occured, just tell the user something went wrong */
+            
             response.render('layout',{ 
                         pageTitle: 'Checkout', 
                         template: 'checkout', 
@@ -130,7 +132,6 @@ module.exports = () => {
             });
 
         };
-        var userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
         var totalItems = 0 ;
         
         var grandTotal = 0.0 ;
@@ -189,7 +190,8 @@ module.exports = () => {
                 );
             } catch(err){
                 console.error("Error loading data, reverting changes: ", err);
-                await  con.rollback();
+                await con.rollback();
+                
                 /* If an error occured, just tell the user something went wrong */
                 response.render('layout',{ 
                             pageTitle: 'Checkout', 
@@ -235,7 +237,8 @@ module.exports = () => {
                 );
             } catch(err){
                 console.error("Error loading data, reverting changes: ", err);
-                await  con.rollback();
+                con.rollback();
+                
                 /* If an error occured, just tell the user something went wrong */
                 response.render('layout',{ 
                             pageTitle: 'Checkout', 
@@ -249,7 +252,8 @@ module.exports = () => {
         }
 
 
-        await  con.commit();
+        con.commit();
+        con.end();
          
         orderHtml += `\t\t\t<tr>\n`;
         orderHtml += `\t\t\t\t<td colspan=2>\n`;
@@ -322,12 +326,13 @@ module.exports = () => {
             template: 'checkout', 
             userCart: userCart,
             error: null,
-            success: "Your order is currently being processed. You will receive an email confirmation shortly."
+            success: "Your order is currently being processed. You will receive an email confirmation shortly.",
+            csrfToken: request.csrfToken()
         });
         response.end(); 
     });
 
-    router.get('/', csrfProtection, (request, response) => { 
+    router.get('/', (request, response) => { 
         
         var userCart = {} ;
         if (request.session.userCart)

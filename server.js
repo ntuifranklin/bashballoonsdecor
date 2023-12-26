@@ -23,6 +23,12 @@ app.set('trust proxy', 1);
 
 const cookieParser = require('cookie-parser');
 
+
+var csrf = require('csurf');
+// csrf protection
+var csrfProtection = csrf({ cookie: true });
+const cookieSession = require('cookie-session');
+var parseForm = bodyParser.urlencoded({ extended: false });
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
 
@@ -165,7 +171,7 @@ for (index = 0 ; index < list_of_items.length ; index++ ) {
 
 
 
-app.use((request, response, next) => { 
+app.use(parseForm, csrfProtection, (request, response, next) => { 
 
     /*
         Load user cart here so that it is accessible from all over the app

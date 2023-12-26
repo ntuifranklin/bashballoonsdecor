@@ -19,7 +19,7 @@
    <link rel="stylesheet" href="assets/css/responsive.css">
    <!-- color -->
    <link rel="stylesheet" href="assets/css/color.css">
-   <% if ( csrfToken ) { %>
+   <% if ( typeof csrfToken !== 'undefined'  ) { %>
    	<meta name="csrf-token" content="<%= csrfToken %>">
    <% } %>
  </head>
