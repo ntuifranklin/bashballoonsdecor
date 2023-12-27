@@ -4,6 +4,12 @@ const express = require('express');
 const router = express.Router();
 require('dotenv').config();
 
+const bodyParser = require('body-parser');
+var csrf = require('csurf');
+// csrf protection
+var csrfProtection = csrf({ cookie: true });
+const cookieSession = require('cookie-session');
+var parseForm = bodyParser.urlencoded({ extended: true });
 try {
    
     module.exports = () => {
@@ -11,7 +17,7 @@ try {
          * Get the packages from the request.locals.packagesAndItems object
          */
         
-        router.get('/', async (request, response) => {
+        router.get('/', csrfProtection, async (request, response) => {
 
             /* must have been loaded in server.js file  */  
             var package3000ID = process.env.PACKAGE3000ID;
@@ -29,6 +35,7 @@ try {
                 package3000: package3000,
                 package3800: package3800,
                 package4900: package4900,
+                csrfToken: request.csrfToken()
             });
             
         });
