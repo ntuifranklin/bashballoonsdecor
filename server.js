@@ -8,8 +8,6 @@ const bodyParser = require('body-parser');
 const template_folder = 'static_template';
 const routes = require('./routes');
 
-
-const {getDatabaseObject,getIndividualItems,getPackageItems} = require('./database/controllers/database');
 const app = express();
 
 var mysql = require('mysql');
