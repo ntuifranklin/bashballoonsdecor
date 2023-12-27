@@ -15,12 +15,29 @@ require('dotenv').config();
 module.exports = () => { 
         
     router.get('/', (request, response) => { 
-        
+        /* must have been loaded in server.js file  */  
+                        
+        const allpackages = require(process.env.PACKAGES_ONLY_FILE);
+        const [
+            package_3000,
+            package_3800,
+            package_4900,
+        ] = [
+            allpackages["package_3000"],
+            allpackages["package_3800"],
+            allpackages["package_4900"],
+        ];
+
         response.render('layout', 
         { 
             pageTitle: request.locals.siteName, 
             template: 'index', 
-            csrfToken: request.csrfToken()
+            package3000: package_3000,
+            package3800: package_3800,
+            package4900: package_4900,
+            list_of_items : request.locals.list_of_items,
+            csrfToken: request.csrfToken(),
+            customers_feedback: request.locals.customers_feedback,
         });
         
     });
