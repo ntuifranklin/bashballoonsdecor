@@ -179,6 +179,6 @@ app.use((request, response, next) => {
 app.use('/',routes());
 
 
-app.listen(PORT,'0.0.0.0', () => {
+app.listen(PORT, () => {
     console.log(`Express server listening on port ${PORT}`);
 });
