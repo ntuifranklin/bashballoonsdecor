@@ -36,7 +36,8 @@ module.exports = () => {
             package3800: package_3800,
             package4900: package_4900,
             list_of_items : request.locals.list_of_items,
-            csrfToken: request.csrfToken()
+            csrfToken: request.csrfToken(),
+            customers_feedback: request.locals.customers_feedback,
         });
         
     });

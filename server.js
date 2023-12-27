@@ -169,6 +169,8 @@ for (index = 0 ; index < list_of_items.length ; index++ ) {
 
 
 
+const customers_feedback = require(process.env.CUSTOMERS_FEEDBACK_FILE);
+app.locals.customers_feedback = customers_feedback ;
 
 
 app.use(parseForm, csrfProtection, (request, response, next) => { 
