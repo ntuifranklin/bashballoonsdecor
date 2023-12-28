@@ -20,7 +20,7 @@ function updateCart(productID, updateType, source='', htmlID='#'){
             'htmlID': htmlID
           },
     }).done((data) => {
-      console.log(`Success data received : ${JSON.stringify(data)}`);
+      //console.log(`Success data received : ${JSON.stringify(data)}`);
       var successHtml = `
       <div class="alert alert-success alert-dismissible fade show" role="alert">
         <strong>Success!</strong>  ${data.responseText}.
@@ -29,7 +29,7 @@ function updateCart(productID, updateType, source='', htmlID='#'){
       $('#cartResult').html(successHtml);
     }).fail((data) => {
       
-      console.log(`Failure data received : ${JSON.stringify(data)}`);
+      //console.log(`Failure data received : ${JSON.stringify(data)}`);
       var errorHtml = ` 
       <div class="alert alert-danger alert-dismissible fade show" role="alert">
         <strong>Error!</strong> ${data.responseText}
