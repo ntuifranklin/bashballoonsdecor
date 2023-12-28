@@ -3,7 +3,7 @@ const router = express.Router();
 
 const bodyParser = require('body-parser');
 var csrf = require('csurf');
-
+const csrfProtection = csrf({ cookie: true })
 
 require('dotenv').config();
 const createError = require('http-errors');
@@ -11,7 +11,7 @@ const databaseAccessor = require('../database/controllers/database');
 
 module.exports = () => { 
     
-    router.post('/', (request, response) => {
+    router.post('/', csrfProtection, (request, response) => {
          
         if (!request.session.userCart) {
             request.session.userCart = {
@@ -23,6 +23,8 @@ module.exports = () => {
         var keyToUpdate = "";
         var tableName = "";
         var keyFieldName = "";
+        const source = new String(request.body.source);
+        const htmlID = new String(request.body.htmlID);
         if (productOrPackage == "IndividualItems")  {
             keyToUpdate = "IndividualItems" ;
             tableName = process.env.PRODUCT_TABLE_NAME;
@@ -85,8 +87,9 @@ module.exports = () => {
         /* update the cart in the locals variable */
         //request.locals.userCart = JSON.stringify(request.session.userCart) ;
         request.session.save();
-        response.redirect(200, '/product-list');
-        response.end();
+        response.status(200).send({ message: 'success', responseText: 'Item added to cart' });
+        //response.redirect(200, `/${source}#${htmlID}`);
+        //response.end();
     });
 
 
