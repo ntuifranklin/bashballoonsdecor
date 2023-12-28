@@ -199,6 +199,11 @@
               </div>
               </div>
         </div>
+               
+        <div class="row">
+          <div id="cartResult" class="col-md-12 col-lg-12">
+          </div>
+        </div>
         <div class="tab-content" id="v-pills-tabContent">
 
           <% /* List showing below */ %>
@@ -235,7 +240,8 @@
                       <span>SKU-<%= individual_item.individItemID %></span>
                       <div class="add-to-cart two">
                       
-                        <a href="#" class="btn" onclick='updateCart("<%= individual_item.individItemID %>","IndividualItems")'><span>Add to Cart</span></a>
+                        <% var htmlID = new String(individual_item.individItemID) + "1";  %>
+                        <a id="<%= htmlID %>" class="btn" onclick='updateCart("<%= individual_item.individItemID %>","IndividualItems", source="products-list", htmlID="<%= htmlID %>")'><span>Add to Cart</span></a>
                         <a href="#" class="heart-wishlist">
                           <i class="fa-regular fa-heart"></i>
                         </a>
@@ -266,6 +272,7 @@
 
           <% /* Tab showing below */ %>
           <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+           
             <div class="row list">
               
               <% for (var j = 0; j < list_of_items.length; j++) { %>
@@ -289,7 +296,8 @@
                       </div>
                       <div class="add-to-cart two">
                       
-                        <a href="#" class="btn" onclick="updateCart('<%= individual_item.individItemID %>','IndividualItems')"><span>Add to Cart</span></a>
+                        <% var htmlID2 = new String(individual_item_box.individItemID) + "2";  %>
+                        <a id="<%= htmlID2 %>" class="btn" onclick="updateCart('<%= individual_item_box.individItemID %>','IndividualItems',  source='products-list', htmlID='<%= htmlID2 %>')"><span>Add to Cart</span></a>
                         <a href="#" class="heart-wishlist">
                           <i class="fa-regular fa-heart"></i>
                         </a>
