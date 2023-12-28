@@ -16,7 +16,7 @@ const MySQLStore = require('express-mysql-session')(session);
 require('dotenv').config();
 
 const {session_database_options} = require('./sessionmanagement/session') ;
-const PORT = process.env.TEST_SITE_PORT;
+const PORT = process.env.SITE_PORT;
 app.set('trust proxy', 1);
 
 const cookieParser = require('cookie-parser');
