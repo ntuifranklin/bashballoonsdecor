@@ -28,12 +28,18 @@ var csrfProtection = csrf({ cookie: true });
 const cookieSession = require('cookie-session');
 var parseForm = bodyParser.urlencoded({ extended: false });
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(cookieParser());
+
+const site_secret = faker.internet.password(30);
+app.use(cookieParser(site_secret, {
+    sameSite: 'strict',
+    maxAge: Number(process.env.SESSION_MAXIMUM_TIME_IN_MILLI_SECONDS),
+    secure: true,
+}));
 
 const session_mysql_connection = mysql.createConnection(session_database_options);
 const sessionStore = new MySQLStore(session_database_options, session_mysql_connection);
 app.use(session({
-    secret: faker.internet.password(30),
+    secret: site_secret,
     resave: true,
     saveUninitialized: false,
     store: sessionStore,
