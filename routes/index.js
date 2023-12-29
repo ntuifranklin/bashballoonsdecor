@@ -48,7 +48,7 @@ module.exports = () => {
     router.use('/packages', packagesRoute());
     router.use(['/product-list','/products-list'], productListRoute());
     router.use(['/contact','/contactus'], contactRoute());
-    router.use(['/product-details','/productdetails','/individual-items-details'], productDetailsRoute());
+    router.use(['/product-details','/products-details','/productdetails','/individual-items-details'], productDetailsRoute());
         
     router.get('/*', (request, response) => {
 
