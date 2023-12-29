@@ -100,7 +100,7 @@ module.exports = () => {
             userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
         //console.log('User Cart in cart.js: ' + JSON.stringify(userCart, null, 4));
         response.render('layout', { 
-            pageTitle: 'Your Cart Items', 
+            pageTitle: 'Your Shopping Cart', 
             template: 'cart', 
             userCart: userCart,
             csrfToken: request.csrfToken()
