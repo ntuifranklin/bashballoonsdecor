@@ -9,6 +9,7 @@ const template_folder = 'static_template';
 const routes = require('./routes');
 
 const app = express();
+app.use(express.json());
 
 var mysql = require('mysql');
 const session = require('express-session');
