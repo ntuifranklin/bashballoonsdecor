@@ -89,7 +89,9 @@
 		</div>
 
 	<% } else { %>
-	<form class="checkout-meta donate-page" method="POST" action="/checkout">
+		
+	
+	<form class="checkout-meta donate-page" id="ordercheckout" method="POST" action="/checkout">
 		<!-- Begin listing cart items -->
 		<div class="row">
 			<div class="col-lg-12">
@@ -206,6 +208,11 @@
 		
 		</div>
 		<!-- End listing cart items -->
+
+		<div class="row">
+			<div id="processOrderResult" class="col-md-12 col-lg-12">
+			</div>
+		</div>
 
 		<!-- Billing Details -->
 		<div class="row">
