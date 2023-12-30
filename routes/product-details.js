@@ -10,50 +10,45 @@ var parseForm = bodyParser.urlencoded({ extended: true });
 
 module.exports = () => { 
     
-    router.get('/:individualItemID',csrfProtection, (request, response) => { 
-        const individItemID = new String(request.params.individualItemID);
-        console.log(`individItemID given : ${individItemID}`);
+    router.get('/:individualItemID',csrfProtection, async (request, response) => { 
+        const individItemID = request.params.individualItemID;
+        //console.log(`individItemID given : ${individItemID}`);
         var foundItem = {} ;
-        var pageTitle = "Unkonwn Page Title";
-        const allItemsAsDict = JSON.parse(JSON.stringify(request.locals.individualItems));
+        var pageTitle = "Unknown Page";
+        const allItemsAsDict = request.locals.individualItems;
         //console.log(`allItemsAsDict : ${JSON.stringify(allItemsAsDict,null, 4)}`);
-        var allkeys = new String(Object.keys(allItemsAsDict));
-        const arraykeys = allkeys.split(',');
+        //var allkeys = new String(Object.keys(allItemsAsDict));
+        //const arraykeys = allkeys.split(',');
         //console.log(`keys of object :  ${JSON.stringify(arraykeys,null, 4)}`);
-        foundItem = arraykeys.find((item) => {
-            //console.log(`item : ${item}`);
-            if (item === individItemID) {
-                return allItemsAsDict[individItemID] ;
-            } ;
+        if (individItemID in allItemsAsDict) {
+
+            foundItem = allItemsAsDict[individItemID] ;
+            //console.log(`foundItem : ${JSON.stringify(foundItem,null, 4)}`);
+            pageTitle = `Page details for ${foundItem.individualItemDetails.individItemTitle}`;
+            response.setHeader("Content-type", "text/html") ;
             
-        }); 
-      
-        if (foundItem === undefined || foundItem == {}) {
-            return response.status(404).render('layout', { 
-                pageTitle: 'Sorry We Could Not Find What You Are Looking For', 
-                template: 'f404',
+            //response.setHeader("Access-Control-Allow-Origin", "*");
+            response.statusCode = 200;
+            return response.render('layout', { 
+                pageTitle: `${pageTitle}`, 
+                template: 'product-details',
                 csrfToken: request.csrfToken(),
+                individualItem: foundItem
             });
-        };
-        console.log(`foundItem : ${JSON.stringify(foundItem,null, 4)}`);
-        pageTitle = foundItem.individualItemDetails.individItemTitle;
-        return response.status(200).render('layout', { 
-            pageTitle: `${pageTitle}`, 
-            template: 'product-details',
-            csrfToken: request.csrfToken(),
-            individualItem: foundItem
-        });
+        } else {
+            response.redirect('/f404');
+        }
+      
+        
     });
 
-    /*
-    //No default route for this page
     router.get('/',  csrfProtection, (request, response, next) => { 
         
         response.redirect('/product-list');
-        //next();
+    
         
     });
-    */
+    
 
 
     return router;
