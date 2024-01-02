@@ -9,6 +9,9 @@ const cookieSession = require('cookie-session');
 var parseForm = bodyParser.urlencoded({ extended: true });
 
 module.exports = () => { 
+    router.get('/',  csrfProtection, (request, response, next) => { 
+        response.redirect('/product-list');
+    });
     
     router.get('/:individualItemID',csrfProtection, async (request, response) => { 
         const individItemID = request.params.individualItemID;
@@ -25,11 +28,11 @@ module.exports = () => {
             foundItem = allItemsAsDict[individItemID] ;
             //console.log(`foundItem : ${JSON.stringify(foundItem,null, 4)}`);
             pageTitle = `Page details for ${foundItem.individualItemDetails.individItemTitle}`;
-            response.setHeader("Content-type", "text/html") ;
+            //response.setHeader("Content-type", "text/html") ;
             
-            //response.setHeader("Access-Control-Allow-Origin", "*");
-            response.statusCode = 200;
-            return response.render('layout', { 
+            response.setHeader("Access-Control-Allow-Origin", "*");
+            //response.statusCode = 200;
+            response.render('layout', { 
                 pageTitle: `${pageTitle}`, 
                 template: 'product-details',
                 csrfToken: request.csrfToken(),
@@ -41,15 +44,6 @@ module.exports = () => {
       
         
     });
-
-    router.get('/',  csrfProtection, (request, response, next) => { 
-        
-        response.redirect('/product-list');
     
-        
-    });
-    
-
-
     return router;
 };

@@ -45,6 +45,7 @@ module.exports = () => {
     router.use('/shop', shopRoute());
     router.use('/checkout', checkoutRoute());
     router.use('/cart', cartRoute());
+    
     router.use('/packages', packagesRoute());
     router.use(['/product-list','/products-list'], productListRoute());
     router.use(['/contact','/contactus'], contactRoute());

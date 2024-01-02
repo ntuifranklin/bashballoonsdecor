@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><%= pageTitle %> | <%= siteName %></title>
   <link rel="icon" href="assets/img/favicon.png">
+
   <!-- CSS only -->
    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">
    <link rel="stylesheet" href="assets/css/owl.carousel.min.css">
@@ -22,6 +23,17 @@
    <% if ( typeof csrfToken !== 'undefined'  ) { %>
    	<meta name="csrf-token" content="<%= csrfToken %>">
    <% } %>
+	
+	<!-- jQuery -->
+	<script src="assets/js/jquery-3.6.0.min.js"></script>
+	<!-- Bootstrap Js -->
+	<script src="assets/js/bootstrap.min.js"></script>
+	<script src="assets/js/owl.carousel.min.js"></script>
+	<!-- fancybox -->
+	<script src="assets/js/jquery.fancybox.min.js"></script>
+	<script src="assets/js/custom.js"></script>
+	<script src="assets/js/cart.js"></script>
+	<script src="assets/js/process_order.js"></script>
  </head>
 <body>
 <span class="loader"></span>
