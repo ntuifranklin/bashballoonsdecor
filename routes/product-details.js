@@ -13,7 +13,10 @@ module.exports = () => {
         response.redirect('/product-list');
     });
     
+    
     router.get('/:individualItemID',csrfProtection, async (request, response) => { 
+        console.log(`request.params.individualItemID : ${request.params.individualItemID}`);
+        /*
         const individItemID = request.params.individualItemID;
         //console.log(`individItemID given : ${individItemID}`);
         var foundItem = {} ;
@@ -41,9 +44,11 @@ module.exports = () => {
         } else {
             response.redirect('/f404');
         }
+        */
       
         
     });
+    
     
     return router;
 };
