@@ -1,80 +1,49 @@
-
-
-var mysql = require('mysql');
-require('dotenv').config();
+const { DatabaseConnector } = require('./DatabaseConnector');
 const { v4: uuidv4 } = require('uuid');
 
-// open the database
 async function getPackageItems (packageid= '') {
+  const db = new DatabaseConnector();
 
-    return await new Promise(async(resolve, reject) => {
-                
-      var con = mysql.createConnection({
-        host: process.env.DATABASE_HOST,
-        user: process.env.DATABASE_USER,
-        password: process.env.DATABASE_PASSWORD,
-        database: process.env.DATABASE_NAME
-      });
-
-       con.connect( function(err) {
-        if (err) reject(err);
-        
-        selectsql = `SELECT *
-                FROM package_contains_items pci
-                JOIN package p ON p.packageid = pci.packageid
-                JOIN packageitems pi on pci.packageitemid = pi.packageitemid
-                WHERE pci.packageid = '${packageid}'
-                ORDER BY pci.packageid, pci.packageitemid
-                `;
-        con.query(selectsql, function (err, result, fields) {
-          if (err) reject(err);
-          con.end();
-          resolve(result) ;
-          
-        });
-        //con.end();
-      });
-      
-   
-    });
-
+  try {
+    await db.connect();
+    selectsql = `SELECT *
+    FROM package_contains_items pci
+    JOIN package p ON p.packageid = pci.packageid
+    JOIN packageitems pi on pci.packageitemid = pi.packageitemid
+    WHERE pci.packageid = '${packageid}'
+    ORDER BY pci.packageid, pci.packageitemid
+    `;
+    const results = await db.query(selectsql);
+    console.log(`\nRan query ${selectsql} and got \n ${JSON.stringify(results)}`);
+    return results ;
+  } catch (error) {
+    console.error('Error:', error);
+  } finally {
+    await db.disconnect();
+  };
 }
 
 exports.getPackageItems = getPackageItems ;
 
-
 async function getIndividualItems () {
+  const db = new DatabaseConnector();
 
-  return await new Promise(async(resolve, reject) => {
-              
-    var con = mysql.createConnection({
-      host: process.env.DATABASE_HOST,
-      user: process.env.DATABASE_USER,
-      password: process.env.DATABASE_PASSWORD,
-      database: process.env.DATABASE_NAME
-    });
-
-     con.connect(function(err) {
-      if (err) reject(err);
-      selectsql = `SELECT *
-                    FROM IndividualItems
-                  `;
-      con.query(selectsql, function (err, result, fields) {
-        if (err) reject(err);
-        con.end();
-        resolve(result) ;
-        
-      });
-      //con.end();
-    });
-
-    
-  });
-
+  try {
+    await db.connect();
+    selectsql = `SELECT *
+    FROM IndividualItems
+    `;
+    const results = await db.query(selectsql);
+    console.log(`\nRan query ${selectsql} and got \n ${JSON.stringify(results)}`);
+    return results ;
+  } catch (error) {
+    console.error('Error:', error);
+  } finally {
+    await db.disconnect();
+  }
 }
 
-exports.getIndividualItems = getIndividualItems
-
+exports.getIndividualItems = getIndividualItems ;
 
 async function getDatabaseObject (tableName='IndividualItems', keyFieldName='individItemID', keyFieldValue='') {
 /*
@@ -89,7 +58,6 @@ MariaDB [bashballoonsdecor]> describe IndividualItems ;
 | individItemQtyAvailable | int(11)   | NO   |     | NULL    |       |
 +-------------------------+-----------+------+-----+---------+-------+
 5 rows in set (0.004 sec)
-
 MariaDB [bashballoonsdecor]> describe package
     -> ;
 +-------------+-------------+------+-----+---------+-------+
@@ -100,88 +68,72 @@ MariaDB [bashballoonsdecor]> describe package
 | packagecost | smallint(6) | YES  |     | NULL    |       |
 +-------------+-------------+------+-----+---------+-------+
 3 rows in set (0.071 sec)
-
 */
-  return await new Promise(async(resolve, reject) => {
-              
-    var con = mysql.createConnection({
-      host: process.env.DATABASE_HOST,
-      user: process.env.DATABASE_USER,
-      password: process.env.DATABASE_PASSWORD,
-      database: process.env.DATABASE_NAME
-    });
 
-     con.connect(function(err) {
-      if (err) reject(err);
-      selectsql = `
-                    SELECT *
-                    FROM ${tableName}
-                    WHERE ${keyFieldName} = '${keyFieldValue}'
-                  `;
-      //console.log(`Running sql in getDatabaseObject : ${selectsql}`);
-      con.query(selectsql, function (err, result, fields) {
-        if (err) reject(err);
-        con.end();
-        resolve(result) ;
-       
-      });
-      //con.end();
-    });
-    
-  });
+  const db = new DatabaseConnector();
+  try{
+    await db.connect();
 
+    selectsql = `SELECT *
+    FROM ${tableName}
+    WHERE ${keyFieldName} = '${keyFieldValue}'
+    `;
+    const results = await db.query(selectsql);
+    console.log(`\nRan query ${selectsql} and got \n ${JSON.stringify(results)}`);
+    return results ;
+  } catch (error) {
+    console.error('Error:', error);
+
+  } finally {
+    await db.disconnect();
+
+  } ;
 }
 
 exports.getDatabaseObject = getDatabaseObject ;
-
 /* 
 Takes an already made mysql connection table, and the field of the table, and 
 a value. It counts the rows whose value matches the one given
 */
-async function countMatchingField(con=null, tableName='IndividualItems', keyFieldName='individItemID', value='') {
-
-  if (con === null) 
-    return await new Promise(async function(resolve,reject) {
-
-        reject(new Error().message = "Connection object is null in function countMatchingField");
-    });
-
-  return await new Promise(async function(resolve,reject){
+async function countMatchingField( tableName='IndividualItems', keyFieldName='individItemID', value='') {
+  const db = new DatabaseConnector();
+  try{
+    await db.connect();
     countsql = `
     SELECT count(*) as ROWCOUNT
     FROM ${tableName}
     WHERE ${keyFieldName} = '${value}'
     `;
-    con.query(countsql, async function (err, result, fields) {
-    if (err) reject(err);
-    resolve(result[0].ROWCOUNT) ;
-    });  
-  });
-  
+    const results = await db.query(countsql);
+    console.log(`\nRan query ${countsql} and got \n ${JSON.stringify(results)}`);
+    return results ;
+  } catch (error) {
+    console.error('Error:', error);
+
+  } finally {
+    await db.disconnect();
+
+  } ;
+
 } ;
 
 exports.countMatchingField = countMatchingField ;
 
-async function generateUniqueID(con=null, tableName='IndividualItems', keyFieldName='individItemID') { 
-  
-  if (con === null) 
-    return await new Promise(async function(resolve,reject) {
+async function generateUniqueID(tableName='IndividualItems', keyFieldName='individItemID') { 
 
-        reject(new Error().message = "Connection object is null in function generateUniqueID");
-    });
   
   return await new Promise(async function(resolve,reject) {
 
-    var id = uuidv4().split('-').join('') ;;
-    var count = await countMatchingField(con, tableName, keyFieldName, id) ;
+    var id = uuidv4().split('-').join('') ;
+    var count = await countMatchingField(tableName, keyFieldName, id) ;
     while (count > 0) {
       id = uuidv4().split('-').join('') ;
-      count = await countMatchingField(con, tableName, keyFieldName, id) ;
+      count = await countMatchingField(tableName, keyFieldName, id) ;
     }
     resolve(id) ;
-
   });
-
-}
+} ;
 
 exports.generateUniqueID = generateUniqueID ;
+
+

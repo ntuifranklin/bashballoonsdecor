@@ -14,14 +14,25 @@ app.use(express.json());
 var mysql = require('mysql');
 const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
+const { 
+    getDatabaseObject, 
+    getIndividualItems, 
+    getPackageItems,
+    generateUniqueID,
+    countMatchingField
+} = require('./database/controllers/database');
+
+
+ 
+
+
 require('dotenv').config();
 
 const {session_database_options} = require('./sessionmanagement/session') ;
-const PORT = process.env.SITE_PORT;
+const PORT = process.env.TEST_SITE_PORT;
 app.set('trust proxy', 1);
 
 const cookieParser = require('cookie-parser');
-
 
 var csrf = require('csurf');
 // csrf protection
@@ -77,13 +88,11 @@ app.locals.packagesArray = null ;
 app.locals.list_of_items = null ;
 app.locals.individualItems = null ;
 
-
 var package3000ID = process.env.PACKAGE3000ID;
 var package3800ID = process.env.PACKAGE3800ID;
 var package4900ID = process.env.PACKAGE4900ID;
 
 const allpackages = require(process.env.PACKAGES_ONLY_FILE);
-
 
 /* TODO: figure out how to place these json files as a return string from a sql query
     the issue is that I attempted to use a function that returns the query result as a json object, or 
@@ -139,23 +148,16 @@ app.locals.packagesAndItems[package3000ID] = JSON.parse(JSON.stringify(package_a
 app.locals.packagesAndItems[package3800ID] = JSON.parse(JSON.stringify(package_and_items_3800)) ;
 app.locals.packagesAndItems[package4900ID] = JSON.parse(JSON.stringify(package_and_items_4900)) ;
 
-//console.log(`Packages and Items : ${JSON.stringify(app.locals.packagesAndItems,null, 4)}`);
 app.locals.packagesArray = [
     package_and_items_3000,
     package_and_items_3800,
     package_and_items_4900,
 ];
 
-
 /* get individual items */
-    
-//console.log(`${process.env.INDIVIDUAL_ITEMS_ONLY_FILE}`);
+
 const list_of_items = require(process.env.INDIVIDUAL_ITEMS_ONLY_FILE);
-//console.log(`list_of_items : ${JSON.stringify(list_of_items,null, 4)}`) ;
-
 app.locals.list_of_items = list_of_items ;
-//console.log(`List of items  : ${JSON.stringify(list_of_items,null, 4)}`);
-
 app.locals.individualItems = {} ;
 
 /* now loop through the list_of_items */
@@ -168,37 +170,39 @@ for (index = 0 ; index < list_of_items.length ; index++ ) {
         app.locals.individualItems[itemID] = {
         } ;
     } ;
-
     app.locals.individualItems[itemID]["individualItemDetails"] = JSON.parse(JSON.stringify(item));
 } ;
 
-
-
 const customers_feedback = require(process.env.CUSTOMERS_FEEDBACK_FILE);
+
 app.locals.customers_feedback = customers_feedback ;
 
-
-app.use(parseForm, csrfProtection, (request, response, next) => { 
-
+app.use(parseForm, csrfProtection, async(request, response, next) => { 
     /*
-        Load user cart here so that it is accessible from all over the app
+    * Load user cart here so that it is accessible from all over the app
     */
     var userCart = {} ;
-    //userCart["totalPrice"] = 0.0 ;
+    
     if (request.session.userCart)
         userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
     app.locals.userCart = userCart;
-    //console.log(`User Cart In server.js: ${JSON.stringify(userCart, null, 4)}`);
-    /* update  the request.locals */
-    request.locals = app.locals ;
+        
+    console.log(`\n Testing getDatabaseObject \n`) ;
+    var tableName = 'package' ;
+    var keyFieldName = 'packageid' ;
+    var value = process.env.PACKAGE3000ID ;
+    let x = await getDatabaseObject(tableName, keyFieldName, value) ;
 
+    console.log(`\n id = ${JSON.stringify(JSON.stringify(x))} \n`) ;  
+    request.locals = app.locals ;
     return next();
 });
 
 app.use('/',routes());
 
-
 app.listen(PORT, () => {
-    console.log(`Express server listening on port ${PORT}`);
-   
+    console.log(`Express server listening on port ${PORT}`);   
 });
+
+
+
