@@ -216,3 +216,31 @@ async function getCategories (tableName='categories') {
   }
   
   exports.getCategories = getCategories ;
+
+  
+async function getCategoriesItems (con=null,tableName='category_items', category_id='') {
+  if ( con !== null )
+  return await new Promise(async(resolve, reject) => {
+    
+    selectsql = `
+                    SELECT *
+                    FROM ${tableName}
+                  `;
+    if (category_id !== '') {
+        selectsql += ` WHERE category_id = '${category_id}'`;
+    }
+      //console.log(`Running sql in getDatabaseObject : ${selectsql}`);
+      await con.execute(selectsql, async function (err, result, fields) {
+        if (err) reject(err);
+        else
+        resolve(result) ;
+       
+      });
+    
+  })
+  else 
+    return new Error("Connection object is null in function getCategoriesItems");
+
+}
+
+exports.getCategories = getCategories ;

@@ -7,7 +7,7 @@ const csrfProtection = csrf({ cookie: true })
 
 require('dotenv').config();
 const createError = require('http-errors');
-const {generateUniqueID} = require('../database/controllers/database');
+const {generateUniqueID, getCategoriesItems} = require('../database/controllers/database');
 
 const { check,validationResult } = require('express-validator');
 var mysql2 = require('mysql2');
@@ -21,7 +21,20 @@ const checkOutValidation = [
 ];
 
 module.exports = () => { 
-   
+    /* generate a connection  */
+    var con = mysql2.createPool({
+        host: process.env.DATABASE_HOST,
+        user: process.env.DATABASE_USER,
+        password: process.env.DATABASE_PASSWORD,
+        database: process.env.DATABASE_UPGRADED_NAME,
+        waitForConnections: true,
+        connectionLimit: 10,
+        maxIdle: 10, // max idle connections, the default value is the same as `connectionLimit`
+        idleTimeout: 60000, // idle connections timeout, in milliseconds, the default value 60000
+        queueLimit: 0,
+        enableKeepAlive: true,
+        keepAliveInitialDelay: 0
+    });
     router.post('/', csrfProtection,checkOutValidation, async(request, response) => {
         
         const formerrors = validationResult(request);
@@ -36,22 +49,6 @@ module.exports = () => {
         var unitPrice = new String(request.body.unitPrice) ;
         var quantityAvailable = new String(request.body.quantityAvailable);
         var category_id = new String(request.body.category_id);
-        /* generate a connection  */
-            
-        con = await mysql2.createPool({
-            host: process.env.DATABASE_HOST,
-            user: process.env.DATABASE_USER,
-            password: process.env.DATABASE_PASSWORD,
-            database: process.env.DATABASE_UPGRADED_NAME,
-            waitForConnections: true,
-            connectionLimit: 10,
-            maxIdle: 10, // max idle connections, the default value is the same as `connectionLimit`
-            idleTimeout: 60000, // idle connections timeout, in milliseconds, the default value 60000
-            queueLimit: 0,
-            enableKeepAlive: true,
-            keepAliveInitialDelay: 0
-        });
-        
         
         // Start Transaction
         con.execute('START TRANSACTION');
@@ -65,18 +62,19 @@ module.exports = () => {
             var sql = `INSERT INTO category_items VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
             var itemArray = [item_id, itemName, description, category_id, category_webid, '', quantityAvailable, unitPrice]; 
             await con.execute(sql,itemArray, 
-                async (err, results,fields) => {
+                async(err, results,fields) => {
                     if (err) {
                         console.error("Error inserting category_items, reverting changes: ", err);
+                        await con.execute('ROLLBACK');//con.rollback();
                         throw err ;
                         
                     };
-                });
+            });
 
             con.execute('COMMIT'); //await con.commit();
             
             
-        response.status(200).send(`Item added to cart successfully`);
+            return response.status(200).send(`Item added to cart successfully`);
         } catch (error) {
             console.log(`Error in admin.js inserting new item: ${error.message}`);
             await con.execute('ROLLBACK');//con.rollback();
