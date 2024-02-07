@@ -17,11 +17,13 @@ const MySQLStore = require('express-mysql-session')(session);
 require('dotenv').config();
 
 const {session_database_options} = require('./sessionmanagement/session') ;
-const PORT = process.env.SITE_PORT;
+const PORT = process.env.TEST_SITE_PORT;
 app.set('trust proxy', 1);
 
 const cookieParser = require('cookie-parser');
 
+
+const {getCategories} = require('./database/controllers/database');
 
 var csrf = require('csurf');
 // csrf protection
@@ -178,7 +180,7 @@ const customers_feedback = require(process.env.CUSTOMERS_FEEDBACK_FILE);
 app.locals.customers_feedback = customers_feedback ;
 
 
-app.use(parseForm, csrfProtection, (request, response, next) => { 
+app.use(parseForm, csrfProtection, async(request, response, next) => { 
 
     /*
         Load user cart here so that it is accessible from all over the app
@@ -188,6 +190,8 @@ app.use(parseForm, csrfProtection, (request, response, next) => {
     if (request.session.userCart)
         userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
     app.locals.userCart = userCart;
+    const categories = await getCategories (tableName='categories') ;
+    app.locals.categories = categories ;
     //console.log(`User Cart In server.js: ${JSON.stringify(userCart, null, 4)}`);
     /* update  the request.locals */
     request.locals = app.locals ;

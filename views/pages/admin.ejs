@@ -1,0 +1,83 @@
+<section class="banner" style="background-image:url(https://via.placeholder.com/1920x300)" >
+    <div class="container">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="/">Home</a>
+        </li>
+          <li class="breadcrumb-item active" aria-current="page">Back Office</li>
+      </ol>
+      <h2>Back Office</h2>
+    </div>
+</section>
+
+<section class="gap">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h2>Add Item Rental To Category</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12" id="addItemResult">
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <!-- Form to add new items -->
+                <form id="addItemForm" class="contact-form">
+                                    
+                    <div class="input-group mb-3">
+                        <div class="input-group-append">
+                            <label class="input-group-text" for="category_id">Category</label>
+                        </div>
+                        <select class="nice-select" name="category_id" id="category_id" >
+                            <!-- loop through categories and list them as option -->
+                            <% var categories = JSON.parse(JSON.stringify(categories)); %>
+                            <% categories.forEach(function(category) { %>
+                                <option value="<%= category.category_id %>"><%= category.category_name %></option>
+                            <% }); %>
+                        </select>
+                        
+                    </div>
+
+                    <div class="form-group">
+                        <label for="itemName">Item Name:</label>
+                        <input type="text" id="itemName" name="itemName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Description:</label>
+                        <textarea  id="description" name="description"  rows="5" cols="33"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="quantityAvailable">Quantity Available:</label>
+                        <input type="number" id="quantityAvailable" name="quantityAvailable" value="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="unitPrice">Unit Price:</label>
+                        <input type="number" id="unitPrice" name="unitPrice" step="0.01" value="0.01" required>
+                    </div>
+
+                    <button type="button" class="btn" id="addItemCategory">Add Item</button>
+                </form>
+
+            </div>
+            <div class="col-md-6">
+                <!-- Table to display existing items -->
+                <h3 id="selectedCategoryTitle">Selected Category</h3>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Item Name</th>
+                            <th>Description</th>
+                            <th>Quantity Available</th>
+                        </tr>
+                    </thead>
+                    <tbody id="itemTableBody">
+                        <!-- Existing items will be displayed here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+      </div>
+</section>

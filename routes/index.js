@@ -8,9 +8,9 @@ const packagesRoute = require('./packages');
 const productListRoute = require('./product-list');
 const contactRoute = require('./contact');
 const productDetailsRoute = require('./product-details');
+const adminRoute = require('./admin');
 
 require('dotenv').config();
-
 
 module.exports = () => { 
         
@@ -49,6 +49,7 @@ module.exports = () => {
     router.use(['/product-list','/products-list'], productListRoute());
     router.use(['/contact','/contactus'], contactRoute());
     router.use(['/product-details','/productdetails','/individual-items-details'], productDetailsRoute());
+    router.use(['/dashboard','/admin','/backend'], adminRoute());
         
     router.get('/*', (request, response) => {
 

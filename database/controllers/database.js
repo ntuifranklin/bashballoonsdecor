@@ -34,14 +34,10 @@ async function getPackageItems (packageid= '') {
         });
         //con.end();
       });
-      
-   
     });
-
-}
+} ;
 
 exports.getPackageItems = getPackageItems ;
-
 
 async function getIndividualItems () {
 
@@ -185,3 +181,38 @@ async function generateUniqueID(con=null, tableName='IndividualItems', keyFieldN
 }
 
 exports.generateUniqueID = generateUniqueID ;
+
+
+
+async function getCategories (tableName='categories') {
+ 
+    return await new Promise(async(resolve, reject) => {
+                
+      var con = mysql.createConnection({
+        host: process.env.DATABASE_HOST,
+        user: process.env.DATABASE_USER,
+        password: process.env.DATABASE_PASSWORD,
+        database: process.env.DATABASE_UPGRADED_NAME
+      });
+  
+       con.connect(function(err) {
+        if (err) reject(err);
+        selectsql = `
+                      SELECT *
+                      FROM ${tableName}
+                    `;
+        //console.log(`Running sql in getDatabaseObject : ${selectsql}`);
+        con.query(selectsql, function (err, result, fields) {
+          if (err) reject(err);
+          con.end();
+          resolve(result) ;
+         
+        });
+        //con.end();
+      });
+      
+    });
+  
+  }
+  
+  exports.getCategories = getCategories ;
