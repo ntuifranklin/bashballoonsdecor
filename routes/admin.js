@@ -94,6 +94,15 @@ module.exports = () => {
             categories: categories
         });
     });
+    
+    router.get('/:category_id', async (request, response) => { 
+        var categories = request.locals.categories;
+        var category_id = new String(request.params.category_id);
+        var categoryItems = await getCategoriesItems(con,tableName='category_items', category_id=category_id);
+        console.log(`Category id: ${category_id}`);
+        console.log(`Category items: ${JSON.stringify(categoryItems)}`);
+        response.json(JSON.stringify(categoryItems));
+    });
 
     return router;
 };

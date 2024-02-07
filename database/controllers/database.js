@@ -227,15 +227,23 @@ async function getCategoriesItems (con=null,tableName='category_items', category
                     FROM ${tableName}
                   `;
     if (category_id !== '') {
-        selectsql += ` WHERE category_id = '${category_id}'`;
-    }
-      //console.log(`Running sql in getDatabaseObject : ${selectsql}`);
-      await con.execute(selectsql, async function (err, result, fields) {
+        selectsql += ` WHERE category_id = ? `;
+        await con.execute(selectsql, [category_id], async function (err, result, fields) {
+          if (err) reject(err);
+          else
+          resolve(result) ;
+         
+        });
+    } else {
+      await con.execute(selectsql,  async function (err, result, fields) {
         if (err) reject(err);
         else
         resolve(result) ;
        
       });
+    }
+      //console.log(`Running sql in getDatabaseObject : ${selectsql}`);
+      
     
   })
   else 
@@ -243,4 +251,4 @@ async function getCategoriesItems (con=null,tableName='category_items', category
 
 }
 
-exports.getCategories = getCategories ;
+exports.getCategoriesItems = getCategoriesItems ;

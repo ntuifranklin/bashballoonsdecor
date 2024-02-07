@@ -58,11 +58,18 @@ $(document).ready(function() {
 
     /* This function below will take from the database the list of category items selected */
     $('#categoryDropdownSelect').on('change', function (e) {
+        //http://bashballoonsrentals.com:9999/dashboard/uKmwctxAcAbRby8O
         var optionSelected = $(this).find("option:selected");
         var valueSelected  = optionSelected.val();
         var textSelected   = optionSelected.text();
         console.log(valueSelected);
         console.log(textSelected);
+      
+      $.get(`/dashboard/${valueSelected}`,
+         (data) => {
+          console.log(`Request sent : ${JSON.stringify(data)}`);  
+        });
+
     });
 
 });
