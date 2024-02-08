@@ -14,7 +14,7 @@ var mysql2 = require('mysql2');
 
 const checkOutValidation = [
     check('itemName').isLength({ min: 3, max:255}).escape().notEmpty().withMessage('Please enter the item name.'),
-    check('description').isLength({ min: 3, max:255 }).escape().notEmpty().withMessage('Please enter the item description.'),
+    check('description').isLength({ min: 3, max:1024 }).escape().notEmpty().withMessage('Please enter the item description.'),
     check('quantityAvailable').isLength({ min: 1 }).escape().isNumeric().withMessage('Please enter a quantity'),
     check('category_id').isLength({ min: 1 }).escape().isAlphanumeric().withMessage('Please select a category'),
     check('unitPrice').isLength({ min: 1 }).escape().isNumeric().withMessage('Please enter a price')
@@ -41,7 +41,7 @@ module.exports = () => {
         if (!formerrors.isEmpty()) {
             const err_message = formerrors.array().map(i => i.msg).join('<br>');
             //console.log(`Error processing form: ${JSON.stringify(formerrors.array(), null, 4)}`);
-            return response.status(400).send(`${err_message}`); 
+            return response.status(400).send(`${JSON.parse(JSON.stringify(err_message))}`); 
         };
         
         var itemName = new String(request.body.itemName);
@@ -77,7 +77,7 @@ module.exports = () => {
             return response.status(200).send(`Item added to cart successfully`);
         } catch (error) {
             console.log(`Error in admin.js inserting new item: ${error.message}`);
-            await con.execute('ROLLBACK');//con.rollback();
+            con.execute('ROLLBACK');//con.rollback();
             return response.status(500).send(`Error processing form`);
         }
         
@@ -99,9 +99,10 @@ module.exports = () => {
         var categories = request.locals.categories;
         var category_id = new String(request.params.category_id);
         var categoryItems = await getCategoriesItems(con,tableName='category_items', category_id=category_id);
-        console.log(`Category id: ${category_id}`);
-        console.log(`Category items: ${JSON.stringify(categoryItems)}`);
-        response.json(JSON.stringify(categoryItems));
+        categoryItems = JSON.parse(JSON.stringify(categoryItems));
+        //console.log(`Category id: ${category_id}`);
+        //console.log(`Category items: ${JSON.stringify(categoryItems)}`);
+        response.json(categoryItems);
     });
 
     return router;
