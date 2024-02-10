@@ -1,6 +1,11 @@
 
 import os
 import csv
+from bs4 import BeautifulSoup
+import requests
+import time 
+import random
+from lxml import html
 
 """
 
@@ -21,8 +26,6 @@ USER = os.getenv('DATABASE_USER')
 PASSWORD = os.getenv('DATABASE_PASSWORD')
 
 url = HTTPS + BASE_URL
-from bs4 import BeautifulSoup
-import requests
 
 categories = [
     'tables',
@@ -62,16 +65,30 @@ categories = [
 with open('dalissa_events.csv', 'w') as csv_file:
     csv_writer = csv.writer(csv_file)
     csv_writer.writerow(['categoryName', 'ItemName',  'Description', 'unitPrice', 'Image'])
-    for category_url in categories:
-        current_url = url + '/' + category_url
+    for category_route in categories:
+        current_url = url + '/' + category_route
+        print(f"\nAccessing : {current_url}")
         current_page = requests.get(current_url)
+        html_tree = html.fromstring(current_page.content)
         current_soup = BeautifulSoup(current_page.content, 'html.parser')
+        # print(f"\nCurrent soup : {current_soup}")
+        seconds = random.choice([1,2,3,4,5])
+        time.sleep(seconds)
         # find the category by xpath
-        category_element_title = current_soup.findByXpath('/html/body/div[1]/main/article/section/div[2]/div/div/div/div/div[1]/div/div/h4')
-        category_title = category_element_title.text
+        item_containing_titles = html_tree.xpath('//div[@class="sqs-block html-block sqs-block-html"]/div[@class="sqs-block-content"]/div[@class="sqs-html-content"]/h3//text()')
+        
+        
+        #print(f"\nCategory element title : {category_element_title}")
+        category_title = item_containing_titles[0]
         # find all the items cards 
-        all_items_cards = current_soup.find_all('gspro-item-card')
+        # all_items_cards = current_soup.findAll('gspro-item-card') 
+        all_items_cards = html_tree.cssselect('gspro-item-card')
+        print(f"\nAll items cardssss : {all_items_cards}")
+        # print(current_soup.prettify())
+        exit()
         for item_card in all_items_cards:
+            print(f"item_card : {item_card}")
+            exit()
             # find the item's title
             h3_containing_title_ = item_card.findByXpath('/html/body/div[1]/main/article/section/div[2]/div/div/div/div/div[2]/div/div[1]/gspro-item-list/div/gspro-item-card[1]/div[2]/h3')
             item_title = h3_containing_title_.text

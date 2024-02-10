@@ -78,7 +78,7 @@ function reloadCategoryTable() {
    var textSelected   = optionSelected.text();
    //console.log(valueSelected);
    //console.log(textSelected);
-   $("#selectedCategoryTitle").html(`${textSelected}`);
+  
  
    $.get(`/admin/${valueSelected}`,
      (data) => {
@@ -86,19 +86,19 @@ function reloadCategoryTable() {
        var htmlRows = '';
        var d = JSON.parse(JSON.stringify(data));
        for (var i = 0; i < d.length; i++) {
-           
            htmlRows += `\n\t\t<tr>
            <td>${d[i].item_name}</td>
            <td>${d[i].description}</td>
            <td>$${d[i].unitPrice}</td>
            <td>${d[i].quantityAvailable}</td>
-           </tr>\n`;
-           
+           </tr>\n`; 
        };
+       $("#selectedCategoryTitle").html(`${textSelected} ${d.length} items`);
        /*
        Request sent : [{"item_id":"4b379d2bc0354e64","item_name":"24K Black Tie Dining Chairs","description":"24K Black Tie Dining Chairs Because classics never go out of style! Have a seat at the table in style with our ultra-chic Dining Chairs.","category_id":"uKmwctxAcAbRby8O","category_webid":"1e5402d3","imageurl":"","quantityAvailable":21,"unitPrice":"16.09"}]
        
        */
        $("#itemTableBody").html(htmlRows);
    });
+   
 }

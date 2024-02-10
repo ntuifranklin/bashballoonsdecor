@@ -4,7 +4,7 @@ const path = require('path');
 const createError = require('http-errors');
 
 const bodyParser = require('body-parser');
-
+const {decode} = require('html-entities');
 const template_folder = 'static_template';
 const routes = require('./routes');
 
@@ -191,8 +191,14 @@ app.use(parseForm, csrfProtection, async(request, response, next) => {
     if (request.session.userCart)
         userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
     app.locals.userCart = userCart;
-    const categories = await getCategories (tableName='categories') ;
-    app.locals.categories = categories ;
+    var categories = await getCategories (tableName='categories') ;
+    var categories2 = [];
+    for (var i = 0; i < categories.length; i++) {
+        var category = JSON.parse(JSON.stringify(categories[i]));
+        category.category_name = decode(category.category_name);
+        categories2.push(category);
+    }
+    app.locals.categories = categories2 ;
     //console.log(`User Cart In server.js: ${JSON.stringify(userCart, null, 4)}`);
     /* update  the request.locals */
     request.locals = app.locals ;

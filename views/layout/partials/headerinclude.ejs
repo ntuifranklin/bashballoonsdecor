@@ -176,21 +176,28 @@
 						  		<img alt="home" src="assets/img/home.png">
 							</i>Home
 						</a>
-						
 					  </li>
 					  <li class="navbar-dropdown menu-item-children">
-						<a href="javascript:void(0)">Party Rental Individual Items</a>
+
+						<a href="javascript:void(0)">Our &nbsp; Party &nbsp; Rental &nbsp; Inventory</a>
 						<div class="dropdown">
-						  <a href="/products-list"> Individual Party Rental Items</a>
-						  <% /* <a href="/products/productid">Product details</a> */ %>
-						  <a href="/cart">Your Shopping Cart</a>
-						  <a href="/checkout">Cart Checkout</a>
+							<% for (var k=0 ; k < categories.length; k++ ) { %>
+								
+								<% var category = JSON.parse(JSON.stringify(categories[k])) ; %>
+								<% var category_name = category.category_name.toLowerCase();  %>
+								<a href="/<%= category_name %>"><%= category_name %></a>
+							<% } %>
 						</div>
 					  </li>
 					  
 					  <li class="navbar-dropdown">
-						<a href="/packages">Party Rental Packages</a>
+						<a href="/cart">Your Shopping Cart</a>
 					  </li>					  
+
+					  <li class="navbar-dropdown">
+						<a href="/checkout">Cart Checkout</a>
+					  </li>
+					 
 					  <li class="navbar-dropdown">
 						<a href="/contact">Contact</a>
 					  </li>

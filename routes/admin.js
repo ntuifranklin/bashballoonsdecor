@@ -28,8 +28,8 @@ module.exports = () => {
         password: process.env.DATABASE_PASSWORD,
         database: process.env.DATABASE_UPGRADED_NAME,
         waitForConnections: true,
-        connectionLimit: 10,
-        maxIdle: 10, // max idle connections, the default value is the same as `connectionLimit`
+        connectionLimit: 5,
+        maxIdle: 4, // max idle connections, the default value is the same as `connectionLimit`
         idleTimeout: 60000, // idle connections timeout, in milliseconds, the default value 60000
         queueLimit: 0,
         enableKeepAlive: true,
@@ -96,7 +96,7 @@ module.exports = () => {
     });
     
     router.get('/:category_id', async (request, response) => { 
-        var categories = request.locals.categories;
+        
         var category_id = new String(request.params.category_id);
         var categoryItems = await getCategoriesItems(con,tableName='category_items', category_id=category_id);
         categoryItems = JSON.parse(JSON.stringify(categoryItems));
