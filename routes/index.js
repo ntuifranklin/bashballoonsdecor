@@ -9,6 +9,7 @@ const rentalItemsListRoute = require('./rental-items-list');
 const contactRoute = require('./contact');
 const productDetailsRoute = require('./product-details');
 const adminRoute = require('./admin');
+const loginRoute = require('./login');
 const { ExpressValidator } = require('express-validator');
 const bodyParser = require('body-parser');
 var mysql2 = require('mysql2');
@@ -70,6 +71,7 @@ module.exports = () => {
     router.use(['/contact','/contactus'], contactRoute());
     router.use(['/product-details','/productdetails','/individual-items-details'], productDetailsRoute());
     router.use(['/dashboard','/admin','/backend'], adminRoute());
+    router.use(['/login','/identify-your-self','/whoami'], loginRoute());
 
     /* this route allows someone to search for a list of items based on an item category name */
     router.get('/:category_name', async(request, response) => { 
