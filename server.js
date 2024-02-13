@@ -4,7 +4,7 @@ const path = require('path');
 const createError = require('http-errors');
 
 const bodyParser = require('body-parser');
-
+const {decode} = require('html-entities');
 const template_folder = 'static_template';
 const routes = require('./routes');
 
@@ -17,11 +17,13 @@ const MySQLStore = require('express-mysql-session')(session);
 require('dotenv').config();
 
 const {session_database_options} = require('./sessionmanagement/session') ;
-const PORT = process.env.SITE_PORT;
-app.set('trust proxy', 1);
+const PORT = process.env.TEST_SITE_PORT;
+
 
 const cookieParser = require('cookie-parser');
 
+
+const {getCategories} = require('./database/controllers/database');
 
 var csrf = require('csurf');
 // csrf protection
@@ -31,24 +33,63 @@ var parseForm = bodyParser.urlencoded({ extended: false });
 app.use(bodyParser.urlencoded({extended: true}));
 
 const site_secret = faker.internet.password(30);
-app.use(cookieParser(site_secret, {
-    sameSite: 'strict',
-    maxAge: Number(process.env.SESSION_MAXIMUM_TIME_IN_MILLI_SECONDS),
-    secure: true,
-}));
-
+//console.log(`Generated site secret as : ${site_secret}`);
 const session_mysql_connection = mysql.createConnection(session_database_options);
 const sessionStore = new MySQLStore(session_database_options, session_mysql_connection);
-app.use(session({
+
+var dynamicCookie =  {
+    sameSite: 'none',
+    maxAge: Number(process.env.SESSION_MAXIMUM_TIME_IN_MILLI_SECONDS),
+    secure: false,
+    httpOnly: false,
+};
+var sessionBasedOnEnvironment = {
+    name: process.env.SESSION_NAME,
     secret: site_secret,
-    resave: true,
+    resave: false,
     saveUninitialized: false,
     store: sessionStore,
-    cookie: {maxAge : Number(process.env.SESSION_MAXIMUM_TIME_IN_MILLI_SECONDS)},
-}));
+    cookie: dynamicCookie,
+} ;
+
+/* If in a production environment, then use un secure cookies */
+if (PORT == process.env.SITE_PORT) {
+        
+    app.set('trust proxy', 1) // trust first proxy
+    dynamicCookie.secure = true; // serve secure cookies
+    dynamicCookie.sameSite = 'strict';
+    dynamicCookie.httpOnly = true;
+    app.use(cookieParser(site_secret, dynamicCookie));
+} else {
+     
+    app.set('trust proxy', 0) // trust first proxy
+    dynamicCookie.secure = false; // we do not need to serve secure cookies
+    dynamicCookie.sameSite = 'strict';
+    dynamicCookie.httpOnly = false;
+    app.use(cookieParser(site_secret, dynamicCookie));
+} ;
+
+app.use(session(sessionBasedOnEnvironment));
+
+/* Prevent attackes from guessing passwords with rate limiting per IP address */
+const { rateLimit } = require('express-rate-limit');
+
+const form_rate_limiter = rateLimit({
+	windowMs: 30 * 60 * 1000, // 30 minutes
+	limit: 100, // Limit each IP to 100 requests per `window` (here, per 30 minutes).
+	standardHeaders: 'draft-7', // draft-6: `RateLimit-*` headers; draft-7: combined `RateLimit` header
+	legacyHeaders: false, // Disable the `X-RateLimit-*` headers.
+	// store: ... , // Use an external store for consistency across multiple server instances.
+
+})
+
+// Apply the rate limiting middleware to all requests.
+app.use(form_rate_limiter); 
+
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, './views'));
+//app.set('assets', path.join(__dirname, './assets'));
 app.use(express.static(path.join(__dirname, `./${template_folder}`)));
 
 app.locals.siteName = process.env.SITENAME;
@@ -178,7 +219,7 @@ const customers_feedback = require(process.env.CUSTOMERS_FEEDBACK_FILE);
 app.locals.customers_feedback = customers_feedback ;
 
 
-app.use(parseForm, csrfProtection, (request, response, next) => { 
+app.use(parseForm, csrfProtection, async(request, response, next) => { 
 
     /*
         Load user cart here so that it is accessible from all over the app
@@ -188,6 +229,14 @@ app.use(parseForm, csrfProtection, (request, response, next) => {
     if (request.session.userCart)
         userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
     app.locals.userCart = userCart;
+    var categories = await getCategories (tableName='categories') ;
+    var categories2 = [];
+    for (var i = 0; i < categories.length; i++) {
+        var category = JSON.parse(JSON.stringify(categories[i]));
+        category.category_name = decode(category.category_name);
+        categories2.push(category);
+    }
+    app.locals.categories = categories2 ;
     //console.log(`User Cart In server.js: ${JSON.stringify(userCart, null, 4)}`);
     /* update  the request.locals */
     request.locals = app.locals ;

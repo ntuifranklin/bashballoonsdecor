@@ -4,21 +4,21 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><%= pageTitle %> | <%= siteName %></title>
-  <link rel="icon" href="assets/img/favicon.png">
+  <link rel="icon" href="/assets/img/favicon.png">
   <!-- CSS only -->
-   <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">
-   <link rel="stylesheet" href="assets/css/owl.carousel.min.css">
-   <link rel="stylesheet" href="assets/css/owl.theme.default.min.css">
+   <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.min.css">
+   <link rel="stylesheet" href="/assets/css/owl.carousel.min.css">
+   <link rel="stylesheet" href="/assets/css/owl.theme.default.min.css">
    <!-- fancybox -->
-   <link rel="stylesheet" href="assets/css/jquery.fancybox.min.css">
+   <link rel="stylesheet" href="/assets/css/jquery.fancybox.min.css">
    <!-- Font Awesome 6 -->
-   <link rel="stylesheet" href="assets/css/fontawesome.min.css">
+   <link rel="stylesheet" href="/assets/css/fontawesome.min.css">
    <!-- style -->
-   <link rel="stylesheet" href="assets/css/style.css">
+   <link rel="stylesheet" href="/assets/css/style.css">
    <!-- responsive -->
-   <link rel="stylesheet" href="assets/css/responsive.css">
+   <link rel="stylesheet" href="/assets/css/responsive.css">
    <!-- color -->
-   <link rel="stylesheet" href="assets/css/color.css">
+   <link rel="stylesheet" href="/assets/css/color.css">
    <% if ( typeof csrfToken !== 'undefined'  ) { %>
    	<meta name="csrf-token" content="<%= csrfToken %>">
    <% } %>
@@ -176,21 +176,28 @@
 						  		<img alt="home" src="assets/img/home.png">
 							</i>Home
 						</a>
-						
 					  </li>
 					  <li class="navbar-dropdown menu-item-children">
-						<a href="javascript:void(0)">Party Rental Individual Items</a>
+
+						<a href="javascript:void(0)">Our Party Rental Inventory</a>
 						<div class="dropdown">
-						  <a href="/products-list"> Individual Party Rental Items</a>
-						  <% /* <a href="/products/productid">Product details</a> */ %>
-						  <a href="/cart">Your Shopping Cart</a>
-						  <a href="/checkout">Cart Checkout</a>
+							<% for (var k=0 ; k < categories.length; k++ ) { %>
+								
+								<% var category = JSON.parse(JSON.stringify(categories[k])) ; %>
+								<% var category_name = category.category_name.toLowerCase();  %>
+								<a href="/<%= category_name %>"><%= category_name %></a>
+							<% } %>
 						</div>
 					  </li>
 					  
 					  <li class="navbar-dropdown">
-						<a href="/packages">Party Rental Packages</a>
+						<a href="/cart">Your Shopping Cart</a>
 					  </li>					  
+
+					  <li class="navbar-dropdown">
+						<a href="/checkout">Cart Checkout</a>
+					  </li>
+					 
 					  <li class="navbar-dropdown">
 						<a href="/contact">Contact</a>
 					  </li>
@@ -237,16 +244,24 @@
 			<li class="menu-item-has-children"><a href="/">Home</a>
 			
 			</li>
-			<li class="menu-item-has-children"><a href="JavaScript:void(0)">Party Rental Individual Items</a>
+
+			<li class="menu-item-has-children"><a href="JavaScript:void(0)">Our Party Rental Inventory</a>
 			  <ul class="sub-menu">
-				<li><a href="/products-list">Party Rental Individual Items List</a></li>
-				<% /*<li> <a href="/product-details">product details</a></li>*/ %>
-				<li><a href="/cart">Shopping Cart</a></li>
-				<li><a href="/checkout">Cart Checkout</a></li>
+				
+						<% for (var j=0 ; j < categories.length; j++ ) { %>
+							
+							<% var category2 = JSON.parse(JSON.stringify(categories[j])) ; %>
+							<% var category_name2 = category2.category_name.toLowerCase();  %>
+							<li><a href="/<%= category_name2 %>"><%= category_name2 %></a></li>
+						<% } %>
+				
 			  </ul>
 			</li>
+			
+			<li><a href="/cart">Shopping Cart</a></li>
+			<li><a href="/checkout">Cart Checkout</a></li>
   
-			<li><a href="/contact">Contacts</a></li>
+			<li><a href="/contact">Contact</a></li>
   
 			</ul>
   

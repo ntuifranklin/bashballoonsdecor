@@ -346,18 +346,20 @@ module.exports = () => {
     router.get('/', (request, response) => { 
         
         var userCart = {} ;
+        var categories = request.locals.categories;
         if (request.session.userCart)
             userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
         //console.log('User Cart in cart.js: ' + JSON.stringify(userCart, null, 4));
         response.render('layout', 
-                        { 
-                            pageTitle: 'Cart Checkout', 
-                            template: 'checkout', 
-                            userCart: userCart,
-                            error: null,
-                            success:null,
-                            csrfToken: request.csrfToken()
-                        }
+            { 
+                pageTitle: 'Cart Checkout', 
+                template: 'checkout', 
+                userCart: userCart,
+                error: null,
+                success:null,
+                csrfToken: request.csrfToken(),
+                categories: categories,
+            }
         );
     });
      
