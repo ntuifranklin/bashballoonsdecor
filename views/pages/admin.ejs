@@ -1,0 +1,104 @@
+<section class="banner" style="background-image:url(https://via.placeholder.com/1920x300)" >
+    <div class="container">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="/">Home</a>
+        </li>
+          <li class="breadcrumb-item active" aria-current="page">Back Office</li>
+      </ol>
+      <h2>Back Office</h2>
+    </div>
+</section>
+
+<section class="gap">
+    <div class="container">
+        
+        <div class="row">
+            <div class="col-md-12" id="addItemResult">
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="box register">
+                    <div class="parallax" style="background-image: url(/assets/img/patron.jpg)"></div>
+                    <h3>Add Rental Item</h3>
+                    <form id="addItemForm" class="contact-form">
+                                    
+                        <div class="input-group sm-12">
+                            <div class="input-group-append">
+                                <label class="input-group-text" for="category_id">Category</label>
+                            </div>
+                            <select class="nice-select" name="category_id" id="category_id" >
+                                <!-- loop through categories and list them as option -->
+                                <% var categories = JSON.parse(JSON.stringify(categories)); %>
+                                <% categories.forEach(function(category) { %>
+                                    <option value="<%= category.category_id %>"><%= category.category_name %></option>
+                                <% }); %>
+                            </select>
+                            
+                        </div>
+    
+                        <div class="form-group">
+                            <!-- <label for="itemName"><h3>Item Name:</h3></label> -->
+                            <input type="text" id="itemName" name="itemName"  placeholder="Item Name" required>
+                        </div>
+                        <div class="form-group">
+                            <!-- <label for="description">Description:</label> -->
+                            <textarea  id="description" name="description" placeholder="Give a description of the item" rows="5" cols="33"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <!-- <label for="quantityAvailable">Quantity Available:</label> --> 
+                            
+                            <% 
+                                /* generate a random number for the quantity available */
+                                var a = Math.floor(Math.random() * 100) + 1;
+                                var b = Math.floor(Math.random() * 1000) + 1;
+                                var quantAvail = Math.round(Math.random() * (b-a) + a);
+                            %>
+                            <input type="number" id="quantityAvailable" name="quantityAvailable"  placeholder="Quantity Available in Inventory"  value="<%= quantAvail %>" required>
+                        </div>
+                        <div class="form-group">
+                            <!--  <label for="unitPrice">Unit Price:</label>  -->
+                            <input type="number" id="unitPrice" name="unitPrice" step="0.01" placeholder="Price for one unit" value="0.01" required>
+                        </div>
+    
+                        <button type="submit" class="btn two" id="addItemCategory"><span>Add Item</span></button>
+                    </form>
+                  </div>
+
+
+
+
+
+
+            </div>
+            <div class="col-md-8">
+                <div class="table-responsive">
+                    
+                    <table class="table table-striped table-hover table-responsive">
+                        <thead>
+                            <tr>
+                                <th colspan="4">
+                                    <!-- Table to display existing items -->
+                                    <h2 class="text-center" id="selectedCategoryTitle">Selected Category</h2>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th>Item Name</th>
+                                <th>Description</th>
+                                <th>Unit Price in USD($)</th>
+                                <th>Quantity Available</th>
+                            </tr>
+                        </thead>
+                        <!-- Existing items will be displayed here -->
+                        <tbody id="itemTableBody">
+                            
+                        </tbody>
+                    </table>
+                    
+                </div>
+            </div>
+        </div>
+      </div>
+</section>

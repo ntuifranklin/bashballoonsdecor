@@ -94,7 +94,7 @@ module.exports = () => {
 
 
     router.get('/', (request, response) => { 
-        
+        var categories = request.locals.categories;
         var userCart = {} ;
         if (request.session.userCart)
             userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
@@ -103,7 +103,8 @@ module.exports = () => {
             pageTitle: 'Your Shopping Cart', 
             template: 'cart', 
             userCart: userCart,
-            csrfToken: request.csrfToken()
+            csrfToken: request.csrfToken(),
+            categories: categories,
         });
     });
 
