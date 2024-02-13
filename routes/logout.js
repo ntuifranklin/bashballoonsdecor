@@ -14,7 +14,7 @@ module.exports = () => {
                 return response.status(500).send(`Error destroying session`);
             }
             
-            response.clearCookie(process.env.SESSION_NAME);
+            //response.clearCookie(process.env.SESSION_NAME);
            
             response.status(200).send(
                 `You have been logged out\n<br>
