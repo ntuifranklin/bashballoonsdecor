@@ -31,7 +31,7 @@ if ( current_dir == PRODUCTION_ENV) {
 }
 
 console.log(`are we in test ? ${current_dir == TEST_ENV}`);
-
+console.log(`are we in production ? ${current_dir == PRODUCTION_ENV}`);
 
 const cookieParser = require('cookie-parser');
 const {getCategories} = require('./database/controllers/database');
