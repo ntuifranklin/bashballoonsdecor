@@ -92,17 +92,22 @@ module.exports = () => {
     router.get('/', csrfProtection, (request, response) => { 
         var categories = request.locals.categories;
         var userCart = {} ;
-        var loggedInUser = {} ;
 
         //console.log(`user ${request.session.user} userCart ${request.session.userCart}`);
         //check if user is logged in
-        var current_session = JSON.parse(JSON.stringify(request.session));
-        if (typeof(request.session.user) != undefined && Object.keys(current_session).includes('user') && request.session.user != null && request.session.user.email !== undefined ) {
-            loggedInUser = JSON.parse(JSON.stringify(request.session.user)) ;
-            console.log(`user : ${JSON.stringify(loggedInUser)}, current session : ${JSON.stringify(current_session)}`);
-            return response.status(401).send(`You are already logged in as ${loggedInUser.email}`);
+        var user = request.session.user;
+        if (user ) {
+            user = JSON.parse(JSON.stringify(request.session.user)) ;
+            console.log(`user : ${JSON.stringify(user)}, current session : ${JSON.stringify(request.session)}`);
+            //return response.status(401).send(`You are already logged in as ${user.email}`);
+            return response.status(200).send(
+                `You are already logged in as ${user.email}\n
+                Click <a href="/logout">here</a> to logout\n<br>
+                Click <a href="/admin">here</a> to head to your dashboard\n<br>`
+            );
         } ;
 
+        user = {} ;
         if (request.session.userCart)
             userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
         //console.log('User Cart in cart.js: ' + JSON.stringify(userCart, null, 4));
@@ -112,20 +117,21 @@ module.exports = () => {
             userCart: userCart,
             csrfToken: request.csrfToken(),
             categories: categories,
-            user: loggedInUser
+            user: user
         });
     });
 
     
     router.post('/', csrfProtection,loginCheckOutValidation, (request, response) => {
-         
-        var loggedInUser = {} ;
-
-        //check if user is logged in
-        if (request.session.user && request.session.user != null && request.session.user != {} ) {
-            loggedInUser = JSON.parse(JSON.stringify(request.session.user)) ;
-            return response.status(401).send(`You are already logged in as ${loggedInUser.email}`);
+         //check if user is logged in
+        var user = request.session.user;
+        if (user) {
+            user = JSON.parse(JSON.stringify(request.session.user)) ;
+            console.log(`user : ${JSON.stringify(user)}, current session : ${JSON.stringify(request.session)}`);
+            return response.status(401).send(`You are already logged in as ${user.email}`);
         } ;
+
+        user = {} ;
         
         const email = new String(request.body.email).trim();
         const password = new String(request.body.password).trim();
