@@ -19,3 +19,35 @@ INSERT INTO `categories` VALUES
 ('mEfkVpMmFSgyuWEd', 'Teaware / Coffeeware', '9fec515ceeb00b9d'),
 ('w7nKt148IWrnVr6Q', 'Children Party Rentals', 'ec0fa50fad58f55e'),
 ('EH/hrvVp5Oc3uIrt', 'Candles', 'a8c867c0f708a7c8') ;
+
+
+
+/* The below mysql code inserts a new user into the database 
+    the structure of the users table is as follows:
+        
+    CREATE TABLE IF NOT EXISTS `users` (
+        user_id VARCHAR(50) PRIMARY KEY,
+        username VARCHAR(50) NOT NULL UNIQUE,
+        email VARCHAR(100) NOT NULL UNIQUE,
+        password_hash VARCHAR(255) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        last_login TIMESTAMP,
+        login_attempts INT DEFAULT 0,
+        user_type ENUM('standard_admin', 'master_admin', 'customer') DEFAULT 'standard_admin',
+        account_status ENUM('active', 'locked') DEFAULT 'active'
+    );
+*/
+
+ insert into users values 
+ ( 'q6qSVIlN84+2621uokE1', 'ntuifranklin', 
+ 'ntuifranklin2005@gmail.com', PASSWORD('password'), 
+ created_at, last_modified, current_timestamp(), 0, 
+ user_type, account_status);
+
+
+/*
+-- Generate OTP for a user
+*/
+INSERT INTO otp (user_id, otp_code, expiration_time)
+VALUES (1, '123456', NOW() + INTERVAL 5 MINUTE);

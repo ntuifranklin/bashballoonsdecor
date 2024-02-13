@@ -18,7 +18,7 @@ require('dotenv').config();
 
 const {session_database_options} = require('./sessionmanagement/session') ;
 const PORT = process.env.TEST_SITE_PORT;
-app.set('trust proxy', 1);
+
 
 const cookieParser = require('cookie-parser');
 
@@ -33,21 +33,59 @@ var parseForm = bodyParser.urlencoded({ extended: false });
 app.use(bodyParser.urlencoded({extended: true}));
 
 const site_secret = faker.internet.password(30);
-app.use(cookieParser(site_secret, {
-    sameSite: 'strict',
-    maxAge: Number(process.env.SESSION_MAXIMUM_TIME_IN_MILLI_SECONDS),
-    secure: true,
-}));
-
+//console.log(`Generated site secret as : ${site_secret}`);
 const session_mysql_connection = mysql.createConnection(session_database_options);
 const sessionStore = new MySQLStore(session_database_options, session_mysql_connection);
-app.use(session({
+
+var dynamicCookie =  {
+    sameSite: 'none',
+    maxAge: Number(process.env.SESSION_MAXIMUM_TIME_IN_MILLI_SECONDS),
+    secure: false,
+    httpOnly: false,
+};
+var sessionBasedOnEnvironment = {
+    name: process.env.SESSION_NAME,
     secret: site_secret,
-    resave: true,
+    resave: false,
     saveUninitialized: false,
     store: sessionStore,
-    cookie: {maxAge : Number(process.env.SESSION_MAXIMUM_TIME_IN_MILLI_SECONDS)},
-}));
+    cookie: dynamicCookie,
+} ;
+
+/* If in a production environment, then use un secure cookies */
+if (PORT == process.env.SITE_PORT) {
+        
+    app.set('trust proxy', 1) // trust first proxy
+    dynamicCookie.secure = true; // serve secure cookies
+    dynamicCookie.sameSite = 'strict';
+    dynamicCookie.httpOnly = true;
+    app.use(cookieParser(site_secret, dynamicCookie));
+} else {
+     
+    app.set('trust proxy', 0) // trust first proxy
+    dynamicCookie.secure = false; // we do not need to serve secure cookies
+    dynamicCookie.sameSite = 'strict';
+    dynamicCookie.httpOnly = false;
+    app.use(cookieParser(site_secret, dynamicCookie));
+} ;
+
+app.use(session(sessionBasedOnEnvironment));
+
+/* Prevent attackes from guessing passwords with rate limiting per IP address */
+const { rateLimit } = require('express-rate-limit');
+
+const form_rate_limiter = rateLimit({
+	windowMs: 30 * 60 * 1000, // 30 minutes
+	limit: 100, // Limit each IP to 100 requests per `window` (here, per 30 minutes).
+	standardHeaders: 'draft-7', // draft-6: `RateLimit-*` headers; draft-7: combined `RateLimit` header
+	legacyHeaders: false, // Disable the `X-RateLimit-*` headers.
+	// store: ... , // Use an external store for consistency across multiple server instances.
+
+})
+
+// Apply the rate limiting middleware to all requests.
+app.use(form_rate_limiter); 
+
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, './views'));

@@ -9,6 +9,9 @@ const rentalItemsListRoute = require('./rental-items-list');
 const contactRoute = require('./contact');
 const productDetailsRoute = require('./product-details');
 const adminRoute = require('./admin');
+const loginRoute = require('./login');
+const logoutRoute = require('./logout');
+const verifyOTPRoute = require('./verifyotp');
 const { ExpressValidator } = require('express-validator');
 const bodyParser = require('body-parser');
 var mysql2 = require('mysql2');
@@ -70,6 +73,9 @@ module.exports = () => {
     router.use(['/contact','/contactus'], contactRoute());
     router.use(['/product-details','/productdetails','/individual-items-details'], productDetailsRoute());
     router.use(['/dashboard','/admin','/backend'], adminRoute());
+    router.use(['/login','/identify-your-self','/whoami'], loginRoute());
+    router.use(['/logout','/signout'], logoutRoute());
+    router.use(['/verifyotp','/verify-otp'], verifyOTPRoute());
 
     /* this route allows someone to search for a list of items based on an item category name */
     router.get('/:category_name', async(request, response) => { 
@@ -105,10 +111,7 @@ module.exports = () => {
                 csrfToken: request.csrfToken(),
                 decode: decode,
             });
-
         }
-        
-        
         
     });
         

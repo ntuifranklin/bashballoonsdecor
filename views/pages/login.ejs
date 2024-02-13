@@ -1,0 +1,68 @@
+<% var given_user = JSON.parse(JSON.stringify(user));%>
+
+<section class="gap">
+    <div class="container">
+
+      
+      <% if (given_user !== {} && given_user.authenticated === true  )  {%>
+
+        <div class="row">
+          <div id="loginfeedback" class="col-md-12">
+
+          </div>
+        </div>
+        
+        <div class="row">
+          <div class="col-md-12">
+                
+              <form class="box login" id="otpverifyform" method="POST" action="/verifyotp">
+                <input type="user_email" name="user_email" placeholder="email address">
+                <input type="hidden" name="_csrf2" value="<%= csrfToken %>">
+                <input name="otp" id="otp" value="" placeholder="Enter your one time password">
+                <button type="submit" class="btn two"><span>Verify OTP</span></button>
+              </form>
+          </div>
+
+        </div>
+        
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="box register">
+              <div class="parallax" style="background-image: url(assets/img/patron.jpg)"></div>
+              <h3>Log In Your Account</h3>
+              <form id="loginform" method="POST" action="/login">
+                <%
+                /*
+                    Once user enters their email,
+                    we check that the email exists.
+                    we also check that the password exists
+                    Then we send them a one time password
+                    If they put it in, then we log them in.
+                */
+                %>
+                <input type="email" name="email" placeholder="enter your email address">
+                <input type="password" name="password" placeholder="enter your password">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <button type="submit" class="btn two"><span>Log In</span></button>
+              </form>
+              
+            </div>
+          </div>
+        </div>
+      <% } else { %>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="alert alert-secondary fade show" role="alert">
+              <strong>It's all good!</strong>
+              <p>You are already logged in</p>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
+          </div>
+        </div>
+
+      <% } %>
+
+    </div>
+</section>
+
