@@ -17,12 +17,23 @@ const MySQLStore = require('express-mysql-session')(session);
 require('dotenv').config();
 
 const {session_database_options} = require('./sessionmanagement/session') ;
-const PORT = process.env.TEST_SITE_PORT;
+
+/* dynamically detect the folder we are running from,
+ then select port accordingly */
+const current_dir = __dirname
+const PRODUCTION_ENV = process.env.BBD_LOCATION;
+const TEST_ENV = process.env.TEST_BBD_LOCATION;
+var PORT = 9999;
+if ( current_dir == PRODUCTION_ENV) {
+    PORT = process.env.SITE_PORT;
+} else if (current_dir == TEST_ENV) {
+    PORT = process.env.TEST_SITE_PORT;
+}
+
+console.log(`are we in test ? ${current_dir == TEST_ENV}`);
 
 
 const cookieParser = require('cookie-parser');
-
-
 const {getCategories} = require('./database/controllers/database');
 
 var csrf = require('csurf');
