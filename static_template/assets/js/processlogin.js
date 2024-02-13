@@ -39,6 +39,9 @@ jQuery(document).ready(function(){
             $('#otpverifyform').toggle();
             /* update user_email with current user email since login was successful */
             $('input[name="user_email"]').val($('input[name="email"]').val());
+
+            /* Hide the login form to leave room for the one time password form */
+            $('#loginform').toggle();
             
         }).fail(function (data) { 
             console.log(`${JSON.stringify(data)}`);
@@ -89,7 +92,8 @@ jQuery(document).ready(function(){
             </div>`;
             
             $(`#loginfeedback`).html(successHtml);
-            /* If the user name and password are correct, then show the otp form */
+            /* If the useremail and one time password are correct, 
+            then hide otp form */
             $('#otpverifyform').toggle();
         }).fail(function (data) { 
             console.log(`${JSON.stringify(data)}`);

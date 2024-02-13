@@ -14,8 +14,9 @@
         
         <div class="row">
           <div class="col-md-12">
-                
+              
               <form class="box login" id="otpverifyform" method="POST" action="/verifyotp">
+                <h3>Verify Your One Time Password (OTP)</h3>
                 <input type="user_email" name="user_email" placeholder="email address">
                 <input type="hidden" name="_csrf2" value="<%= csrfToken %>">
                 <input name="otp" id="otp" value="" placeholder="Enter your one time password">
@@ -29,8 +30,9 @@
           <div class="col-sm-12">
             <div class="box register">
               <div class="parallax" style="background-image: url(assets/img/patron.jpg)"></div>
-              <h3>Log In Your Account</h3>
+              
               <form id="loginform" method="POST" action="/login">
+                <h3>Log In Your Account</h3>
                 <%
                 /*
                     Once user enters their email,

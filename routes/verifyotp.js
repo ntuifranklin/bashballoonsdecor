@@ -111,8 +111,11 @@ module.exports = () => {
 
                     request.session.save();
             
-                    response.send(
-                        `OTP successfully verified`
+                    return response.status(200).send(
+                        `OTP successfully verified\n<br/>
+                        You are logged in as ${user_email}\n
+                        Click <a href="/logout">here</a> to logout\n<br>
+                        Click <a href="/admin">here</a> to head to your dashboard\n<br>`
                     );
                 });
             
