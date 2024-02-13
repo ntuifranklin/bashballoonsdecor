@@ -252,3 +252,19 @@ async function getCategoriesItems (con=null,tableName='category_items', category
 }
 
 exports.getCategoriesItems = getCategoriesItems ;
+
+
+/* This function below takes a text and generates the mysql password for it */
+
+async function mysqlpassword(con=null, text='anything') {
+  return await new Promise(async(resolve, reject) => {
+    selectsql = `SELECT PASSWORD(?) as password_hash`;
+    await con.execute(selectsql, [text], async function (err, result) {
+      if (err) reject(err);
+      else
+        resolve(result[0].password_hash) ;
+    });
+  });
+} ;
+
+exports.mysqlpassword = mysqlpassword ;

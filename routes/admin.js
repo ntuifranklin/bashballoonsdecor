@@ -21,7 +21,7 @@ const checkOutValidation = [
 ];
 
 module.exports = () => { 
-    /* generate a connection  */
+    /* generate a pool of mysql connection  */
     var con = mysql2.createPool({
         host: process.env.DATABASE_HOST,
         user: process.env.DATABASE_USER,
@@ -37,6 +37,14 @@ module.exports = () => {
     });
     router.post('/', csrfProtection,checkOutValidation, async(request, response) => {
         
+        var loggedInUser = {} ;
+
+        //check if user is logged in
+        if (request.session.user != {}) {
+            loggedInUser = JSON.parse(JSON.stringify(request.session.user)) ;
+        } else {
+            return response.status(401).send(`You are not authorized to access this page`);
+        };
         const formerrors = validationResult(request);
         if (!formerrors.isEmpty()) {
             const err_message = formerrors.array().map(i => i.msg).join('<br>');
@@ -86,12 +94,22 @@ module.exports = () => {
 
     router.get('/', csrfProtection, async (request, response) => { 
         var categories = request.locals.categories;
+    
+        var loggedInUser = {} ;
+
+        //check if user is logged in
+        if (request.session.user && request.session.user != {}) {
+            loggedInUser = JSON.parse(JSON.stringify(request.session.user)) ;
+        } else {
+            return response.status(401).send(`You are not authorized to access this page`);
+        };
 
         response.render('layout', { 
             pageTitle: 'Dashboard', 
             template: 'admin', 
             csrfToken: request.csrfToken(),
-            categories: categories
+            categories: categories,
+            user: loggedInUser
         });
     });
     

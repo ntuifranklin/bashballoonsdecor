@@ -3,6 +3,8 @@ DROP TABLE IF EXISTS `order_category_items`;
 DROP TABLE IF EXISTS `orders`;
 DROP TABLE IF EXISTS `category_items` ;
 DROP TABLE IF EXISTS `categories` ;
+DROP TABLE IF EXISTS `users` ;
+DROP TABLE IF EXISTS `otp` ;
 
 CREATE TABLE IF NOT EXISTS `customers` (
   `customer_id` VARCHAR(16) PRIMARY KEY,
@@ -36,7 +38,7 @@ CREATE TABLE IF NOT EXISTS `category_items` (
   ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-CREATE TABLE `orders` (
+CREATE TABLE IF NOT EXISTS `orders` (
   `order_id` char(64)  PRIMARY KEY COMMENT 'Primary Key for this order',
   `customer_id` char(64) NOT NULL,
   `order_date` timestamp NULL DEFAULT current_timestamp(),
@@ -46,7 +48,7 @@ CREATE TABLE `orders` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
-CREATE TABLE `order_category_items` (
+CREATE TABLE IF NOT EXISTS `order_category_items` (
   `order_category_items_id` char(64) PRIMARY KEY COMMENT 'Primary Key for this order category item',
   `order_id` char(64) NOT NULL COMMENT 'References an order in the order table',
   `category_id` char(64) NOT NULL COMMENT 'References the sub category from which this item belongs to',
@@ -56,4 +58,27 @@ CREATE TABLE `order_category_items` (
   FOREIGN KEY (`order_id`) REFERENCES `orders` (`order_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`category_id`) REFERENCES `categories`(`category_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `users` (
+    user_id VARCHAR(50) PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    last_login TIMESTAMP,
+    login_attempts INT DEFAULT 0,
+    user_type ENUM('standard_admin', 'master_admin', 'customer') DEFAULT 'standard_admin',
+    account_status ENUM('active', 'locked') DEFAULT 'active'
+);
+
+
+CREATE TABLE IF NOT EXISTS otp (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_email VARCHAR(50) NOT NULL,
+    otp_code VARCHAR(10) NOT NULL,
+    expiration_time DATETIME NOT NULL,
+    FOREIGN KEY (user_email) REFERENCES users(email)
+);
+
 
