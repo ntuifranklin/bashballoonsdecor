@@ -34,14 +34,10 @@ async function getPackageItems (packageid= '') {
         });
         //con.end();
       });
-      
-   
     });
-
-}
+} ;
 
 exports.getPackageItems = getPackageItems ;
-
 
 async function getIndividualItems () {
 
@@ -185,3 +181,90 @@ async function generateUniqueID(con=null, tableName='IndividualItems', keyFieldN
 }
 
 exports.generateUniqueID = generateUniqueID ;
+
+
+
+async function getCategories (tableName='categories') {
+ 
+    return await new Promise(async(resolve, reject) => {
+                
+      var con = mysql.createConnection({
+        host: process.env.DATABASE_HOST,
+        user: process.env.DATABASE_USER,
+        password: process.env.DATABASE_PASSWORD,
+        database: process.env.DATABASE_UPGRADED_NAME
+      });
+  
+       con.connect(function(err) {
+        if (err) reject(err);
+        selectsql = `
+                      SELECT *
+                      FROM ${tableName}
+                    `;
+        //console.log(`Running sql in getDatabaseObject : ${selectsql}`);
+        con.query(selectsql, function (err, result, fields) {
+          if (err) reject(err);
+          con.end();
+          resolve(result) ;
+         
+        });
+        //con.end();
+      });
+      
+    });
+  
+  }
+  
+  exports.getCategories = getCategories ;
+
+  
+async function getCategoriesItems (con=null,tableName='category_items', category_id='') {
+  if ( con !== null )
+  return await new Promise(async(resolve, reject) => {
+    
+    selectsql = `
+                    SELECT *
+                    FROM ${tableName}
+                  `;
+    if (category_id !== '') {
+        selectsql += ` WHERE category_id = ? `;
+        await con.execute(selectsql, [category_id], async function (err, result, fields) {
+          if (err) reject(err);
+          else
+          resolve(result) ;
+         
+        });
+    } else {
+      await con.execute(selectsql,  async function (err, result, fields) {
+        if (err) reject(err);
+        else
+        resolve(result) ;
+       
+      });
+    }
+      //console.log(`Running sql in getDatabaseObject : ${selectsql}`);
+      
+    
+  })
+  else 
+    return new Error("Connection object is null in function getCategoriesItems");
+
+}
+
+exports.getCategoriesItems = getCategoriesItems ;
+
+
+/* This function below takes a text and generates the mysql password for it */
+
+async function mysqlpassword(con=null, text='anything') {
+  return await new Promise(async(resolve, reject) => {
+    selectsql = `SELECT PASSWORD(?) as password_hash`;
+    await con.execute(selectsql, [text], async function (err, result) {
+      if (err) reject(err);
+      else
+        resolve(result[0].password_hash) ;
+    });
+  });
+} ;
+
+exports.mysqlpassword = mysqlpassword ;

@@ -16,6 +16,10 @@
   <section class="gap">
     <div class="container">
       <div class="row">
+        <div id="cartResult" class="col-md-12 col-lg-12">
+        </div>
+      </div>
+      <div class="row">
         <% var allpackages = [package3000, package3800, package4900] ; %>
          
         <% for (var j = 0; j < allpackages.length; j++) { %>
@@ -40,14 +44,19 @@
                 </ul>
                 <h5>$<%= package[0].packagecost %></h5>
               </div>
-                       
+              <% var cartResultIndexID = 'cartResultIndex' + package[0].packageid %>
               <div class="add-to-cart two">
                                 
-                <a href="#" class="btn" onclick='updateCart("<%= package[0].packageid %>","package")'><span>Add to Cart</span></a>
+                <a class="btn" onclick='updateCart("<%= package[0].packageid %>","package",source="packages", htmlID="<%= package[0].packageid %>", alertIndex="<%= cartResultIndexID %>")' id="<%= package[0].packageid %>"><span>Add to Cart</span></a>
                 <a href="#" class="heart-wishlist">
                   <i class="fa-regular fa-heart"></i>
                 </a>
               </div>
+              
+              
+              <div id="<%= cartResultIndexID %>" class="col-md-12 col-lg-12">
+              </div>
+              
             </div>
           </div>
           <% } %>

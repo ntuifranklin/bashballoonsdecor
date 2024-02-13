@@ -172,6 +172,11 @@
 	<h2>Recent Products</h2>
 	<p>Love With Our Wide Selection Of Chafing Dishes Stand</p>
 	</div>
+	   
+	<div class="row">
+		<div id="cartResult" class="col-md-12 col-lg-12">
+		</div>
+	</div>
 	<div class="product-slider owl-carousel owl-theme">
 		<% list_of_items = shuffleArray(list_of_items); %>
 		<% for (var i = 0; i < list_of_items.length; i++) { %>
@@ -186,7 +191,9 @@
 				<h6>$<%= individual_item.individItemUnitCost %></h6>
 				<span>In stock, <%= individual_item.individItemQtyAvailable %> units</span>
 				<div class="add-to-cart">
-				<a href="#" class="btn"><span>Add to Cart</span></a>
+
+				<% var htmlID = new String(individual_item.individItemID) + "1";  %>
+				<a id="<%= htmlID %>" class="btn" onclick='updateCart("<%= individual_item.individItemID %>","IndividualItems", source="#", htmlID="<%= htmlID %>")'><span>Add to Cart</span></a>
 				<a href="#" class="heart-wishlist">
 					<i class="fa-regular fa-heart"></i>
 				</a>
@@ -226,6 +233,11 @@
 	<div class="heading two">
 	<h2>Party Decorations</h2>
 	</div>
+	
+	<div class="row">
+		<div id="cartResultIndex" class="col-md-12 col-lg-12">
+		</div>
+	</div>
 	<div class="nav nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
 		<button class="nav-link active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-home" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">Baby Shower</button>
 		<button class="nav-link" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false">Birthday Party</button>
@@ -253,7 +265,8 @@
 						<h6>$<%= individual_item.individItemUnitCost %></h6>
 						<span>In stock, <%= individual_item.individItemQtyAvailable %> units</span>
 						<div class="add-to-cart">
-							<a href="#" class="btn"><span>Add to Cart</span></a>
+							<% var htmlID2 = new String(individual_item.individItemID) + "2";  %>
+							<a id="<%= htmlID2 %>" class="btn" onclick='updateCart("<%= individual_item.individItemID %>","IndividualItems", source="#", htmlID="<%= htmlID2 %>", alertIndex="cartResultIndex")'><span>Add to Cart</span></a>
 							<a href="#" class="heart-wishlist">
 							<i class="fa-regular fa-heart"></i>
 							</a>
@@ -283,7 +296,9 @@
 							<h6>$<%= individual_item.individItemUnitCost %></h6>
 							<span>In stock, <%= individual_item.individItemQtyAvailable %> units</span>
 							<div class="add-to-cart">
-								<a href="#" class="btn"><span>Add to Cart</span></a>
+								<% var htmlID3 = new String(individual_item.individItemID) + "3";  %>
+								<a id="<%= htmlID3 %>" class="btn" onclick='updateCart("<%= individual_item.individItemID %>","IndividualItems", source="#", htmlID="<%= htmlID3 %>")'><span>Add to Cart</span></a>
+								<!-- <a href="#" class="btn"><span>Add to Cart</span></a> -->
 								<a href="#" class="heart-wishlist">
 								<i class="fa-regular fa-heart"></i>
 								</a>
@@ -312,7 +327,10 @@
 					<h6>$<%= individual_item.individItemUnitCost %></h6>
 					<span>In stock, <%= individual_item.individItemQtyAvailable %> units</span>
 					<div class="add-to-cart">
-						<a href="#" class="btn"><span>Add to Cart</span></a>
+
+						<% var htmlID4 = new String(individual_item.individItemID) + "4";  %>
+						<a id="<%= htmlID4 %>" class="btn" onclick='updateCart("<%= individual_item.individItemID %>","IndividualItems", source="#", htmlID="<%= htmlID4 %>")'><span>Add to Cart</span></a>
+						<!-- <a href="#" class="btn"><span>Add to Cart</span></a> -->
 						<a href="#" class="heart-wishlist">
 						<i class="fa-regular fa-heart"></i>
 						</a>
@@ -343,7 +361,10 @@
 					<h6>$<%= individual_item.individItemUnitCost %></h6>
 					<span>In stock, <%= individual_item.individItemQtyAvailable %> units</span>
 					<div class="add-to-cart">
-						<a href="#" class="btn"><span>Add to Cart</span></a>
+						
+						<% var htmlID5 = new String(individual_item.individItemID) + "5";  %>
+						<a id="<%= htmlID5 %>" class="btn" onclick='updateCart("<%= individual_item.individItemID %>","IndividualItems", source="#", htmlID="<%= htmlID5 %>")'><span>Add to Cart</span></a>
+						<!-- <a href="#" class="btn"><span>Add to Cart</span></a> -->
 						<a href="#" class="heart-wishlist">
 						<i class="fa-regular fa-heart"></i>
 						</a>
@@ -374,7 +395,9 @@
 					<h6>$<%= individual_item.individItemUnitCost %></h6>
 					<span>In stock, <%= individual_item.individItemQtyAvailable %> units</span>
 					<div class="add-to-cart">
-						<a href="#" class="btn"><span>Add to Cart</span></a>
+						<% var htmlID6 = new String(individual_item.individItemID) + "6";  %>
+						<a id="<%= htmlID6 %>" class="btn" onclick='updateCart("<%= individual_item.individItemID %>","IndividualItems", source="#", htmlID="<%= htmlID6 %>")'><span>Add to Cart</span></a>
+						<!-- <a href="#" class="btn"><span>Add to Cart</span></a> -->
 						<a href="#" class="heart-wishlist">
 						<i class="fa-regular fa-heart"></i>
 						</a>
@@ -388,6 +411,7 @@
 	</div>
 </div>
 </section>
+<!-- 
 <section class="party-supply" style="background-image: url(https://via.placeholder.com/1920x720);">
 <div class="container">
 	<div class="featured-area two">
@@ -397,6 +421,7 @@
 		</div>
 </div>
 </section>
+-->
 <section class="gap popular-occasion">
 <div class="container">
 	<div class="heading">

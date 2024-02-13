@@ -2,70 +2,84 @@
 <footer class="gap">
 	<div class="container">
 	  <div class="row">
-		<div class="col-lg-3 col-md-6">
+		<div class="col-lg-6 col-lg-6">
 		  <div class="logo-footer">
-			<a href="/"><img alt="log" src="assets/img/logo.png"></a>
-			<p>over 20,000 rental products including <br/>
-				foil balloons, silverware, chairs,
-				wine glasses.</p>
+			<a href="/"><img alt="log" src="/assets/img/logo.png"></a>
+			<p>over 10,000+ party rental items including <br/>
+				wine glases, silverware, chairs,
+				fancy charis.</p>
 		  </div>
 		</div>
-		<div class="col-lg-3 col-md-6">
+		
+		<% 
+			/*
+			<!--
+			<div class="col-lg-3 col-md-6">
+			<div class="account">
+				<h5>My Account</h5>
+				<ul>
+				<li>
+					<i class="fa-solid fa-angle-right"></i>
+					<a href="#">My Account</a>
+				</li>
+				<li>
+					<i class="fa-solid fa-angle-right"></i>
+					<a href="/shop-cart">Cart</a>
+				</li>
+				<li>
+					<i class="fa-solid fa-angle-right"></i>
+					<a href="#">My Addresses</a>
+				</li>
+				<li>
+					<i class="fa-solid fa-angle-right"></i>
+					<a href="#">My Orders</a>
+				</li>
+				</ul>
+			</div>
+			</div>
+			-->
+			*/
+		%>
+
+		<div class="col-lg-6 col-lg-6">
 		  <div class="account">
-			<h5>My Account</h5>
+			<h5>Top Party Rental Categories</h5>
 			<ul>
 			  <li>
 				<i class="fa-solid fa-angle-right"></i>
-				<a href="#">My Account</a>
+				<a href="/packages">All Our Party Rental Packages</a>
 			  </li>
 			  <li>
 				<i class="fa-solid fa-angle-right"></i>
-				<a href="/shop-cart">Cart</a>
+				<a href="/packages#d09745340cebd03c6e0a">Package for 150 Guests</a>
 			  </li>
 			  <li>
 				<i class="fa-solid fa-angle-right"></i>
-				<a href="#">My Addresses</a>
+				<a href="/packages#ab7adb97a1f89a92527a">Package for 250 Guests</a>
 			  </li>
 			  <li>
 				<i class="fa-solid fa-angle-right"></i>
-				<a href="#">My Orders</a>
+				<a href="/packages#bfcd68043040f450b8e7">Package For 300 Guests</a>
 			  </li>
 			</ul>
 		  </div>
 		</div>
-		<div class="col-lg-3 col-md-6">
-		  <div class="account">
-			<h5>Top Category</h5>
-			<ul>
-			  <li>
-				<i class="fa-solid fa-angle-right"></i>
-				<a href="/product-list">Party Balloons</a>
-			  </li>
-			  <li>
-				<i class="fa-solid fa-angle-right"></i>
-				<a href="/products-list">Number balloons</a>
-			  </li>
-			  <li>
-				<i class="fa-solid fa-angle-right"></i>
-				<a href="/product-list">Latex Balloons</a>
-			  </li>
-			  <li>
-				<i class="fa-solid fa-angle-right"></i>
-				<a href="/product-list">Bargain Balloons</a>
-			  </li>
-			</ul>
-		  </div>
-		</div>
-		<div class="col-lg-3 col-md-6">
-		  <div class="account">
-			<h5>Subscribe Newsletter</h5>
-			<p>Join our subscribers list to receive email notices of new deals</p>
-			<form>
-			  <input type="text" name="email" placeholder="Enter Your Email">
-			  <button><i class="fa-solid fa-paper-plane"></i></button>
-			</form>
-		  </div>
-		</div>
+		<% 
+			/*
+			<!--
+			<div class="col-lg-3 col-md-6">
+			<div class="account">
+				<h5>Subscribe Newsletter</h5>
+				<p>Join our subscribers list to receive email notices of new deals</p>
+				<form>
+				<input type="text" name="email" placeholder="Enter Your Email">
+				<button><i class="fa-solid fa-paper-plane"></i></button>
+				</form>
+			</div>
+			</div>
+			-->
+			*/
+		%>
 	  </div>
 	  <div class="footer-contact-info">
 		<div>
@@ -238,12 +252,12 @@
 	  </div>
 	  <div class="footer-bottom">
 		<div>
-		  <a href="#">
+		  <a href="/checkout">
 			<img alt="card" src="assets/img/card.png">
 		  </a>
-		  	 
 		  <p><span>© 2021 - <%= (new Date()).getFullYear() %> </span> <%= siteName %> </p>
 		</div>
+		
 		<ul class="social-media ">
 		  <li><a href="<%= facebookLink %>"><i class="fa-brands fa-facebook-f"></i></a></li>
 		  <li><a href="<%= instagramLink %>"><i class="fa-brands fa-instagram"></i></a></li>
@@ -253,20 +267,40 @@
 		 
 		</ul>
 	  </div>
+	  <div class="section">
+		
+		<p>
+			<small>
+				Designed by
+				<span>
+				<a href="https://linkedin.com/in/franklinngongang">Franklin</a> 
+				</span>
+			</small>
+			<small> 
+				Checkout his portfolio
+				<span>
+					<a href="https://github.com/ntuifranklin">here</a> 
+				</span>
+			</small>
+			
+		  </p>
+	  </div>
 	</div>
 </footer>
 <div id="progress">
 <span id="progress-value"><i class="fa-solid fa-arrow-up"></i></span>
 </div>
 <!-- jQuery -->
-<script src="assets/js/jquery-3.6.0.min.js"></script>
+<script src="/assets/js/jquery-3.6.0.min.js"></script>
 <!-- Bootstrap Js -->
-<script src="assets/js/bootstrap.min.js"></script>
-<script src="assets/js/owl.carousel.min.js"></script>
+<script src="/assets/js/bootstrap.min.js"></script>
+<script src="/assets/js/owl.carousel.min.js"></script>
 <!-- fancybox -->
-<script src="assets/js/jquery.fancybox.min.js"></script>
-<script src="assets/js/custom.js"></script>
-<script src="assets/js/cart.js"></script>
-<script src="assets/js/process_order.js"></script>
+<script src="/assets/js/jquery.fancybox.min.js"></script>
+<script src="/assets/js/custom.js"></script>
+<script src="/assets/js/cart.js"></script>
+<script src="/assets/js/process_order.js"></script>
+<script src="/assets/js/adminbackend.js"></script>
+<script src="/assets/js/processlogin.js"></script>
 </body>
 </html>
