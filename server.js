@@ -15,8 +15,11 @@ var mysql = require('mysql');
 const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
 require('dotenv').config();
-
+var mysql2 = require('mysql2');
 const {session_database_options} = require('./sessionmanagement/session') ;
+
+const cookieParser = require('cookie-parser');
+const {getCategories,getCategoriesItems} = require('./database/controllers/database');
 
 /* dynamically detect the folder we are running from,
  then select port accordingly */
@@ -30,11 +33,8 @@ if ( current_dir == PRODUCTION_ENV) {
     PORT = process.env.TEST_SITE_PORT;
 }
 
-console.log(`are we in test ? ${current_dir == TEST_ENV}`);
-console.log(`are we in production ? ${current_dir == PRODUCTION_ENV}`);
-
-const cookieParser = require('cookie-parser');
-const {getCategories} = require('./database/controllers/database');
+//console.log(`are we in test ? ${current_dir == TEST_ENV}`);
+//console.log(`are we in production ? ${current_dir == PRODUCTION_ENV}`);
 
 var csrf = require('csurf');
 // csrf protection
@@ -241,13 +241,32 @@ app.use(parseForm, csrfProtection, async(request, response, next) => {
         userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
     app.locals.userCart = userCart;
     var categories = await getCategories (tableName='categories') ;
-    var categories2 = [];
-    for (var i = 0; i < categories.length; i++) {
-        var category = JSON.parse(JSON.stringify(categories[i]));
-        category.category_name = decode(category.category_name);
-        categories2.push(category);
+    /* generate a pool of mysql connection  */
+    var con = mysql2.createPool({
+        host: process.env.DATABASE_HOST,
+        user: process.env.DATABASE_USER,
+        password: process.env.DATABASE_PASSWORD,
+        database: process.env.DATABASE_UPGRADED_NAME,
+        waitForConnections: true,
+        connectionLimit: 3,
+        maxIdle: 3, // max idle connections, the default value is the same as `connectionLimit`
+        idleTimeout: 60000, // idle connections timeout, in milliseconds, the default value 60000
+        queueLimit: 0,
+        enableKeepAlive: true,
+        keepAliveInitialDelay: 0
+    });
+    var category_items = await getCategoriesItems (con=con,tableName='category_items', category_id='');
+    //var categories2 = [];
+    for (var j=0 ; j < category_items.length; j++ ) {
+        category_items[j].item_name = decode(category_items[j].item_name);
     }
-    app.locals.categories = categories2 ;
+    for (var i = 0; i < categories.length; i++) {
+        //var category = JSON.parse(JSON.stringify(categories[i]));
+        categories[i].category_name = decode(categories[i].category_name);
+        //categories2.push(category);
+    }
+    app.locals.categories = categories ;
+    app.locals.category_items = category_items ;
     //console.log(`User Cart In server.js: ${JSON.stringify(userCart, null, 4)}`);
     /* update  the request.locals */
     request.locals = app.locals ;
