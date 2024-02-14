@@ -39,7 +39,8 @@ module.exports = () => {
     });
     router.get('/', async (request, response) => { 
         /* must have been loaded in server.js file  */  
-                        
+        var categories = request.locals.categories;
+        var categories_items = request.locals.categories_items;
         const allpackages = require(process.env.PACKAGES_ONLY_FILE);
         const [
             package_3000,
@@ -59,6 +60,8 @@ module.exports = () => {
             package3800: package_3800,
             package4900: package_4900,
             list_of_items : request.locals.list_of_items,
+            categories: categories,
+            categories_items: categories_items,
             csrfToken: request.csrfToken(),
             customers_feedback: request.locals.customers_feedback,
         });
@@ -80,8 +83,6 @@ module.exports = () => {
     /* this route allows someone to search for a list of items based on an item category name */
     router.get('/:category_name', async(request, response) => { 
         
-        
-
         var category_name = new String(request.params.category_name);
         //console.log(`Category name: ${category_name}`);
         category_name = category_name.toLocaleLowerCase();
