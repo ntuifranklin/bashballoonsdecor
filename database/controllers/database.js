@@ -4,6 +4,7 @@ var mysql = require('mysql');
 require('dotenv').config();
 const { v4: uuidv4 } = require('uuid');
 
+const {MySQLDBConnector} = require('../models/MySQLDBConnector');
 // open the database
 async function getPackageItems (packageid= '') {
 
@@ -184,33 +185,21 @@ exports.generateUniqueID = generateUniqueID ;
 
 
 
-async function getCategories (tableName='categories') {
- 
+async function getCategories (con=null,tableName='categories') {
+    var tableName = tableName;
     return await new Promise(async(resolve, reject) => {
-                
-      var con = mysql.createConnection({
-        host: process.env.DATABASE_HOST,
-        user: process.env.DATABASE_USER,
-        password: process.env.DATABASE_PASSWORD,
-        database: process.env.DATABASE_UPGRADED_NAME
-      });
-  
-       con.connect(function(err) {
-        if (err) reject(err);
-        selectsql = `
-                      SELECT *
-                      FROM ${tableName}
-                    `;
-        //console.log(`Running sql in getDatabaseObject : ${selectsql}`);
-        con.query(selectsql, function (err, result, fields) {
-          if (err) reject(err);
-          con.end();
-          resolve(result) ;
-         
-        });
-        //con.end();
-      });
       
+        try {            
+            selectsql = `
+            SELECT * 
+            FROM categories
+          `;
+          var result = await MySQLDBConnector.execute(selectsql, []) 
+            
+          resolve(result) ;
+        } catch( err ){
+          reject(err);
+        } ;
     });
   
   }
@@ -218,36 +207,30 @@ async function getCategories (tableName='categories') {
   exports.getCategories = getCategories ;
 
   
-async function getCategoriesItems (con=null,tableName='category_items', category_id='') {
-  if ( con !== null )
-  return await new Promise(async(resolve, reject) => {
-    
-    selectsql = `
-                    SELECT *
-                    FROM ${tableName}
-                  `;
-    if (category_id !== '') {
-        selectsql += ` WHERE category_id = ? `;
-        await con.execute(selectsql, [category_id], async function (err, result, fields) {
-          if (err) reject(err);
-          else
-          resolve(result) ;
-         
-        });
-    } else {
-      await con.execute(selectsql,  async function (err, result, fields) {
-        if (err) reject(err);
-        else
+async function getCategoriesItems (tableName='category_items', category_id='') {
+  
+    var tableName = new String(tableName);
+    var category_id = new String(category_id);
+
+    return await new Promise(async(resolve, reject) => {
+      try {            
+        selectsql = `
+                      SELECT * 
+                      FROM category_items
+                    `;
+        var params = [] ;
+        if (category_id != '') {
+          params.push(category_id) ;
+          selectsql += ` WHERE category_id = ? `;
+        } ;
+        var result = await MySQLDBConnector.execute(selectsql, params)  ;
         resolve(result) ;
-       
-      });
-    }
-      //console.log(`Running sql in getDatabaseObject : ${selectsql}`);
-      
-    
-  })
-  else 
-    return new Error("Connection object is null in function getCategoriesItems");
+    } catch( err ){
+      console.log(`Error in getCategoriesItems: ${err}`);
+      reject(err);
+    } ;
+    }) ;
+  
 
 }
 

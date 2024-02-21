@@ -87,7 +87,7 @@ const { rateLimit } = require('express-rate-limit');
 
 const form_rate_limiter = rateLimit({
 	windowMs: 30 * 60 * 1000, // 30 minutes
-	limit: 100, // Limit each IP to 100 requests per `window` (here, per 30 minutes).
+	limit: 10000, // Limit each IP to 1000 requests per `window` (here, per 30 minutes).
 	standardHeaders: 'draft-7', // draft-6: `RateLimit-*` headers; draft-7: combined `RateLimit` header
 	legacyHeaders: false, // Disable the `X-RateLimit-*` headers.
 	// store: ... , // Use an external store for consistency across multiple server instances.
@@ -229,47 +229,66 @@ for (index = 0 ; index < list_of_items.length ; index++ ) {
 const customers_feedback = require(process.env.CUSTOMERS_FEEDBACK_FILE);
 app.locals.customers_feedback = customers_feedback ;
 
-
 app.use(parseForm, csrfProtection, async(request, response, next) => { 
 
     /*
         Load user cart here so that it is accessible from all over the app
     */
     var userCart = {} ;
-    //userCart["totalPrice"] = 0.0 ;
+        
+    var category_items = null ;
+    var categories = null ;
+    var categoriesItemsHash = {} ;
+
     if (request.session.userCart)
         userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
     app.locals.userCart = userCart;
-    var categories = await getCategories (tableName='categories') ;
-    /* generate a pool of mysql connection  */
-    var con = mysql2.createPool({
-        host: process.env.DATABASE_HOST,
-        user: process.env.DATABASE_USER,
-        password: process.env.DATABASE_PASSWORD,
-        database: process.env.DATABASE_UPGRADED_NAME,
-        waitForConnections: true,
-        connectionLimit: 3,
-        maxIdle: 3, // max idle connections, the default value is the same as `connectionLimit`
-        idleTimeout: 60000, // idle connections timeout, in milliseconds, the default value 60000
-        queueLimit: 0,
-        enableKeepAlive: true,
-        keepAliveInitialDelay: 0
-    });
-    var category_items = await getCategoriesItems (con=con,tableName='category_items', category_id='');
-    //var categories2 = [];
-    for (var j=0 ; j < category_items.length; j++ ) {
-        category_items[j].item_name = decode(category_items[j].item_name);
-    }
-    for (var i = 0; i < categories.length; i++) {
-        //var category = JSON.parse(JSON.stringify(categories[i]));
-        categories[i].category_name = decode(categories[i].category_name);
-        //categories2.push(category);
-    }
-    app.locals.categories = categories ;
-    app.locals.category_items = category_items ;
-    //console.log(`User Cart In server.js: ${JSON.stringify(userCart, null, 4)}`);
-    /* update  the request.locals */
+    if (!request.session.category_items) {
+        category_items = await getCategoriesItems ();
+        category_items = JSON.parse(JSON.stringify(category_items));
+        var category_item = null ;
+        for (var j=0 ; j < category_items.length; j++ ) {
+            category_item = JSON.parse(JSON.stringify(category_items[j]));
+            category_items[j].item_name = decode(category_item.item_name);
+            var categoryID = category_item.category_id ;
+            if (!(categoryID in categoriesItemsHash)) {
+                categoriesItemsHash[categoryID] = [] ;
+            } ;
+            categoriesItemsHash[categoryID].push(category_item);
+        } ;
+        
+        request.session.categoriesItemsHash = categoriesItemsHash ;
+        app.locals.categoriesItemsHash = categoriesItemsHash ;
+        request.session.category_items = category_items ;
+        app.locals.category_items = category_items ;
+        
+        request.session.save();
+
+    } ;
+
+    
+    
+    if (!request.session.categories) {
+        categories = await getCategories (tableName='categories') ;
+        for (var i = 0; i < categories.length; i++) {
+            var category = JSON.parse(JSON.stringify(categories[i]));
+            category.category_name = decode(category.category_name);
+            
+        };
+        request.session.categories = categories ;
+       
+        app.locals.categories = categories ;
+        
+        request.session.save();
+       
+    } ;
+
     request.locals = app.locals ;
+    request.session.save();
+
+    //console.log(`Categories : ${JSON.stringify(request.session.categories,null, 4)}`);
+    //console.log(`Category Items : ${JSON.stringify(request.session.category_items,null, 4)}`);
+    //console.log(`Category Items Hash: ${JSON.stringify(request.session.categoriesItemsHash,null, 4)}`);
 
     return next();
 });

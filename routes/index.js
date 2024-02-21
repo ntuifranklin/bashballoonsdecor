@@ -39,8 +39,10 @@ module.exports = () => {
     });
     router.get('/', async (request, response) => { 
         /* must have been loaded in server.js file  */  
-        var categories = request.locals.categories;
-        var categories_items = request.locals.categories_items;
+
+        var categories = request.session.categories;
+        var categories_items = request.session.categoriesItemsHash;
+
         const allpackages = require(process.env.PACKAGES_ONLY_FILE);
         const [
             package_3000,
@@ -59,7 +61,6 @@ module.exports = () => {
             package3000: package_3000,
             package3800: package_3800,
             package4900: package_4900,
-            list_of_items : request.locals.list_of_items,
             categories: categories,
             categories_items: categories_items,
             csrfToken: request.csrfToken(),
@@ -84,28 +85,44 @@ module.exports = () => {
     router.get('/:category_name', async(request, response) => { 
         
         var category_name = new String(request.params.category_name);
-        //console.log(`Category name: ${category_name}`);
+        //console.log(`Category name sent in get: ${category_name}`);
         category_name = category_name.toLocaleLowerCase();
-        var categories = request.locals.categories;
-        var category = null ;
+        var categories = JSON.parse(JSON.stringify(request.session.categories));
+        var all_categories_items = JSON.parse(JSON.stringify(request.session.categoriesItemsHash));
+        //console.log(`Categories: ${JSON.parse(JSON.stringify(categories))}`);
+        //console.log(`Category Hash By CategorID: ${JSON.parse(JSON.stringify(all_categories_items))}`);
+        var category = {} ;
+        var index = -1;
+        var categoryID = "";
 
         for (var i = 0; i < categories.length; i++) {
-            if (categories[i].category_name.toLocaleLowerCase() === category_name) {
-                category = JSON.parse(JSON.stringify(categories[i]));
+            var one_category = JSON.parse(JSON.stringify(categories[i]));
+            if (one_category.category_name.toLocaleLowerCase() === category_name) {
+                category = one_category;
+                index = i;
+                categoryID = new String(JSON.parse(JSON.stringify(one_category.category_id)));
+                //console.log(`Categories ID found : ${JSON.parse(JSON.stringify(categoryID))}`);
+                //console.log(`Category found : ${JSON.parse(JSON.stringify(one_category.category_name))}`);
                 break;
             }
         }
         
-        if (category == null) {
-            response.status(200).redirect('/');
+        if (category == {} || index == -1 || categoryID == "") { 
+            //console.log(`Category not found: ${category_name}. Redirecting to route f404 page`);
+            
+            response.status(200).redirect('/'); 
+            
         } else {
-            var category_items = await getCategoriesItems (con=con,tableName='category_items', category_id=category.category_id);
-            //console.log(`category name : ${category.category_name} items: ${JSON.parse(JSON.stringify(category_items))}`);
+           
+            
+            var category_items = [] ;
+            category_items = await getCategoriesItems(tableName='category_items', category_id=categoryID);
+            //getCategoriesItems (tableName='category_items', category_id='')
+            //console.log(`category item selected : ${category_items}`);
             response.status(200).render('layout',
             {
                 pageTitle: decode(category.category_name),
                 template: 'rental-items-list',
-                list_of_items : request.locals.list_of_items,
                 category_items: category_items,
                 category: decode(category.category_name),
                 category_id: category.category_id,
