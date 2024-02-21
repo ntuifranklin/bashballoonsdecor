@@ -20,7 +20,6 @@ const {session_database_options} = require('./sessionmanagement/session') ;
 
 const cookieParser = require('cookie-parser');
 const {getCategories,getCategoriesItems} = require('./database/controllers/database');
-//const {MySQLDBconnector} = require('./database/models/MySQLDBConnector');
 
 /* dynamically detect the folder we are running from,
  then select port accordingly */
@@ -244,8 +243,6 @@ app.use(parseForm, csrfProtection, async(request, response, next) => {
     if (request.session.userCart)
         userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
     app.locals.userCart = userCart;
-    
-    
     if (!request.session.category_items) {
         category_items = await getCategoriesItems ();
         category_items = JSON.parse(JSON.stringify(category_items));
@@ -285,6 +282,7 @@ app.use(parseForm, csrfProtection, async(request, response, next) => {
         request.session.save();
        
     } ;
+
     request.locals = app.locals ;
     request.session.save();
 

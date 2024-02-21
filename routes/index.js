@@ -39,8 +39,10 @@ module.exports = () => {
     });
     router.get('/', async (request, response) => { 
         /* must have been loaded in server.js file  */  
+
         var categories = request.session.categories;
         var categories_items = request.session.categoriesItemsHash;
+
         const allpackages = require(process.env.PACKAGES_ONLY_FILE);
         const [
             package_3000,
@@ -59,7 +61,6 @@ module.exports = () => {
             package3000: package_3000,
             package3800: package_3800,
             package4900: package_4900,
-            //list_of_items : request.locals.list_of_items,
             categories: categories,
             categories_items: categories_items,
             csrfToken: request.csrfToken(),
