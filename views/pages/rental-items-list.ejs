@@ -240,7 +240,7 @@
                       <div class="add-to-cart two">
                       
                         <% var htmlID = new String(individual_item.item_id) + "1";  %>
-                        <a id="<%= htmlID %>" class="btn" onclick='updateCart("<%= individual_item.item_id %>","category_items", source="rental-items-list", htmlID="<%= htmlID %>")'><span>Add to Cart</span></a>
+                        <a id="<%= htmlID %>" class="btn" onclick='updateCart("<%= individual_item.item_id %>", source="rental-items-list", htmlID="<%= htmlID %>")'><span>Add to Cart</span></a>
                         <a href="#" class="heart-wishlist">
                           <i class="fa-regular fa-heart"></i>
                         </a>
@@ -297,7 +297,7 @@
                       <div class="add-to-cart two">
                       
                         <% var htmlID2 = new String(individual_item_box.item_id) + "2";  %>
-                        <a id="<%= htmlID2 %>" class="btn" onclick="updateCart('<%= individual_item_box.item_id %>','category_items',  source='rental-items-list', htmlID='<%= htmlID2 %>')"><span>Add to Cart</span></a>
+                        <a id="<%= htmlID2 %>" class="btn" onclick="updateCart('<%= individual_item_box.item_id %>', source='rental-items-list', htmlID='<%= htmlID2 %>')"><span>Add to Cart</span></a>
                         <a href="#" class="heart-wishlist">
                           <i class="fa-regular fa-heart"></i>
                         </a>

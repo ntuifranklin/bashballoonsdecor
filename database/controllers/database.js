@@ -220,7 +220,7 @@ async function getCategoriesItems (tableName='category_items', category_id='') {
                     `;
         var params = [] ;
         if (category_id != '') {
-          params.push(category_id) ;
+          params[0] = category_id ;
           selectsql += ` WHERE category_id = ? `;
         } ;
         var result = await MySQLDBConnector.execute(selectsql, params)  ;

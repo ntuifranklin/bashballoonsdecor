@@ -1,9 +1,9 @@
 
 
 <% var c = JSON.parse(JSON.stringify(categories)) ;%>
-<% var cat_items = JSON.parse(JSON.stringify(category_items)) ;%>
+<% var all_items_array = JSON.parse(JSON.stringify(items_array)) ;%>
 <% //console.log(`On index page received categories : ${c}`) ;%>
-<% //console.log(`On index page received category_items : ${cat_items}`) ;%>
+<% //console.log(`On index page received category_items : ${all_items_array}`) ;%>
 
 <section class="slider-home-1 owl-carousel owl-theme">
 	<div class="hero-section item" style="background-image: url(https://via.placeholder.com/1920x640);">
@@ -66,7 +66,7 @@
 			<p>Find all your Wine Glasses, Chapagne Glasses, Glass Charger Plates, Fancy chairs, and Chaffing Dishes.
 				We can deliver as fast as same day!</p>
 			<ul>
-				<% var cit2 = shuffleArray(cat_items);  %>
+				<% var cit2 = shuffleArray(all_items_array);  %>
 				<% //console.log(`Shuffled category items : ${JSON.stringify(cit2)}`) ;%>
 				<% var M =  (cit2.length > 10 ) ? 10 : cit2.length ; %>
 				<% for(var counter=0; counter<M; counter++) { %>
@@ -183,7 +183,7 @@
 	<img alt="heading" src="assets/img/heading.png">
 	<h2>Recent Products</h2>
 	
-	<% var cit3 = shuffleArray(cat_items);  %>
+	<% var cit3 = shuffleArray(all_items_array);  %>
 	<% //console.log(`Shuffled category items : ${JSON.stringify(cit2)}`) ;%>
 	<% var N =  (cit3.length > 3 ) ? 3 : cit3.length ; %>
 	<% for(var n=0; n<N; n++) { %>
@@ -199,7 +199,7 @@
 		</div>
 	</div>
 	<div class="product-slider owl-carousel owl-theme">
-		<% list_of_items = shuffleArray(cat_items); %>
+		<% list_of_items = shuffleArray(all_items_array); %>
 		<% for (var i = 0; i < list_of_items.length; i++) { %>
                 
 			<% var individual_item = list_of_items[i] %>
@@ -214,7 +214,7 @@
 				<div class="add-to-cart">
 
 				<% var htmlID = new String(individual_item.category_webid) + "1";  %>
-				<a id="<%= htmlID %>" class="btn" onclick='updateCart("<%= individual_item.item_id %>","category_items", source="#", htmlID="<%= htmlID %>")'><span>Add to Cart</span></a>
+				<a id="<%= htmlID %>" class="btn" onclick='updateCart("<%= individual_item.item_id %>", source="#", htmlID="<%= htmlID %>")'><span>Add to Cart</span></a>
 				<a href="#" class="heart-wishlist">
 					<i class="fa-regular fa-heart"></i>
 				</a>
@@ -229,7 +229,7 @@
 <div class="container">
 	<div class="row align-items-center">
 		
-		<% var allpackages = [package3000, package3800, package4900] ; %>
+		
          
         <% for (var j = 0; j < categories.length; j++) { %>
 
@@ -270,7 +270,7 @@
 		<div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
 			<div class="row">
 				
-				<% list_of_items = shuffleArray(category_items); %>
+				<% list_of_items = shuffleArray(list_of_items); %>
 				<% for (var i = 0; i < list_of_items.length; i++) { %>
 		
 				<% var individual_item = list_of_items[i] %>
@@ -287,7 +287,7 @@
 						<span>In stock, <%= individual_item.quantityAvailable %> units</span>
 						<div class="add-to-cart">
 							<% var htmlID2 = new String(individual_item.item_id) + "2";  %>
-							<a id="<%= htmlID2 %>" class="btn" onclick='updateCart("<%= individual_item.item_id %>","category_items", source="#", htmlID="<%= htmlID2 %>", alertIndex="cartResultIndex")'><span>Add to Cart</span></a>
+							<a id="<%= htmlID2 %>" class="btn" onclick='updateCart("<%= individual_item.item_id %>",source="#", htmlID="<%= htmlID2 %>", alertIndex="cartResultIndex")'><span>Add to Cart</span></a>
 							<a href="#" class="heart-wishlist">
 							<i class="fa-regular fa-heart"></i>
 							</a>
@@ -301,7 +301,7 @@
 		</div>
 		<div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
 			<div class="row">
-				<% list_of_items = shuffleArray(category_items); %>
+				<% list_of_items = shuffleArray(list_of_items); %>
 				<% for (var i = list_of_items.length - 1; i >= 0; i--) { %>
 		
 				<% var individual_item = list_of_items[i] %>
@@ -318,7 +318,7 @@
 							<span>In stock, <%= individual_item.quantityAvailable %> units</span>
 							<div class="add-to-cart">
 								<% var htmlID3 = new String(individual_item.item_id) + "3";  %>
-								<a id="<%= htmlID3 %>" class="btn" onclick='updateCart("<%= individual_item.item_id %>","category_items", source="#", htmlID="<%= htmlID3 %>")'><span>Add to Cart</span></a>
+								<a id="<%= htmlID3 %>" class="btn" onclick='updateCart("<%= individual_item.item_id %>", source="#", htmlID="<%= htmlID3 %>")'><span>Add to Cart</span></a>
 								<!-- <a href="#" class="btn"><span>Add to Cart</span></a> -->
 								<a href="#" class="heart-wishlist">
 								<i class="fa-regular fa-heart"></i>
@@ -332,7 +332,7 @@
 		</div>
 		<div class="tab-pane fade" id="v-pills-coffee" role="tabpanel" aria-labelledby="v-pills-coffee-tab">
 			<div class="row">
-				<% list_of_items = shuffleArray(category_items); %>
+				<% list_of_items = shuffleArray(list_of_items); %>
 				<% for (var i = 0; i < list_of_items.length; i++) { %>
 			
 				<% var individual_item = list_of_items[i] %>
@@ -350,7 +350,7 @@
 					<div class="add-to-cart">
 
 						<% var htmlID4 = new String(individual_item.item_id) + "4";  %>
-						<a id="<%= htmlID4 %>" class="btn" onclick='updateCart("<%= individual_item.item_id %>","categories_items", source="#", htmlID="<%= htmlID4 %>")'><span>Add to Cart</span></a>
+						<a id="<%= htmlID4 %>" class="btn" onclick='updateCart("<%= individual_item.item_id %>", source="#", htmlID="<%= htmlID4 %>")'><span>Add to Cart</span></a>
 						<!-- <a href="#" class="btn"><span>Add to Cart</span></a> -->
 						<a href="#" class="heart-wishlist">
 						<i class="fa-regular fa-heart"></i>
@@ -366,7 +366,7 @@
 		</div>
 		<div class="tab-pane fade" id="v-pills-pizza" role="tabpanel" aria-labelledby="v-pills-pizza-tab">
 			<div class="row">
-				<% list_of_items = shuffleArray(category_items); %>
+				<% list_of_items = shuffleArray(list_of_items); %>
 				<% for (var p = list_of_items.length-1; p >= 0 ; p--) { %>
 				
 				<% var individual_item = list_of_items[p] %>
@@ -384,7 +384,7 @@
 					<div class="add-to-cart">
 						
 						<% var htmlID5 = new String(individual_item.item_id) + "5";  %>
-						<a id="<%= htmlID5 %>" class="btn" onclick='updateCart("<%= individual_item.item_id %>","category_items", source="#", htmlID="<%= htmlID5 %>")'><span>Add to Cart</span></a>
+						<a id="<%= htmlID5 %>" class="btn" onclick='updateCart("<%= individual_item.item_id %>", source="#", htmlID="<%= htmlID5 %>")'><span>Add to Cart</span></a>
 						<!-- <a href="#" class="btn"><span>Add to Cart</span></a> -->
 						<a href="#" class="heart-wishlist">
 						<i class="fa-regular fa-heart"></i>
@@ -400,7 +400,7 @@
 		</div>
 		<div class="tab-pane fade" id="v-pills-burger" role="tabpanel" aria-labelledby="v-pills-burger-tab">
 			<div class="row">
-				<% list_of_items = shuffleArray(category_items); %>
+				<% list_of_items = shuffleArray(list_of_items); %>
 				<% for (var i = 0; i < list_of_items.length; i++) { %>
 					
 				<% var individual_item = list_of_items[i] %>
@@ -417,7 +417,7 @@
 					<span>In stock, <%= individual_item.individItemQtyAvailable %> units</span>
 					<div class="add-to-cart">
 						<% var htmlID6 = new String(individual_item.item_id) + "6";  %>
-						<a id="<%= htmlID6 %>" class="btn" onclick='updateCart("<%= individual_item.item_id %>","category_items", source="#", htmlID="<%= htmlID6 %>")'><span>Add to Cart</span></a>
+						<a id="<%= htmlID6 %>" class="btn" onclick='updateCart("<%= individual_item.item_id %>", source="#", htmlID="<%= htmlID6 %>")'><span>Add to Cart</span></a>
 						<!-- <a href="#" class="btn"><span>Add to Cart</span></a> -->
 						<a href="#" class="heart-wishlist">
 						<i class="fa-regular fa-heart"></i>
@@ -539,7 +539,7 @@
 					<h3>surprise baby shower completely elegant theme</h3>
 					<ul>
 									
-						<% list_of_items = shuffleArray(category_items); %>
+						<% list_of_items = shuffleArray(list_of_items); %>
 						<% var themeTotal = 0.0 %>
 						<% for (var i = 0; i < list_of_items.length/2; i++) { %>
 						<% var individual_item = list_of_items[i] %>
@@ -580,7 +580,7 @@
 					<h3>Birthday surprise completely elegant theme</h3>
 					<ul>
 					
-					<% list_of_items = shuffleArray(category_items); %>
+					<% list_of_items = shuffleArray(list_of_items); %>
 					<% var themeTotal = 0.0 %>
 					<% for (var i = 0; i < list_of_items.length/2; i++) { %>
 					<% var individual_item = list_of_items[i] ;  %>
@@ -619,7 +619,7 @@
 					<h6>Ready Time <span>– 2 to 2.5 Hours</span></h6>
 					<h3>Gender surprise completely elegant theme</h3>
 					<ul>
-						<% list_of_items = shuffleArray(category_items); %>
+						<% list_of_items = shuffleArray(list_of_items); %>
 						<% themeTotal = 0.0 ; %>
 						<% for (var i = 0; i < list_of_items.length/2; i++) { %>
 							<% var individual_item = list_of_items[i] ;  %>
