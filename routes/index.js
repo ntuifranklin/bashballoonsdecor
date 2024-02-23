@@ -23,45 +23,24 @@ require('dotenv').config();
 
 module.exports = () => { 
         
-    /* generate a connection  */
-    var con = mysql2.createPool({
-        host: process.env.DATABASE_HOST,
-        user: process.env.DATABASE_USER,
-        password: process.env.DATABASE_PASSWORD,
-        database: process.env.DATABASE_UPGRADED_NAME,
-        waitForConnections: true,
-        connectionLimit: 5,
-        maxIdle:5, // max idle connections, the default value is the same as `connectionLimit`
-        idleTimeout: 60000, // idle connections timeout, in milliseconds, the default value 60000
-        queueLimit: 0,
-        enableKeepAlive: true,
-        keepAliveInitialDelay: 0
-    });
+    router.use(bodyParser.json());
     router.get('/', async (request, response) => { 
         /* must have been loaded in server.js file  */  
         var categories = request.session.categories;
         var categories_items = request.session.categoriesItemsHash;
-        const allpackages = require(process.env.PACKAGES_ONLY_FILE);
-        const [
-            package_3000,
-            package_3800,
-            package_4900,
-        ] = [
-            allpackages["package_3000"],
-            allpackages["package_3800"],
-            allpackages["package_4900"],
-        ];
-
+        
+        var userCart = {} ;
+        if (request.session.userCart)
+            userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
+        
+        console.log(`User cart : ${JSON.stringify(userCart)}`);
         response.render('layout', 
         { 
             pageTitle: request.locals.siteName, 
             template: 'index', 
-            package3000: package_3000,
-            package3800: package_3800,
-            package4900: package_4900,
-            //list_of_items : request.locals.list_of_items,
-            categories: categories,
-            categories_items: categories_items,
+            userCart : userCart,
+            categories: request.session.categories,
+            items_array: request.session.items_array,
             csrfToken: request.csrfToken(),
             customers_feedback: request.locals.customers_feedback,
         });
@@ -84,50 +63,67 @@ module.exports = () => {
     router.get('/:category_name', async(request, response) => { 
         
         var category_name = new String(request.params.category_name);
-        //console.log(`Category name sent in get: ${category_name}`);
+        var userCart = {} ;
+        if (request.session.userCart)
+            userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
+        
         category_name = category_name.toLocaleLowerCase();
-        var categories = JSON.parse(JSON.stringify(request.session.categories));
-        var all_categories_items = JSON.parse(JSON.stringify(request.session.categoriesItemsHash));
-        //console.log(`Categories: ${JSON.parse(JSON.stringify(categories))}`);
-        //console.log(`Category Hash By CategorID: ${JSON.parse(JSON.stringify(all_categories_items))}`);
+        var categories = await JSON.parse(JSON.stringify(request.session.categories));
+        
+        var itemsByCategoryID = await JSON.parse(JSON.stringify(request.session.itemsByCategoryID));
+        
         var category = {} ;
         var index = -1;
         var categoryID = "";
 
         for (var i = 0; i < categories.length; i++) {
-            var one_category = JSON.parse(JSON.stringify(categories[i]));
+            var one_category = await JSON.parse(JSON.stringify(categories[i]));
             if (one_category.category_name.toLocaleLowerCase() === category_name) {
                 category = one_category;
                 index = i;
                 categoryID = new String(JSON.parse(JSON.stringify(one_category.category_id)));
-                //console.log(`Categories ID found : ${JSON.parse(JSON.stringify(categoryID))}`);
-                //console.log(`Category found : ${JSON.parse(JSON.stringify(one_category.category_name))}`);
+               
                 break;
             }
         }
         
         if (category == {} || index == -1 || categoryID == "") { 
-            //console.log(`Category not found: ${category_name}. Redirecting to route f404 page`);
-            
+                        
             response.status(200).redirect('/'); 
             
         } else {
            
             
             var category_items = [] ;
-            category_items = await getCategoriesItems(tableName='category_items', category_id=categoryID);
-            //getCategoriesItems (tableName='category_items', category_id='')
-            //console.log(`category item selected : ${category_items}`);
-            response.status(200).render('layout',
-            {
-                pageTitle: decode(category.category_name),
-                template: 'rental-items-list',
-                category_items: category_items,
-                category: decode(category.category_name),
-                category_id: category.category_id,
-                csrfToken: request.csrfToken(),
-                decode: decode,
-            });
+            if (categoryID in itemsByCategoryID) { 
+                category_items = itemsByCategoryID[categoryID];
+                response.status(200).render('layout',
+                {
+                    pageTitle: decode(category.category_name),
+                    template: 'rental-items-list',
+                    categories: categories,
+                    items_array: request.session.items_array,
+                    userCart: userCart,
+                    category: decode(category.category_name),
+                    category_id: category.category_id,
+                    category_items: category_items,
+                    csrfToken: request.csrfToken(),
+                    decode: decode,
+                });
+            } else {
+                response.status(200).render('layout',
+                {
+                    pageTitle: "No Items Found in " + decode(category.category_name) + " Category",
+                    template: 'noitems',
+                    categories: categories,
+                    category_items: category_items,
+                    userCart: userCart,
+                    category: decode(category.category_name),
+                    csrfToken: request.csrfToken(),
+                    decode: decode,
+                });
+            } ;
+            
         }
         
     });

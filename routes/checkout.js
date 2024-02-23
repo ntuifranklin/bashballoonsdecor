@@ -31,7 +31,7 @@ const checkOutValidation = [
     check('order_note').isLength({ min: 5 }).withMessage('Please enter your order note.'),
 ];
 module.exports = () => {
-    router.post('/', checkOutValidation, async (request, response) => {
+    router.post('/', checkOutValidation,csrfProtection, async (request, response) => {
          
         if (typeof request.session.userCart === "undefined" || request.session.userCart == undefined || Object.keys(request.session.userCart).length === 0 || !request.session.userCart || request.session.userCart == {} || request.session.userCart == null ) {
             response.redirect(200, '/');
@@ -343,13 +343,13 @@ module.exports = () => {
 
     });
 
-    router.get('/', (request, response) => { 
+    router.get('/', csrfProtection,async(request, response) => { 
         
         var userCart = {} ;
-        var categories = request.locals.categories;
+        var categories = request.session.categories;
         if (request.session.userCart)
             userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
-        //console.log('User Cart in cart.js: ' + JSON.stringify(userCart, null, 4));
+        //console.log('User Cart in checkout.js: ' + JSON.stringify(userCart, null, 4));
         response.render('layout', 
             { 
                 pageTitle: 'Cart Checkout', 
@@ -359,6 +359,7 @@ module.exports = () => {
                 success:null,
                 csrfToken: request.csrfToken(),
                 categories: categories,
+                
             }
         );
     });

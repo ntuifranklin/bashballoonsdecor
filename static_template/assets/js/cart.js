@@ -9,7 +9,7 @@
   This is useful on the index page that is super long and the user might not see the message if displayed at the top.
   Every other page should pass an empty string for the alertIndex variable or use the default function value.
 */
-function updateCart(productID, updateType, source='', htmlID='#', alertIndex=''){
+function updateCart(productID, source='', htmlID='#', alertIndex=''){
     var token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
     //console.log(` client side productID : ${productID}`);
     
@@ -23,7 +23,6 @@ function updateCart(productID, updateType, source='', htmlID='#', alertIndex='')
         url: "/cart",
         data: {
             'itemUpdateID': productID, 
-            'updateType': updateType,
             '_csrf': token,
             'source': source,
             'htmlID': htmlID
