@@ -1,3 +1,4 @@
+<% //console.log(`User cart in headerinclude.ejs : ${JSON.stringify(userCart)}`) ;%>
 <!DOCTYPE html>
 <html lang="zxx">
 <head>
@@ -60,69 +61,34 @@
 				  </a>
 				 
 				  <div class="cart-popup">
-  
-					<% //console.log(`user cart is ${userCart}`); %>
 					<% var grandTotal = 0 ; %>
 					<% var totalItems = 0 ; %>
 					<% if (Object.keys(userCart).length > 0 ) { %>
 						<ul>
-							<%  if ( "IndividualItems" in userCart)  { %>
-
-								<% for (var itemKey in userCart["IndividualItems"] ) { %>
-									<% //console.log(`userCart["IndividualItems"] : ${JSON.stringify(userCart["IndividualItems"], null, 4)}`); %>
-                                    <% var individualItem = JSON.parse(JSON.stringify(userCart["IndividualItems"][itemKey])) ;%>
-                                    <% var itemDetails = JSON.parse(JSON.stringify(individualItem["individualItemDetails"])) ; %>
-									<li class="d-flex align-items-center position-relative">
-		
-										<div class="p-img light-bg">
-				
-										<img alt="img" src="https://via.placeholder.com/75x75">
-				
-										</div>
-				
-										<div class="p-data">
-				
-										<h3 class="font-semi-bold"><%= itemDetails["individItemTitle"] %></h3>
-				
-										<p class="theme-clr font-semi-bold"><%= individualItem["quantity"] %> x $<%= itemDetails["individItemUnitCost"] %></p>
-										<% grandTotal = grandTotal + (individualItem["quantity"] * itemDetails["individItemUnitCost"]) ; %>
-										</div>
-				
-										<a href="JavaScript:void(0)" id="crosss"></a>
-				
-									</li>
-								<% } %>
-							<% } %>
 							
-							<% if ("package" in userCart ) { %>
-								<% //console.log(`userCart["package"] : ${JSON.stringify(userCart["package"], null, 4)}`); %>
-								<% for (var packageKey in userCart["package"] ) { %>
-									<% //console.log(`userCart["package"] : ${JSON.stringify(userCart["package"])}`); %>
-                                    <% var package = JSON.parse(JSON.stringify(userCart["package"][packageKey])); %>
-                                    <% var packageDetails = JSON.parse(JSON.stringify(package["packageDetails"])) ; %>
-									<li class="d-flex align-items-center position-relative">
-		
-										<div class="p-img light-bg">
-				
-										<img alt="img" src="https://via.placeholder.com/75x75">
-				
-										</div>
-				
-										<div class="p-data">
-				
-										<h3 class="font-semi-bold"><%= packageDetails["packagedesc"] %></h3>
-										<% grandTotal = grandTotal + (JSON.parse(JSON.stringify(package["quantity"])) * JSON.parse(JSON.stringify(packageDetails["packagecost"]))) ; %>
-
-										<p class="theme-clr font-semi-bold"><%= JSON.parse(JSON.stringify(package["quantity"])) %> x $<%=  JSON.parse(JSON.stringify(packageDetails["packagecost"])) %></p>
-				
-										</div>
-				
-										<a href="JavaScript:void(0)" id="crosss"></a>
-				
-									</li>
-								<% } %>
-									
-									
+							<% for (var itemKey in userCart ) { %>
+								
+								<% var item = JSON.parse(JSON.stringify(userCart[itemKey])) ;%>
+								<% var itemDetails = JSON.parse(JSON.stringify(item["itemDetails"])) ; %>
+								<li class="d-flex align-items-center position-relative">
+	
+									<div class="p-img light-bg">
+			
+									<img alt="img" src="https://via.placeholder.com/75x75">
+			
+									</div>
+			
+									<div class="p-data">
+			
+									<h3 class="font-semi-bold"><%= itemDetails["item_name"] %></h3>
+			
+									<p class="theme-clr font-semi-bold"><%= item["quantity"] %> x $<%= itemDetails["unitPrice"] %></p>
+									<% grandTotal = grandTotal + (item["quantity"] * itemDetails["unitPrice"]) ; %>
+									</div>
+			
+									<a href="JavaScript:void(0)" id="crosss"></a>
+			
+								</li>
 							<% } %>
 						
 						</ul>

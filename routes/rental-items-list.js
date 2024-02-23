@@ -5,15 +5,19 @@ const router = express.Router();
 module.exports = () => {
         
     router.get('/', async (request, response) => { 
-        
-        var categories = request.locals.categories;
+        var userCart = {} ;
+        if (request.session.userCart) {
+            userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
+        };
+        var categories = request.session.categories;
         response.render('layout', { 
             pageTitle: 'Individual Items | Individual Products', 
             template: 'rental-items-list',
-            list_of_items : request.locals.list_of_items,
+            //list_of_items : request.locals.list_of_items,
             category: 'Individual Party Rental Items',
             csrfToken: request.csrfToken(),
             categories: categories,
+            userCart: userCart
         }); 
     });
     return router;

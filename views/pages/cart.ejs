@@ -26,8 +26,7 @@
                 <p class="mb-0">Please add some items to your cart.</p>
                 
                 <ul>
-                    <li><a href="/packages" class="link-primary">Affordable Party Packages</a></li>
-                    <li><a href="/product-list" class="link-primary">Individual Party Rental Items</a></li>
+                    <li><a href="/" class="link-primary">Affordable Party Rental Items</a></li>
                 </ul>
             </div>
         <% } else { %>
@@ -39,7 +38,7 @@
                         <table class="shop_table table-responsive">
                             <thead>
                                 <tr>
-                                    <th class="product-name">Product Detail</th>
+                                    <th class="product-name">Party Rental Item</th>
                                     <th class="product-price">Unit Price</th>
                                     <th class="product-quantity">Quantity</th>
                                     <th class="product-subtotal">Total Price</th>
@@ -49,88 +48,46 @@
                             <tbody>
                             <% var grandTotal = 0 ; %>
                             <% var totalItems = 0 ; %>
-                            <%  if ("IndividualItems" in userCart ) { %>
-                                <% for(var itemKey in userCart["IndividualItems"])  { %>
-                                    <% var individualItem = JSON.parse(JSON.stringify(userCart["IndividualItems"][itemKey])) ;%>
-                                    <% var itemDetails = JSON.parse(JSON.stringify(individualItem["individualItemDetails"])) ; %>
-                                    <tr class="product">
-                                        <td class="product-name">
-                                            <img alt="img" src="https://via.placeholder.com/70x70">
-                                            <div>
-                                                <span><%= itemDetails.individItemTitle %></span>
-                                                <p><%= itemDetails.individItemDescription %></p>
-                                                
-                                                <p>SKU: <%= itemKey %></p>
-                                            </div>
-                                        </td>
-                                        <td class="product-price">
-                                            <span class="woocommerce-Price-amount">
-                                                <bdi>
-                                                    <span class="woocommerce-Price-currencySymbol">$</span><%= itemDetails.individItemUnitCost %>
-                                                </bdi>
-                                                </span>          
-                                        </td>
-                                        <td class="product-quantity">
-                                            Quantity<input type="number" class="input-text" value="<%= individualItem.quantity %>" min="1" >
-                                        </td>
-                                        <% totalItems += individualItem.quantity ; %>
-                                        <% var itemsSubTotal = individualItem.quantity * itemDetails.individItemUnitCost ; %>
-                                        <td class="product-subtotal">
-                                            <span class="woocommerce-Price-amount">
-                                                <bdi>
-                                                    <span class="woocommerce-Price-currencySymbol">$</span><%= itemsSubTotal %>
-                                                </bdi>
-                                            </span>
-                                        </td>
-                                        <% grandTotal += itemsSubTotal ; %>
-                                        <td class="product-remove">
-                                            <a href="#"><i class="fa-regular fa-circle-xmark"></i></a>
-                                        </td>
-                                    </tr>
-                                <% } %>
+
+                            <% for(var itemKey in userCart)  { %>
+                                <% var cartItem = JSON.parse(JSON.stringify(userCart[itemKey])) ;%>
+                                <% var itemDetails = JSON.parse(JSON.stringify(cartItem["itemDetails"])) ;%>
+                               
+                                <tr class="product">
+                                    <td class="product-name">
+                                        <img alt="img" src="https://via.placeholder.com/70x70">
+                                        <div>
+                                            <span><%= itemDetails.item_name %></span>
+                                            <p><%= itemDetails.description %></p>
+                                            
+                                            <p>SKU: <%= itemDetails.category_webid %></p>
+                                        </div>
+                                    </td>
+                                    <td class="product-price">
+                                        <span class="woocommerce-Price-amount">
+                                            <bdi>
+                                                <span class="woocommerce-Price-currencySymbol">$</span><%= itemDetails.unitPrice %>
+                                            </bdi>
+                                            </span>          
+                                    </td>
+                                    <td class="product-quantity">
+                                        Quantity<input type="number" class="input-text" value="<%= cartItem.quantity %>" min="1" >
+                                    </td>
+                                    <% totalItems += cartItem.quantity ; %>
+                                    <% var itemsSubTotal = cartItem.quantity * itemDetails.unitPrice ; %>
+                                    <td class="product-subtotal">
+                                        <span class="woocommerce-Price-amount">
+                                            <bdi>
+                                                <span class="woocommerce-Price-currencySymbol">$</span><%= itemsSubTotal %>
+                                            </bdi>
+                                        </span>
+                                    </td>
+                                    <% grandTotal += itemsSubTotal ; %>
+                                    <td class="product-remove">
+                                        <a href="#"><i class="fa-regular fa-circle-xmark"></i></a>
+                                    </td>
+                                </tr>
                             <% } %>
-                            
-                            <% if ("package" in userCart) { %>
-                                <% //console.log("package in userCart cart.ejs"); %>
-                                <% for (var packageKey in userCart["package"])  { %>
-                                    <% var package = JSON.parse(JSON.stringify(userCart["package"][packageKey])); %>
-                                    <% var packageDetails = JSON.parse(JSON.stringify(package["packageDetails"])) ; %>
-                                        <tr class="product">
-                                            <td class="product-name">
-                                                <img alt="img" src="https://via.placeholder.com/70x70">
-                                                <div>
-                                                    <span><%= packageDetails["packagedesc"] %></span>
-                                                    <p><%= packageDetails["packagedesc"] %></p>   
-                                                    <p>SKU: <%= packageKey %></p>
-                                                </div>
-                                            </td>
-                                            <td class="product-price">
-                                                <span class="woocommerce-Price-amount">
-                                                    <bdi>
-                                                        <span class="woocommerce-Price-currencySymbol">$</span><%= packageDetails["packagecost"] %>
-                                                    </bdi>
-                                                </span>          
-                                            </td>
-                                            <td class="product-quantity">
-                                                Quantity
-                                                <input type="number" class="input-text" value="<%= package['quantity'] %>" min="1" >
-                                            </td>
-                                            <% totalItems += package.quantity ; %>
-                                            <% var packageSubTotal = package["quantity"] * packageDetails["packagecost"] ; %>
-                                            <td class="product-subtotal">
-                                                <span class="woocommerce-Price-amount">
-                                                    <bdi>
-                                                        <span class="woocommerce-Price-currencySymbol">$</span><%= packageSubTotal %>
-                                                    </bdi>
-                                                </span>
-                                            </td>
-                                            <% grandTotal += packageSubTotal ; %>
-                                            <td class="product-remove">
-                                                <a href="#"><i class="fa-regular fa-circle-xmark"></i></a>
-                                            </td>
-                                        </tr>
-                                <% } %>
-                        <% } %>
                             </tbody>
                             <tfoot>
                                 <tr>

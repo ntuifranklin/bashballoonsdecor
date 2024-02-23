@@ -7,85 +7,46 @@ const csrfProtection = csrf({ cookie: true })
 
 require('dotenv').config();
 const createError = require('http-errors');
-const databaseAccessor = require('../database/controllers/database');
+const {getCategoriesItems} = require('../database/controllers/database');
 
 module.exports = () => { 
     
-    router.post('/', csrfProtection, (request, response) => {
+    router.post('/', csrfProtection, async(request, response) => {
          
-        if (!request.session.userCart) {
-            request.session.userCart = {
-            } ;
+        var userCart = {} ;
+        if (request.session.userCart) {
+            userCart = await JSON.parse(JSON.stringify(request.session.userCart)) ;
         };
+        var itemsHashOnly =  JSON.stringify(request.session.itemsByID) ;
+        itemsHashOnly = await JSON.parse(itemsHashOnly) ;
         
-        var itemUpdateID = new String(request.body.itemUpdateID);
-        var productOrPackage = new String(request.body.updateType) ;
-        var keyToUpdate = "";
-        var tableName = "";
-        var keyFieldName = "";
-        const source = new String(request.body.source);
-        const htmlID = new String(request.body.htmlID);
-        if (productOrPackage == "IndividualItems")  {
-            keyToUpdate = "IndividualItems" ;
-            tableName = process.env.PRODUCT_TABLE_NAME;
-            keyFieldName = process.env.INDIVIDUAL_ITEM_TABLE_KEY_FIELD_NAME;
-        } else {
-            keyToUpdate = "package";
-            tableName = process.env.PACKAGE_TABLE_NAME;
-            keyFieldName = process.env.PACKAGE_TABLE_KEY_FIELD_NAME;
-        }
-            
-        //console.log(`product or package ID received : ${itemUpdateID}`);
-        if (!( keyToUpdate in request.session.userCart)) {
-            request.session.userCart[keyToUpdate] = {
-                
-            }
-        }
-        if (!( itemUpdateID in request.session.userCart[keyToUpdate]) ) {
-            request.session.userCart[keyToUpdate][itemUpdateID] = {
-            }
+        const itemUpdateID = request.body.itemUpdateID;
+        
+        if (!( itemUpdateID in userCart)) {
+            userCart[itemUpdateID] = {
+               
+            } ;   
         }
         
-        if (!("quantity" in request.session.userCart[keyToUpdate][itemUpdateID])) {
-            request.session.userCart[keyToUpdate][itemUpdateID] = {
-                "quantity" : 0
-            }
-        }
-    
-         
-            /* The product/package details must have been loaded at the start of the app
-            * First: access the request.locals variable and pull the data for that product/package.
-            * Second: assign it to the session variable for the corresponding product/package
-            * Finally: save the session
-            */
-        if (keyToUpdate == "IndividualItems") {
-           
-            if (itemUpdateID in request.locals.individualItems ) {
-                request.session.userCart[keyToUpdate][itemUpdateID]["individualItemDetails"] = 
-                request.locals.individualItems[itemUpdateID]["individualItemDetails"];
-                request.session.save();
-            } else {
-                console.log(`BIG ERROR(THIS SHOULD NOT HAPPEN) : Products ${itemUpdateID} not found in request.locals.products`);
-            }
-            
-        } else if (keyToUpdate == "package") {
-    
-            if (itemUpdateID in request.locals.packages ) {
-                
-                    request.session.userCart[keyToUpdate][itemUpdateID]["packageDetails"] = 
-                    request.locals.packages[itemUpdateID];
-                    request.session.save();
-            } else {
-                console.log(`BIG ERROR(THIS SHOULD NOT HAPPEN) : Packages ${itemUpdateID} not found in request.locals.packages`);
-            } 
-        };
-        
-        /* update quantity and save session */
-        request.session.userCart[keyToUpdate][itemUpdateID]["quantity"] += 1;
-        //console.log(`Updated session ${JSON.stringify(request.session.userCart)}`);
+        if (!("quantity" in userCart[itemUpdateID])) {
+            userCart[itemUpdateID]["quantity"] = 0;
+        } ;
 
-        /* update the cart in the locals variable */
-        //request.locals.userCart = JSON.stringify(request.session.userCart) ;
+        var itemDetails = null ;
+        if (! ("itemDetails" in userCart[itemUpdateID])) {
+            userCart[itemUpdateID]["itemDetails"] = {} ;
+        } ;
+
+        itemDetails = await JSON.parse(JSON.stringify(itemsHashOnly[itemUpdateID])) ;
+        //console.log(`itemDetails : ${JSON.stringify(itemDetails)}`);
+        userCart[itemUpdateID]["itemDetails"] = itemDetails["itemDetails"] ;
+    
+        /* update quantity and save session */
+        userCart[itemUpdateID]["quantity"] += 1;
+        request.session.userCart = JSON.parse(JSON.stringify(userCart)) ;
+        request.session.save();
+        //console.log(`Updated session cart ${JSON.stringify(request.session.userCart)}`);
+        
         request.session.save();
         response.status(200).send({ message: 'success', responseText: 'Item added to cart' });
         //response.redirect(200, `/${source}#${htmlID}`);
@@ -93,13 +54,16 @@ module.exports = () => {
     });
 
 
-    router.get('/', (request, response) => { 
-        var categories = request.locals.categories;
+    router.get('/', csrfProtection, async(request, response) => { 
+       
+        var categories = await JSON.parse(JSON.stringify(request.session.categories));
+        
+        //var categories_items = request.locals.categoriesItemsHash ;
         var userCart = {} ;
         if (request.session.userCart)
-            userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
-        //console.log('User Cart in cart.js: ' + JSON.stringify(userCart, null, 4));
-        response.render('layout', { 
+            userCart = await JSON.parse(JSON.stringify(request.session.userCart)) ;
+        //console.log(`User Cart in cart.js: ${JSON.stringify(userCart, null, 4)}`);
+        response.status(200).render('layout', { 
             pageTitle: 'Your Shopping Cart', 
             template: 'cart', 
             userCart: userCart,

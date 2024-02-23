@@ -230,6 +230,7 @@ for (index = 0 ; index < list_of_items.length ; index++ ) {
 const customers_feedback = require(process.env.CUSTOMERS_FEEDBACK_FILE);
 app.locals.customers_feedback = customers_feedback ;
 
+
 app.use(parseForm, csrfProtection, async(request, response, next) => { 
 
     /*
@@ -237,61 +238,62 @@ app.use(parseForm, csrfProtection, async(request, response, next) => {
     */
     var userCart = {} ;
         
-    var category_items = null ;
+    var items_array = null ;
+    var itemsByID = null ;
+    var itemsByCategoryID = {}
     var categories = null ;
-    var categoriesItemsHash = {} ;
 
     if (request.session.userCart)
         userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
-    app.locals.userCart = userCart;
     
-    
-    if (!request.session.category_items) {
-        category_items = await getCategoriesItems ();
-        category_items = JSON.parse(JSON.stringify(category_items));
-        var category_item = null ;
-        for (var j=0 ; j < category_items.length; j++ ) {
-            category_item = JSON.parse(JSON.stringify(category_items[j]));
-            category_items[j].item_name = decode(category_item.item_name);
-            var categoryID = category_item.category_id ;
-            if (!(categoryID in categoriesItemsHash)) {
-                categoriesItemsHash[categoryID] = [] ;
+    var item = null ;
+    if (!request.session.items_array || request.session.items_array == null || request.session.items_array == {}) {
+        itemsByID = {} ;
+        itemsByCategoryID = {} ;
+        items_array = await getCategoriesItems ();
+        
+        for (var j=0 ; j < items_array.length; j++ ) {
+            item = JSON.parse(JSON.stringify(items_array[j]));
+            items_array[j].item_name = decode(item.item_name);
+            var categoryID = item.category_id ;
+            if (!(categoryID in itemsByCategoryID)) {
+                itemsByCategoryID[categoryID] = [] ;
             } ;
-            categoriesItemsHash[categoryID].push(category_item);
-        } ;
-        
-        request.session.categoriesItemsHash = categoriesItemsHash ;
-        app.locals.categoriesItemsHash = categoriesItemsHash ;
-        request.session.category_items = category_items ;
-        app.locals.category_items = category_items ;
-        
-        request.session.save();
-
-    } ;
-
-    
-    
-    if (!request.session.categories) {
-        categories = await getCategories (tableName='categories') ;
-        for (var i = 0; i < categories.length; i++) {
-            var category = JSON.parse(JSON.stringify(categories[i]));
-            category.category_name = decode(category.category_name);
+            itemsByCategoryID[categoryID].push(item);
+            var itemID = new String(item.item_id) ;
             
-        };
-        request.session.categories = categories ;
-       
-        app.locals.categories = categories ;
+            if (!(itemID in itemsByID)) { 
+                itemsByID[itemID] = {} ;
+            } ;
+
+            itemsByID[itemID]["itemDetails"] = JSON.parse(JSON.stringify(item)) ;
+        } ;
+
         
+        request.session.items_array = JSON.parse(JSON.stringify(items_array));
+        request.session.itemsByID = JSON.parse(JSON.stringify(itemsByID)) ;
+        request.session.itemsByCategoryID = JSON.parse(JSON.stringify(itemsByCategoryID));
         request.session.save();
-       
     } ;
-    request.locals = app.locals ;
+
+    //console.log(`itemsByID in server.js: ${JSON.stringify(request.session.itemsByID,null,4)}`);
+    
+    if (!request.session.categories || request.session.categories == null) {
+        categories = await getCategories (tableName='categories') ;
+        for (var i = 0; i <  categories.length; i++) {
+            var category = JSON.parse(JSON.stringify( categories[i]));
+            category.category_name = decode(category.category_name);
+            categories[i].category_name = category.category_name;
+        };
+
+        request.session.categories = JSON.parse(JSON.stringify(categories));
+        request.session.save();
+    } ;
+
+    request.session.userCart = JSON.parse(JSON.stringify(userCart)) ;
     request.session.save();
-
-    //console.log(`Categories : ${JSON.stringify(request.session.categories,null, 4)}`);
-    //console.log(`Category Items : ${JSON.stringify(request.session.category_items,null, 4)}`);
-    //console.log(`Category Items Hash: ${JSON.stringify(request.session.categoriesItemsHash,null, 4)}`);
-
+    request.locals = app.locals ;
+   
     return next();
 });
 
