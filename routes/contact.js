@@ -1,5 +1,7 @@
 const express = require('express');
+const { decode } = require('html-entities');
 const router = express.Router();
+
 
 
 module.exports = () => { 
@@ -16,6 +18,7 @@ module.exports = () => {
             csrfToken: request.csrfToken(),
             userCart: userCart,
             categories: categories,
+            decode:decode,
         });
     });
      

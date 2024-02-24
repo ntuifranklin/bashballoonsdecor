@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-
+const {decode} = require('html-entities');
 
 module.exports = () => {
         
@@ -17,7 +17,8 @@ module.exports = () => {
             category: 'Individual Party Rental Items',
             csrfToken: request.csrfToken(),
             categories: categories,
-            userCart: userCart
+            userCart: userCart,
+            decode: decode,
         }); 
     });
     return router;

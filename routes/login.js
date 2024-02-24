@@ -14,6 +14,7 @@ const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
 const randomstring = require('randomstring');
 var mysql2 = require('mysql2');
+const {decode} = require('html-entities');
 
 
 /* define a function that sends one time passwords */
@@ -117,7 +118,8 @@ module.exports = () => {
             userCart: userCart,
             csrfToken: request.csrfToken(),
             categories: categories,
-            user: user
+            user: user,
+            decode:decode,
         });
     });
 

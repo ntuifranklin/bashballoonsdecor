@@ -15,6 +15,8 @@ const cookieSession = require('cookie-session');
 var parseForm = bodyParser.urlencoded({ extended: true });
 const { check,validationResult } = require('express-validator');
 const mysql2 = require('mysql2');
+
+const {decode} = require('html-entities');
         
 //read jquery file stream and css stream into a string 
 const jqueryCode = fs.readFileSync(`${process.env.BOOTSTRAP_JS_FILE}`).toString();
@@ -359,6 +361,7 @@ module.exports = () => {
                 success:null,
                 csrfToken: request.csrfToken(),
                 categories: categories,
+                decode: decode,
                 
             }
         );

@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
+const {decode} = require('html-entities');
+
 module.exports = () => { 
     
     router.get('/*', (request, response) => { 
@@ -10,6 +12,7 @@ module.exports = () => {
              template: 'f404',
             csrfToken: request.csrfToken(),
             categories: categories,
+            decode: decode,
             });
     });
      

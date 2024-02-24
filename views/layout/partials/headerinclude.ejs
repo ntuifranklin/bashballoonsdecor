@@ -1,4 +1,3 @@
-<% //console.log(`User cart in headerinclude.ejs : ${JSON.stringify(userCart)}`) ;%>
 <!DOCTYPE html>
 <html lang="zxx">
 <head>
@@ -63,7 +62,9 @@
 				  <div class="cart-popup">
 					<% var grandTotal = 0 ; %>
 					<% var totalItems = 0 ; %>
-					<% if (Object.keys(userCart).length > 0 ) { %>
+					
+					<% if (userCart != null && Object.keys(userCart).length > 0 ) { %>
+						
 						<ul>
 							
 							<% for (var itemKey in userCart ) { %>
@@ -123,6 +124,7 @@
 						</ul>
 							
 					<% } %>
+					
 				  </div>
   
 		  </div>
@@ -216,7 +218,7 @@
 				
 						<% for (var j=0 ; j < categories.length; j++ ) { %>
 							
-							<% var category2 = JSON.parse(JSON.stringify(categories[j])) ; %>
+							<% var category2 = JSON.parse(JSON.stringify((categories[j]))) ; %>
 							<% var category_name2 = category2.category_name.toLowerCase();  %>
 							<li><a href="/<%= category_name2 %>"><%= category_name2 %></a></li>
 						<% } %>
