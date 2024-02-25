@@ -27,7 +27,7 @@ const {getCategories,getCategoriesItems} = require('./database/controllers/datab
 const current_dir = __dirname
 const PRODUCTION_ENV = process.env.BBD_LOCATION;
 const TEST_ENV = process.env.TEST_BBD_LOCATION;
-var PORT = 9999;
+var PORT = process.env.TEST_SITE_PORT;
 if ( current_dir == PRODUCTION_ENV) {
     PORT = process.env.PRODUCTION_SITE_PORT;
 } else if (current_dir == TEST_ENV) {
