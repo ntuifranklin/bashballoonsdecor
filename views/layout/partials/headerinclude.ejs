@@ -65,19 +65,13 @@
 					<% var keysList = [...Object.keys(userCart)]; %>
 					<% var noKeys = keysList; %>
 					<% if (userCart != null && noKeys.length > 0 ) { %>
-						
 						<ul>
-							
 							<% for (var itemKey in userCart ) { %>
-								
 								<% var item = JSON.parse(JSON.stringify(userCart[itemKey])) ;%>
 								<% var itemDetails = JSON.parse(JSON.stringify(item["itemDetails"])) ; %>
 								<li class="d-flex align-items-center position-relative">
-	
 									<div class="p-img light-bg">
-			
 									<img alt="img" src="https://via.placeholder.com/75x75">
-			
 									</div>
 			
 									<div class="p-data">
