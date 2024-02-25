@@ -5,6 +5,8 @@ DROP TABLE IF EXISTS `category_items` ;
 DROP TABLE IF EXISTS `categories` ;
 DROP TABLE IF EXISTS `users` ;
 DROP TABLE IF EXISTS `otp` ;
+DROP TABLE IF EXISTS `orders`;
+
 
 CREATE TABLE IF NOT EXISTS `customers` (
   `customer_id` VARCHAR(16) PRIMARY KEY,
@@ -70,7 +72,7 @@ CREATE TABLE IF NOT EXISTS `users` (
     login_attempts INT DEFAULT 0,
     user_type ENUM('standard_admin', 'master_admin', 'customer') DEFAULT 'standard_admin',
     account_status ENUM('active', 'locked') DEFAULT 'active'
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
 CREATE TABLE IF NOT EXISTS otp (
@@ -79,6 +81,8 @@ CREATE TABLE IF NOT EXISTS otp (
     otp_code VARCHAR(10) NOT NULL,
     expiration_time DATETIME NOT NULL,
     FOREIGN KEY (user_email) REFERENCES users(email)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
 
 
