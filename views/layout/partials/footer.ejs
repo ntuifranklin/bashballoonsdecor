@@ -2,7 +2,7 @@
 <footer class="gap">
 	<div class="container">
 	  <div class="row">
-		<div class="col-lg-6 col-lg-6">
+		<div class="col-lg-2 col-md-2">
 		  <div class="logo-footer">
 			<a href="/"><img alt="log" src="/assets/img/logo.png"></a>
 			<p>over 10,000+ party rental items including <br/>
@@ -11,75 +11,102 @@
 		  </div>
 		</div>
 		
-		<% 
-			/*
-			<!--
-			<div class="col-lg-3 col-md-6">
+		<div class="col-lg-2 col-md-2">
 			<div class="account">
 				<h5>My Account</h5>
 				<ul>
 				<li>
 					<i class="fa-solid fa-angle-right"></i>
-					<a href="#">My Account</a>
-				</li>
-				<li>
-					<i class="fa-solid fa-angle-right"></i>
-					<a href="/shop-cart">Cart</a>
-				</li>
-				<li>
-					<i class="fa-solid fa-angle-right"></i>
-					<a href="#">My Addresses</a>
-				</li>
-				<li>
-					<i class="fa-solid fa-angle-right"></i>
-					<a href="#">My Orders</a>
+					<a href="/cart">Cart</a>
 				</li>
 				</ul>
 			</div>
-			</div>
-			-->
-			*/
-		%>
+		</div>
 
-		<div class="col-lg-6 col-lg-6">
+		<div class="col-lg-2 col-md-2">
 		  <div class="account">
-			<h5>Top Party Rental Categories</h5>
-			<ul>
-			  <li>
-				<i class="fa-solid fa-angle-right"></i>
-				<a href="/packages">All Our Party Rental Packages</a>
-			  </li>
-			  <li>
-				<i class="fa-solid fa-angle-right"></i>
-				<a href="/packages#d09745340cebd03c6e0a">Package for 150 Guests</a>
-			  </li>
-			  <li>
-				<i class="fa-solid fa-angle-right"></i>
-				<a href="/packages#ab7adb97a1f89a92527a">Package for 250 Guests</a>
-			  </li>
-			  <li>
-				<i class="fa-solid fa-angle-right"></i>
-				<a href="/packages#bfcd68043040f450b8e7">Package For 300 Guests</a>
-			  </li>
+			<h5>Affordable Rental Items</h5>
+			<ul >
+
+			<% 
+			  function capitalizeFirstLetter(wordin) { 
+				const word = wordin ;
+
+				words = word.split(" ");
+
+				for (var i=0 ; i < words.length; i++) {
+					var w = words[i] ;
+					const firstLetter = w.charAt(0) ;
+					const firstLetterCap = firstLetter.toUpperCase() ;
+					const remainingLetters = w.slice(1) ;
+					const capitalizedWord = firstLetterCap + remainingLetters ;
+					words[i] = capitalizedWord ;
+				}
+
+				
+				const w2 = words.join(" ");
+				return w2 ;
+			  }
+			
+			%>
+	
+			<% var l1 = Math.ceil(categories.length/3);%>
+			
+			<% for (var l=0 ; l < l1; l++ ) { %>
+								
+				<% var category_l = JSON.parse(JSON.stringify(categories[l])) ; %>
+				<% var category_name_l = category_l.category_name.toLowerCase();  %>
+				<li class="dropdown">
+					<i class="fa-solid fa-angle-right"></i>
+					<a href="/<%= category_name_l %>"><%= capitalizeFirstLetter(category_name_l) %></a>
+			  	</li>
+			<% } %>
 			</ul>
 		  </div>
 		</div>
-		<% 
-			/*
-			<!--
-			<div class="col-lg-3 col-md-6">
+		
+		
+		<div class="col-lg-2 col-md-2">
 			<div class="account">
-				<h5>Subscribe Newsletter</h5>
-				<p>Join our subscribers list to receive email notices of new deals</p>
-				<form>
-				<input type="text" name="email" placeholder="Enter Your Email">
-				<button><i class="fa-solid fa-paper-plane"></i></button>
-				</form>
+			<h5>Baby Shower Rental Items</h5>
+			  <ul>	  
+			  <% var l1 = Math.ceil(categories.length/3);%>
+			  <% var l2 = Math.ceil(categories.length*(2/3));%>
+			  
+			  <% for (var l=l1 ; l < l2; l++ ) { %>
+								  
+				  <% var category_l = JSON.parse(JSON.stringify(categories[l])) ; %>
+				  <% var category_name_l = category_l.category_name.toLowerCase();  %>
+				  <li>
+					  <i class="fa-solid fa-angle-right"></i>
+					  <a href="/<%= category_name_l %>"><%= capitalizeFirstLetter(category_name_l) %></a>
+					</li>
+			  <% } %>
+			  </ul>
 			</div>
+		  </div>
+		  
+		<div class="col-lg-2 col-md-2">
+			<div class="account">
+			<h5>Graduation Party Rental Items</h5>
+			  <ul>	  
+			  <% var l3 = Math.ceil(categories.length*(2/3));	%>
+			  <% var l4 = categories.length;	%>
+			  
+			  <% for (var l=l3 ; l < l4; l++ ) { %>
+								  
+				  <% var category_l = JSON.parse(JSON.stringify(categories[l])) ; %>
+				  <% var category_name_l = category_l.category_name.toLowerCase();  %>
+				  <li>
+					  <i class="fa-solid fa-angle-right"></i>
+					  <a href="/<%= category_name_l %>"><%= capitalizeFirstLetter(category_name_l) %></a>
+					</li>
+			  <% } %>
+			  </ul>
 			</div>
-			-->
-			*/
-		%>
+		  </div>
+		
+		
 	  </div>
 	  <div class="footer-contact-info">
 		<div>
