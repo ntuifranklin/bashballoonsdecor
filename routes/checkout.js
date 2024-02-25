@@ -176,98 +176,44 @@ module.exports = () => {
         orderHtml += `\t\t\t</thead>\n`;
         orderHtml += `\t\t<tbody>\n`;
         var individualItemsInsert = [] ;
-        if ("IndividualItems" in userCart ) { 
-            var allIndividualItems = JSON.parse(JSON.stringify(userCart["IndividualItems"])) ;
-            for(var itemKey in allIndividualItems)  {
-                var order_individualItemID = await generateUniqueID(con=con, tableName="order_individualItems", keyFieldName="order_individItemID") ;
-                orderHtml += `\t\t\t<tr>\n`;
-                var individualItem = JSON.parse(JSON.stringify(allIndividualItems[itemKey])) ;
-                var itemDetails = JSON.parse(JSON.stringify(individualItem["individualItemDetails"])) ;
-                totalItems += individualItem.quantity ;
-                var itemsSubTotal = individualItem.quantity * itemDetails.individItemUnitCost ;
-                grandTotal += itemsSubTotal ; 
-                orderHtml += `\t\t\t\t<td>${itemDetails.individItemTitle}</td>\n`;
-                orderHtml += `\t\t\t\t<td>${individualItem.quantity}</td>\n`;
-                orderHtml += `\t\t\t\t<td>${itemDetails.individItemUnitCost}</td>\n`;
-                orderHtml += `\t\t\t\t<td>$${itemsSubTotal}</td>\n`;
-                orderHtml += `\t\t\t</tr>\n`;
-                /* 
-                    individualItemsInsert.push([
+    
+        var allIndividualItems = JSON.parse(JSON.stringify(userCart)) ;
+        for(var itemKey in allIndividualItems)  {
+            var order_individualItemID = await generateUniqueID(con=con, tableName="order_individualItems", keyFieldName="order_individItemID") ;
+            orderHtml += `\t\t\t<tr>\n`;
+            var individualItem = JSON.parse(JSON.stringify(allIndividualItems[itemKey])) ;
+            var itemDetails = JSON.parse(JSON.stringify(individualItem["itemDetails"])) ;
+            totalItems += individualItem.quantity ;
+            var itemsSubTotal = individualItem.quantity * itemDetails.individItemUnitCost ;
+            grandTotal += itemsSubTotal ; 
+            orderHtml += `\t\t\t\t<td>${itemDetails.item_name}</td>\n`;
+            orderHtml += `\t\t\t\t<td>${individualItem.quantity}</td>\n`;
+            orderHtml += `\t\t\t\t<td>${itemDetails.unitPrice}</td>\n`;
+            orderHtml += `\t\t\t\t<td>$${itemsSubTotal}</td>\n`;
+            orderHtml += `\t\t\t</tr>\n`;
+           
+            con.execute(
+                "INSERT INTO order_individualItems VALUES(?, ?, ?, ?, ?, ?)",
+                [
                     order_individualItemID,
                     order_id,
                     itemDetails.individItemID,
                     individualItem.quantity,
                     itemDetails.individItemUnitCost,
                     itemsSubTotal,
-                ]);
-                */
-                con.execute(
-                    "INSERT INTO order_individualItems VALUES(?, ?, ?, ?, ?, ?)",
-                    [
-                        order_individualItemID,
-                        order_id,
-                        itemDetails.individItemID,
-                        individualItem.quantity,
-                        itemDetails.individItemUnitCost,
-                        itemsSubTotal,
-                    ],
-                    async (err, results,fields) => {
-                        if (err) {
-                            console.error("Error inserting order_individualItems, reverting changes: ", err);
-                            await con.execute('ROLLBACK');//con.rollback();
-                            /* If an error occured, just tell the user something went wrong */
-                            return response.status(400).send({ message: `${err.message}`, responseText: 'Error processing your order' });
-                        };
-                    }
-                );
-                
-            } ;
-            //now insert into the database
-           
-        }
-
-        var order_packagesInsert = [] ;
-        if ("package" in userCart) {
-            var allPackages = JSON.parse(JSON.stringify(userCart["package"])) ;
-            var order_packageid = await generateUniqueID(con=con, tableName="order_package", keyFieldName="order_packageid") ;
-            for (var packageKey in allPackages)  { 
-                var packag = JSON.parse(JSON.stringify(allPackages[packageKey]));
-                var packageDetails = JSON.parse(JSON.stringify(packag["packageDetails"])) ;
-                var packageSubTotal = packag["quantity"] * packageDetails["packagecost"] ;
-                totalItems += packag.quantity ;
-                grandTotal += packageSubTotal ; 
-                orderHtml += `\t\t\t<tr>\n`;
-                orderHtml += `\t\t\t\t<td>${packageDetails["packagedesc"]}</td>\n`;
-                orderHtml += `\t\t\t\t<td>${packag["quantity"]}</td>\n`;
-                orderHtml += `\t\t\t\t<td>${packageDetails["packagecost"]}</td>\n`;
-                orderHtml += `\t\t\t\t<td>$${packageSubTotal}</td>\n`;
-                orderHtml += `\t\t\t</tr>\n`;
-                order_packagesInsert.push([
-                    order_packageid,
-                    order_id,
-                    packageDetails["packageid"],
-                    packag["quantity"],
-                    packageDetails["packagecost"],
-                    packageSubTotal,
-                ]);
-            }
-            //now insert into the database
-           
-            await con.execute(
-                "INSERT INTO order_package VALUES(?, ?, ?, ?, ?, ?)",
-                order_packagesInsert,
+                ],
                 async (err, results,fields) => {
                     if (err) {
-                        console.error("Error inserting order_package, reverting changes: ", err);
+                        console.error("Error inserting order_individualItems, reverting changes: ", err);
                         await con.execute('ROLLBACK');//con.rollback();
                         /* If an error occured, just tell the user something went wrong */
                         return response.status(400).send({ message: `${err.message}`, responseText: 'Error processing your order' });
                     };
                 }
             );
-        }
-
-
+            
+        } ;
+           
         con.execute('COMMIT'); //await con.commit();
         
         //con.end();
@@ -336,7 +282,7 @@ module.exports = () => {
         });
         /* update the cart in the locals variable */
         request.session.userCart = {} ;
-        request.locals.userCart = JSON.stringify(request.session.userCart) ;
+        
         request.session.save();
         return response.status(200).send({ 
             message: `success`, 
@@ -351,7 +297,8 @@ module.exports = () => {
         var categories = request.session.categories;
         if (request.session.userCart)
             userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
-        //console.log('User Cart in checkout.js: ' + JSON.stringify(userCart, null, 4));
+        
+        console.log('Passed cart : ' + JSON.stringify(userCart, null, 4));
         response.render('layout', 
             { 
                 pageTitle: 'Cart Checkout', 

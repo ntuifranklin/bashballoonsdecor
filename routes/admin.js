@@ -93,7 +93,7 @@ module.exports = () => {
 
 
     router.get('/', csrfProtection, async (request, response) => { 
-        var categories = request.locals.categories;
+        var categories = request.session.categories;
     
         var loggedInUser = {} ;
 

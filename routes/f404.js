@@ -6,7 +6,7 @@ const {decode} = require('html-entities');
 module.exports = () => { 
     
     router.get('/*', (request, response) => { 
-        var categories = request.locals.categories;
+        var categories = request.session.categories;
         response.render('layout', { 
             pageTitle: 'Sorry We Could Not Find What You Are Looking For',
              template: 'f404',

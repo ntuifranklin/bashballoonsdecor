@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-
 const bodyParser = require('body-parser');
 var csrf = require('csurf');
 const csrfProtection = csrf({ cookie: true }) ;
@@ -56,15 +55,15 @@ module.exports = () => {
     });
 
 
-    router.get('/', csrfProtection, (request, response) => { 
+    router.get('/', csrfProtection, async (request, response) => { 
        
-        var categories = JSON.parse(JSON.stringify(request.session.categories));
+        var categories = await JSON.parse(JSON.stringify(request.session.categories));
         
         //var categories_items = request.locals.categoriesItemsHash ;
         var userCart = {} ;
         if (request.session.userCart)
-            userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
-        //console.log(`User Cart in cart.js: ${JSON.stringify(userCart, null, 4)}`);
+            userCart = await JSON.parse(JSON.stringify(request.session.userCart)) ;
+        console.log('Passed cart : ' + JSON.stringify(userCart, null, 4));
         response.render('layout', { 
             pageTitle: 'Your Shopping Cart', 
             template: 'cart', 

@@ -4,7 +4,6 @@ const shopRoute = require('./shop');
 const checkoutRoute = require('./checkout');
 const f404Route = require('./f404');
 const cartRoute = require('./cart');
-const packagesRoute = require('./packages');
 const rentalItemsListRoute = require('./rental-items-list');
 const contactRoute = require('./contact');
 const productDetailsRoute = require('./product-details');
@@ -50,7 +49,6 @@ module.exports = () => {
     router.use('/shop', shopRoute());
     router.use('/checkout', checkoutRoute());
     router.use('/cart', cartRoute());
-    router.use('/packages', packagesRoute());
     router.use(['/rental-items-list'], rentalItemsListRoute());
     router.use(['/contact','/contactus'], contactRoute());
     router.use(['/product-details','/productdetails','/individual-items-details'], productDetailsRoute());

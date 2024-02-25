@@ -62,8 +62,9 @@
 				  <div class="cart-popup">
 					<% var grandTotal = 0 ; %>
 					<% var totalItems = 0 ; %>
-					
-					<% if (userCart != null && Object.keys(userCart).length > 0 ) { %>
+					<% var keysList = [...Object.keys(userCart)]; %>
+					<% var noKeys = keysList; %>
+					<% if (userCart != null && noKeys.length > 0 ) { %>
 						
 						<ul>
 							

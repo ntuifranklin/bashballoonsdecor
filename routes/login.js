@@ -91,7 +91,7 @@ module.exports = () => {
 
     
     router.get('/', csrfProtection, (request, response) => { 
-        var categories = request.locals.categories;
+        var categories = request.session.categories;
         var userCart = {} ;
 
         //console.log(`user ${request.session.user} userCart ${request.session.userCart}`);
