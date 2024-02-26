@@ -7,14 +7,16 @@ var csrf = require('csurf');
 var csrfProtection = csrf({ cookie: true });
 const cookieSession = require('cookie-session');
 var parseForm = bodyParser.urlencoded({ extended: true });
-
+const {decode, encode} = require('html-entities');
 module.exports = () => { 
     
     router.get('/',  csrfProtection, (request, response) => { 
         response.render('layout', { 
             pageTitle: 'Details of Product with title BlaBlaBla', 
             template: 'product-details',
-            csrfToken: request.csrfToken()
+            csrfToken: request.csrfToken(),
+            decode: decode,
+            encode: encode,
         });
     });
 

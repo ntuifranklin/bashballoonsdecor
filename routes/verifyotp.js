@@ -9,6 +9,7 @@ const { check,validationResult } = require('express-validator');
 require('dotenv').config();
 const createError = require('http-errors');
 const {mysqlpassword} = require('../database/controllers/database');
+const {decode, encode} = require('html-entities');
 
 const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');

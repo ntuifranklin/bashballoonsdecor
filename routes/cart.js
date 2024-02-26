@@ -3,8 +3,8 @@ const router = express.Router();
 const bodyParser = require('body-parser');
 var csrf = require('csurf');
 const csrfProtection = csrf({ cookie: true }) ;
+const {decode, encode} = require('html-entities');
 
-const {decode} = require('html-entities');
 
 require('dotenv').config();
 const createError = require('http-errors');
@@ -71,6 +71,7 @@ module.exports = () => {
             csrfToken: request.csrfToken(),
             categories: categories,
             decode:decode,
+            encode:encode
         });
     });
 
