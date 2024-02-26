@@ -180,7 +180,7 @@ app.use(parseForm, csrfProtection, async(request, response, next) => {
         for (var i = 0; i <  categories.length; i++) {
             var category = JSON.parse(JSON.stringify( categories[i]));
             category.category_name = decode(category.category_name);
-            categories[i].category_name = category.category_name;
+            //categories[i].category_name = category.category_name;
         };
 
         request.session.categories = JSON.parse(JSON.stringify(categories));

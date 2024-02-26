@@ -4,7 +4,7 @@ const router = express.Router();
 const bodyParser = require('body-parser');
 var csrf = require('csurf');
 const csrfProtection = csrf({ cookie: true })
-
+const {decode, encode} = require('html-entities');
 require('dotenv').config();
 const createError = require('http-errors');
 const {generateUniqueID, getCategoriesItems} = require('../database/controllers/database');

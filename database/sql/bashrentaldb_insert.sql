@@ -51,3 +51,9 @@ INSERT INTO `categories` VALUES
 */
 INSERT INTO otp (user_id, otp_code, expiration_time)
 VALUES (1, '123456', NOW() + INTERVAL 5 MINUTE);
+
+
+update categories set category_name = 'Pedestal and Plinths' where category_id = 'CzcfVrglF1cORrS/';
+update categories set category_name = 'Flowers, Plants and Trees' where category_id = 'ISQdbBvXb6SGHFh0';
+update categories set category_name = 'Teaware or Coffeeware' where category_id = 'mEfkVpMmFSgyuWEd';
+update categories set category_name = 'Marquee and LED Signs' where category_id = 'JGnG0WO5wyeNGxc5';

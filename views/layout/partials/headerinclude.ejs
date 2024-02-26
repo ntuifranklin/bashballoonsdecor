@@ -148,7 +148,9 @@
 								
 								<% var category = JSON.parse(JSON.stringify(categories[k])) ; %>
 								<% var category_name = category.category_name.toLowerCase();  %>
-								<a href="/<%= category_name %>"><%= category_name %></a>
+								<% //console.log(`encoded : ${encode(category_name)}`);%>
+								
+								<a href="/<%= category_name %>"><%= decode(category_name) %></a>
 							<% } %>
 						</div>
 					  </li>
@@ -215,7 +217,8 @@
 							
 							<% var category2 = JSON.parse(JSON.stringify((categories[j]))) ; %>
 							<% var category_name2 = category2.category_name.toLowerCase();  %>
-							<li><a href="/<%= category_name2 %>"><%= category_name2 %></a></li>
+							<% //console.log(`encoded : ${encode(category_name2, {mode: 'nonAsciiPrintable'})}`);%>
+							<li><a href="/<%= category_name2 %>"><%= decode(category_name2) %></a></li>
 						<% } %>
 				
 			  </ul>

@@ -16,7 +16,7 @@ const bodyParser = require('body-parser');
 var mysql2 = require('mysql2');
 const {getCategoriesItems} = require('../database/controllers/database');
 
-const {decode} = require('html-entities');
+const {decode, encode} = require('html-entities');
 
 require('dotenv').config();
 
@@ -42,6 +42,8 @@ module.exports = () => {
             items_array: request.session.items_array,
             csrfToken: request.csrfToken(),
             customers_feedback: request.locals.customers_feedback,
+            decode: decode,
+            encode: encode,
         });
         
     });
@@ -61,6 +63,7 @@ module.exports = () => {
     router.get('/:category_name', async(request, response) => { 
         
         var category_name = new String(request.params.category_name);
+        //console.log(`Category Name Encoded : ${category_name}`);
         var userCart = {} ;
         if (request.session.userCart)
             userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
@@ -73,10 +76,12 @@ module.exports = () => {
         var category = {} ;
         var index = -1;
         var categoryID = "";
-
+        category_name = encode(category_name);
         for (var i = 0; i < categories.length; i++) {
             var one_category = await JSON.parse(JSON.stringify(categories[i]));
-            if (one_category.category_name.toLocaleLowerCase() === category_name) {
+            
+            //console.log(`Category Name Encoded : ${category_name}`);
+            if (encode(one_category.category_name.toLocaleLowerCase()) === category_name) {
                 category = one_category;
                 index = i;
                 categoryID = new String(JSON.parse(JSON.stringify(one_category.category_id)));
@@ -107,6 +112,7 @@ module.exports = () => {
                     category_items: category_items,
                     csrfToken: request.csrfToken(),
                     decode: decode,
+                    encode: encode,
                 });
             } else {
                 response.status(200).render('layout',
@@ -119,6 +125,7 @@ module.exports = () => {
                     category: decode(category.category_name),
                     csrfToken: request.csrfToken(),
                     decode: decode,
+                    encode: encode,
                 });
             } ;
             
@@ -126,12 +133,23 @@ module.exports = () => {
         
     });
         
-    router.get('/*', (request, response) => {
+    router.get('/*', async (request, response) => {
 
+        var userCart = {} ;
+        if (request.session.userCart)
+            userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
+        
+        var categories = [] ;
+        var categories = await JSON.parse(JSON.stringify(request.session.categories));
         response.status(404).render('layout', 
         { 
             pageTitle: 'Sorry We Could Not Find What You Are Looking For', 
             template: 'f404',
+            category_items: categories,
+            userCart: userCart, 
+            categories: categories,
+            csrfToken: request.csrfToken(),
+            decode: decode,
         });
     });
     

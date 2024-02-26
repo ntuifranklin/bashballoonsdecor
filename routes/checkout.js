@@ -3,6 +3,7 @@ const router = express.Router();
 var mysql = require('mysql');
 const { v4: uuidv4 } = require('uuid');
 const {generateUniqueID} = require('../database/controllers/database');
+
 require('dotenv').config();
 var nodemailer = require('nodemailer'); 
 const fs = require('fs');
@@ -17,7 +18,7 @@ const { check,validationResult } = require('express-validator');
 
 const {MySQLDBConnector, defaultMySQLDBConnectorConfig} = require('../database/models/MySQLDBConnector');
 
-const {decode} = require('html-entities');
+const {decode,encode} = require('html-entities');
 const mysql2 = require('mysql2');
 //read jquery file stream and css stream into a string 
 const jqueryCode = fs.readFileSync(`${process.env.BOOTSTRAP_JS_FILE}`).toString();
@@ -304,6 +305,7 @@ module.exports = () => {
                 csrfToken: request.csrfToken(),
                 categories: categories,
                 decode: decode,
+                encode: encode
                 
             }
         );

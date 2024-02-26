@@ -14,7 +14,7 @@ const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
 const randomstring = require('randomstring');
 var mysql2 = require('mysql2');
-const {decode} = require('html-entities');
+const {decode,encode} = require('html-entities');
 
 
 /* define a function that sends one time passwords */
@@ -120,6 +120,7 @@ module.exports = () => {
             categories: categories,
             user: user,
             decode:decode,
+            encode:encode
         });
     });
 

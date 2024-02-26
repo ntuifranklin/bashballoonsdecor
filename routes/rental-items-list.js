@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const {decode} = require('html-entities');
+const {decode,encode} = require('html-entities');
 
 module.exports = () => {
         
@@ -19,6 +19,7 @@ module.exports = () => {
             categories: categories,
             userCart: userCart,
             decode: decode,
+            encode: encode,
         }); 
     });
     return router;
