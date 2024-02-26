@@ -19,14 +19,13 @@ const defaultMySQLDBConnectorConfig = {
 
 exports.defaultMySQLDBConnectorConfig = defaultMySQLDBConnectorConfig;
 
-
 class MySQLDBConnector{
 
     static pool = null;
     static connection = null ;
     static config = defaultMySQLDBConnectorConfig;
     constructor(){
-        this.config = MySQLDBConnector.defaultMySQLDBConnectorConfig;
+        this.config =  config;
         MySQLDBConnector.pool = getPool();
 
     }
@@ -79,40 +78,85 @@ class MySQLDBConnector{
         });
     } ;
 
+    
+    /** 
+     * This method is used to execute multiple queries in a transaction mode.
+     * @param {Array} queries - An array of queries to be executed.
+     * @param {Array} multiple_params - An array of arrays of parameters to be used in the queries.
+    */
+    static async executeInTransactionMode(queries=[], multiple_params=[]){
+        //console.log(`Executing query: ${query} with params: ${params}`);
+        var multiple_params = multiple_params;
+        var queries = queries;
+        return new Promise(async(resolve, reject) => {
+                        
+            if (multiple_params !== null && multiple_params.length != 0 && queries != null && queries.length == multiple_params.length){ 
+                var i = 0 ;
+               try {
+                const pool = await MySQLDBConnector.startTransaction();
+                    
+                    while (i < multiple_params.length){
+                        var query = queries[i];
+                        var params = multiple_params[i];
+                        i++;
+                        console.log(`Executing query: ${query} with params: ${params}`);
+                        
+                        await pool.execute(query, params, (err, rows, fields) => {
+                            if (err) {
+                                console.log(err);
+                                throw new Error(err);
+                            } 
+                        });
+                    } ;
+                    const endTransaction = await MySQLDBConnector.endTransaction(pool);
+                    resolve('successfully all queries executed in transaction mode.');
+               } catch (err) {
+                     throw new Error(err);
+               }
+                
+            } else {
+                reject(new Error('Invalid parameters'));
+            } ;
+            
+        });
+    } ;
+
     static async startTransaction(){
         return new Promise(async(resolve, reject) => {
-            const conn = MySQLDBConnector.getConnection();
-            await conn.execute('START TRANSACTION',(err) => {
+            var pool = await MySQLDBConnector.getPool();
+            await pool.execute('START TRANSACTION',(err) => {
                 if (err) {
                     reject(new Error(err));
                 } else {
-                    resolve(conn);
+                    resolve(pool);
                 }
             });
         });
     } ;
 
-    static async rollbackTransaction(){ 
+    static async rollbackTransaction(pool){ 
+        const con = pool ;
         return new Promise(async(resolve, reject) => {
-            const conn = MySQLDBConnector.getConnection();
-            await conn.execute('ROLLBACK',(err) => {
+            
+            await con.execute('ROLLBACK',(err) => {
                 if (err) {
                     reject(new Error(err));
                 } else {
-                    resolve(conn);
+                    resolve(con);
                 }
             });
         });
     }
     
-    static async endTransaction(){
+    static async endTransaction(pool){
+        const con = pool ;
         return new Promise(async(resolve, reject) => {
-            const conn = MySQLDBConnector.getConnection();
-            await conn.execute('COMMIT',(err) => {
+            
+            await con.execute('COMMIT',(err) => {
                 if (err) {
                     throw new Error(err);
                 } else {
-                    resolve(conn);
+                    resolve(con);
                 }
             });
         });

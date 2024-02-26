@@ -159,7 +159,7 @@ async function countMatchingField(con=null, tableName='IndividualItems', keyFiel
 
 exports.countMatchingField = countMatchingField ;
 
-async function generateUniqueID(con=null, tableName='IndividualItems', keyFieldName='individItemID') { 
+async function generateUniqueID(con=null, tableName='IndividualItems', keyFieldName='individItemID', size=16) { 
   
   if (con === null) 
     return await new Promise(async function(resolve,reject) {
@@ -169,7 +169,8 @@ async function generateUniqueID(con=null, tableName='IndividualItems', keyFieldN
   
   return await new Promise(async function(resolve,reject) {
 
-    var id = uuidv4().split('-').join('') ;;
+    var id = uuidv4().split('-').join('') ;
+    id = id.substring(0, size);
     var count = await countMatchingField(con, tableName, keyFieldName, id) ;
     while (count > 0) {
       id = uuidv4().split('-').join('') ;
