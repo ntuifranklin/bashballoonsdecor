@@ -99,7 +99,7 @@ module.exports = () => {
         var user = request.session.user;
         if (user ) {
             user = JSON.parse(JSON.stringify(request.session.user)) ;
-            console.log(`user : ${JSON.stringify(user)}, current session : ${JSON.stringify(request.session)}`);
+            //console.log(`user : ${JSON.stringify(user)}, current session : ${JSON.stringify(request.session)}`);
             //return response.status(401).send(`You are already logged in as ${user.email}`);
             return response.status(200).send(
                 `You are already logged in as ${user.email}\n
@@ -130,7 +130,7 @@ module.exports = () => {
         var user = request.session.user;
         if (user) {
             user = JSON.parse(JSON.stringify(request.session.user)) ;
-            console.log(`user : ${JSON.stringify(user)}, current session : ${JSON.stringify(request.session)}`);
+            //console.log(`user : ${JSON.stringify(user)}, current session : ${JSON.stringify(request.session)}`);
             return response.status(401).send(`You are already logged in as ${user.email}`);
         } ;
 
