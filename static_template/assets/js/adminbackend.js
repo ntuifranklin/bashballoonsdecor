@@ -76,29 +76,41 @@ function reloadCategoryTable() {
    var optionSelected = $("#category_id").find("option:selected");
    var valueSelected  = optionSelected.val();
    var textSelected   = optionSelected.text();
-   //console.log(valueSelected);
-   //console.log(textSelected);
-  
- 
-   $.get(`/admin/${valueSelected}`,
-     (data) => {
-       //console.log(`Request sent : ${JSON.stringify(data)}`);  
-       var htmlRows = '';
-       var d = JSON.parse(JSON.stringify(data));
-       for (var i = 0; i < d.length; i++) {
-           htmlRows += `\n\t\t<tr>
-           <td>${d[i].item_name}</td>
-           <td>${d[i].description}</td>
-           <td>$${d[i].unitPrice}</td>
-           <td>${d[i].quantityAvailable}</td>
-           </tr>\n`; 
-       };
-       $("#selectedCategoryTitle").html(`${textSelected} ${d.length} items`);
-       /*
-       Request sent : [{"item_id":"4b379d2bc0354e64","item_name":"24K Black Tie Dining Chairs","description":"24K Black Tie Dining Chairs Because classics never go out of style! Have a seat at the table in style with our ultra-chic Dining Chairs.","category_id":"uKmwctxAcAbRby8O","category_webid":"1e5402d3","imageurl":"","quantityAvailable":21,"unitPrice":"16.09"}]
-       
-       */
-       $("#itemTableBody").html(htmlRows);
-   });
    
+    /* get the form data */
+    $.ajaxSetup({
+      headers: {
+         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      }
+    });
+   const data = {
+    '_csrf': $('input[name="_csrf"]').val(),
+    'category_id': valueSelected,
+    } ;
+    $.ajax({
+        type: "POST",
+        url: `/admin/category_items`,
+        data: data,
+        encode: true,
+      }).done(function (data) {
+        
+        var d = JSON.parse(JSON.stringify(data));
+        console.log(`${d.length} items found for category ${textSelected }`);
+        var htmlRows = '';
+        
+        for (var i = 0; i < d.length; i++) {
+            htmlRows += `\n\t\t<tr>
+            <td>${d[i].item_name}</td>
+            <td>${d[i].description}</td>
+            <td>$${d[i].unitPrice}</td>
+            <td>${d[i].quantityAvailable}</td>
+            </tr>\n`; 
+        };
+        $("#selectedCategoryTitle").html(`${textSelected} ${d.length} items`);
+        
+        $("#itemTableBody").html(htmlRows);
+      }).fail(function (data) { 
+        var d = JSON.parse(JSON.stringify(data));
+        console.log(`error data gotten back : ${JSON.stringify(d)}`);        
+      }); 
 }

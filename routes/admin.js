@@ -9,8 +9,11 @@ require('dotenv').config();
 const createError = require('http-errors');
 const {generateUniqueID, getCategoriesItems} = require('../database/controllers/database');
 
+const {MySQLDBConnector, defaultMySQLDBConnectorConfig} = require('../database/models/MySQLDBConnector');
 const { check,validationResult } = require('express-validator');
 var mysql2 = require('mysql2');
+const {getFakeCategoriesItems} = require('../utilities/fakedata');
+const { fa } = require('@faker-js/faker');
 
 const checkOutValidation = [
     check('itemName').isLength({ min: 3, max:255}).escape().notEmpty().withMessage('Please enter the item name.'),
@@ -20,21 +23,42 @@ const checkOutValidation = [
     check('unitPrice').isLength({ min: 1 }).escape().isNumeric().withMessage('Please enter a price')
 ];
 
+const apiCheckValidation = [
+    check('category_id').isLength({ min: 1 }).escape().isAlphanumeric().withMessage('Please select a category')
+];
+
 module.exports = () => { 
     /* generate a pool of mysql connection  */
-    var con = mysql2.createPool({
-        host: process.env.DATABASE_HOST,
-        user: process.env.DATABASE_USER,
-        password: process.env.DATABASE_PASSWORD,
-        database: process.env.DATABASE_UPGRADED_NAME,
-        waitForConnections: true,
-        connectionLimit: 5,
-        maxIdle: 4, // max idle connections, the default value is the same as `connectionLimit`
-        idleTimeout: 60000, // idle connections timeout, in milliseconds, the default value 60000
-        queueLimit: 0,
-        enableKeepAlive: true,
-        keepAliveInitialDelay: 0
+    var con = mysql2.createPool(defaultMySQLDBConnectorConfig);
+    
+    router.get('/', csrfProtection, async (request, response) => { 
+        var categories = JSON.parse(JSON.stringify(request.session.categories));
+    
+        var userCart = {} ;
+        if (request.session.userCart)
+            userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
+
+        var loggedInUser = {} ;
+
+        //check if user is logged in
+        if (request.session.user && request.session.user != {}) {
+            loggedInUser = JSON.parse(JSON.stringify(request.session.user)) ;
+        } else {
+            return response.status(401).send(`You are not authorized to access this page`);
+        };
+
+        response.render('layout', { 
+            pageTitle: 'Dashboard', 
+            template: 'admin', 
+            csrfToken: request.csrfToken(),
+            categories: categories,
+            user: loggedInUser,
+            userCart: userCart,
+            decode: decode,
+            encode: encode,
+        });
     });
+
     router.post('/', csrfProtection,checkOutValidation, async(request, response) => {
         
         var loggedInUser = {} ;
@@ -73,7 +97,7 @@ module.exports = () => {
                 async(err, results,fields) => {
                     if (err) {
                         console.error("Error inserting category_items, reverting changes: ", err);
-                        await con.execute('ROLLBACK');//con.rollback();
+                        con.execute('ROLLBACK');//con.rollback();
                         throw err ;
                         
                     };
@@ -91,37 +115,33 @@ module.exports = () => {
         
     });
 
-
-    router.get('/', csrfProtection, async (request, response) => { 
-        var categories = request.session.categories;
-    
-        var loggedInUser = {} ;
-
-        //check if user is logged in
-        if (request.session.user && request.session.user != {}) {
-            loggedInUser = JSON.parse(JSON.stringify(request.session.user)) ;
-        } else {
-            return response.status(401).send(`You are not authorized to access this page`);
-        };
-
-        response.render('layout', { 
-            pageTitle: 'Dashboard', 
-            template: 'admin', 
-            csrfToken: request.csrfToken(),
-            categories: categories,
-            user: loggedInUser
-        });
-    });
-    
-    router.get('/:category_id', async (request, response) => { 
+    router.post('/category_items', csrfProtection, apiCheckValidation,async (request, response) => { 
         
-        var category_id = new String(request.params.category_id);
-        var categoryItems = await getCategoriesItems(con,tableName='category_items', category_id=category_id);
-        categoryItems = JSON.parse(JSON.stringify(categoryItems));
-        //console.log(`Category id: ${category_id}`);
-        //console.log(`Category items: ${JSON.stringify(categoryItems)}`);
-        response.json(categoryItems);
+        var category_id = new String(request.body.category_id);
+        var categoryItems = [] ;
+        var fakeCategoryItems = await getFakeCategoriesItems() ;
+        fakeCategoryItems = JSON.parse(JSON.stringify(fakeCategoryItems));
+        var loggedInUser = {} ;
+        var errorCode = 200 ;
+        //console.log(`fake data generated : ${JSON.stringify(fakeCategoryItems, null, 4)}`);
+        //check if user is logged in
+        if (!request.session.user) {
+            //console.log("User is not logged in. Might be a bot trying to access this route. Generating fake data for this bot to eat");
+           
+            errorCode = 401 ;
+            return response.status(401).json(fakeCategoryItems);
+        } else {
+            loggedInUser = JSON.parse(JSON.stringify(request.session.user)) ;
+            if (request.session.itemsByCategoryID && category_id in request.session.itemsByCategoryID) {
+                categoryItems = JSON.parse(JSON.stringify(request.session.itemsByCategoryID[category_id]));
+                return  response.status(200).json(categoryItems);
+            } else {
+                return  response.status(401).json(fakeCategoryItems);
+            } ;
+        } ;   
+
     });
+    
 
     return router;
 };

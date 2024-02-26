@@ -15,7 +15,6 @@
   "author": "Franklin Nkokam Ngongang",
   "license": "ISC",
   "dependencies": {
-    "@faker-js/faker": "^7.4.0",
     "@googleapis/docs": "^3.0.0",
     "axios": "^0.27.2",
     "bcrypt": "^5.1.1",
@@ -44,6 +43,7 @@
     "uuid": "^9.0.1"
   },
   "devDependencies": {
+    "@faker-js/faker": "^8.4.1",
     "eslint": "^8.19.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^8.5.0",
