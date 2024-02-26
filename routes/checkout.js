@@ -14,23 +14,24 @@ var csrfProtection = csrf({ cookie: true });
 const cookieSession = require('cookie-session');
 var parseForm = bodyParser.urlencoded({ extended: true });
 const { check,validationResult } = require('express-validator');
-const mysql2 = require('mysql2');
+
+const {MySQLDBConnector, defaultMySQLDBConnectorConfig} = require('../database/models/MySQLDBConnector');
 
 const {decode} = require('html-entities');
-        
+const mysql2 = require('mysql2');
 //read jquery file stream and css stream into a string 
 const jqueryCode = fs.readFileSync(`${process.env.BOOTSTRAP_JS_FILE}`).toString();
 const bootstrapCode = fs.readFileSync(`${process.env.BOOTSTRAP_CSS_FILE}`).toString(); ;
 
 const checkOutValidation = [
-    check('completename').isLength({ min: 5 }).withMessage('Please enter your full name.'),
+    check('completename').isLength({ min: 5, max:255 }).withMessage('Please enter your full name.'),
     check('email').isEmail().normalizeEmail().withMessage('Please enter a valid email address.'),
-    check('street_address').isLength({ min: 5 }).withMessage('Please enter your street address.'),
-    check('city').isLength({ min: 2 }).withMessage('Please enter your city.'),
-    check('state').isLength({ min: 2 }).withMessage('Please enter your state.'),
-    check('zipcode').isLength({ min: 5 }).withMessage('Please enter your zipcode.'),
-    check('phone').isLength({ min: 5 }).withMessage('Please enter your phone number.'),
-    check('order_note').isLength({ min: 5 }).withMessage('Please enter your order note.'),
+    check('street_address').isLength({ min: 5, max:255 }).withMessage('Please enter your street address.'),
+    check('city').isLength({ min: 2, max:255 }).withMessage('Please enter your city.'),
+    check('state').isLength({ min: 2, max:255 }).withMessage('Please enter your state.'),
+    check('zipcode').isLength({ min: 5, max:5 }).withMessage('Please a valid zipcode.'),
+    check('phone').isLength({ min: 5, max:16 }).withMessage('Please enter your phone number.'),
+    check('order_note').isLength({ min: 5, max:255 }).withMessage('Please enter your order note.'),
 ];
 module.exports = () => {
     router.post('/', checkOutValidation,csrfProtection, async (request, response) => {
@@ -52,15 +53,14 @@ module.exports = () => {
         const street_address = new String(request.body.street_address) ;
         const order_note = new String(request.body.order_note);
 
+        //============================================
+        /* Begin sanitize from data here */
         const formerrors = validationResult(request);
         if (!formerrors.isEmpty()) {
             const err_message = formerrors.array().map(i => i.msg).join('<br>');
             //console.log(`Error processing form: ${JSON.stringify(formerrors.array(), null, 4)}`);
             return response.status(400).send(`${err_message}`); 
         }
-        //============================================
-        /* Begin sanitize from data here */
-
         /* End Sanitize form data  */
         //============================================
 
@@ -73,28 +73,22 @@ module.exports = () => {
             - generate an email that will recieve the order 
         */
         
-        let con;
+        let pool = null ;
+        let con = null ;
+        
+        pool = mysql2.createPool(defaultMySQLDBConnectorConfig);
+        con = pool;
+        
+        var transactionQueries = [];
+        var transactionData = [];
         try {
-            con = await mysql2.createPool({
-            host: process.env.DATABASE_HOST,
-            user: process.env.DATABASE_USER,
-            password: process.env.DATABASE_PASSWORD,
-            database: process.env.DATABASE_NAME,
-            waitForConnections: true,
-            connectionLimit: 10,
-            maxIdle: 10, // max idle connections, the default value is the same as `connectionLimit`
-            idleTimeout: 60000, // idle connections timeout, in milliseconds, the default value 60000
-            queueLimit: 0,
-            enableKeepAlive: true,
-            keepAliveInitialDelay: 0
-            });
-            // con.connect();
-            // Start Transaction
-            con.execute('START TRANSACTION'); //con.beginTransaction() does not seem to work
+            pool = await MySQLDBConnector.getPool();
+            con = pool;
             //generate new order id
-            var order_id = await generateUniqueID(con=con, tableName="orders", keyFieldName="order_id") ;
+            var order_id = await generateUniqueID(con=con, tableName="orders", keyFieldName="order_id", size=64) ;
             //generate new customer id
-            var customer_id = await generateUniqueID(con=con, tableName="customers", keyFieldName="customer_id") ;
+            var customer_id = await generateUniqueID(con=con, tableName="customers", keyFieldName="customer_id", size=16) ;
+            const customerInsertSql = "INSERT INTO customers VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
             const customerInsertArray = [
                 customer_id, 
                 completename, 
@@ -105,22 +99,14 @@ module.exports = () => {
                 zipcode, 
                 phone, 
                 order_note] ;
+            transactionQueries.push(customerInsertSql);
+            transactionData.push(customerInsertArray);
             
-              // Insert customers
-            con.execute(
-                "INSERT INTO customers VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                customerInsertArray,
-                async (err, results,fields) => {
-                    if (err) {
-                        console.error("Error inserting new customer, reverting changes: ", err);
-                        await con.execute('ROLLBACK');//con.rollback();
-                        /* If an error occured, just tell the user something went wrong */
-                        return response.status(400).send({ message: `${err.message}`, responseText: 'Error processing your order' });
-                    };
-                }
-            );
+            //console.log(`customer : oneOrderItemInsertSQL : ${transactionQueries.length} : ${transactionData.length}`);
 
+            // Insert customers
             
+                        
             var orderInsertArray = [
                 order_id,
                 customer_id,
@@ -129,24 +115,75 @@ module.exports = () => {
                 'pending',//payment_status
                 '' //paypal_transaction_id
             ] ;
-            con.execute(
-                "INSERT INTO orders VALUES(?, ?, ?, ?, ?, ?)",
-                orderInsertArray,
-                async (err, results,fields) => {
-                    if (err) {
-                        console.error("Error inserting new order, reverting changes: ", err);
-                        await con.execute('ROLLBACK');//con.rollback();
-                        /* If an error occured, just tell the user something went wrong */
-                        return response.status(400).send({ message: `${err.message}`, responseText: 'Error processing your order' });
-                    };
+            var orderInsertSql = "INSERT INTO orders VALUES(?, ?, ?, ?, ?, ?)";
+            
+            transactionData.push(orderInsertArray);
+            transactionQueries.push(orderInsertSql);
+            
+            //console.log(`order : oneOrderItemInsertSQL : ${oneOrderItemInsertSQL.length} : ${oneOrderItemInsertData.length}`);
+
+            var emailOrderBodyHtml = "" ;
+            var allIndividualItems = JSON.parse(JSON.stringify(userCart)) ;
+            for(var itemKey in allIndividualItems)  {
+                var  order_category_items_id = await generateUniqueID(con=con, tableName="order_category_items", keyFieldName="order_category_items_id", size=64) ;
+               
+                emailOrderBodyHtml += `\t\t\t<tr>\n`;
+
+                var individualItem = JSON.parse(JSON.stringify(allIndividualItems[itemKey])) ;
+                var itemDetails = JSON.parse(JSON.stringify(individualItem["itemDetails"])) ;
+                totalItems += individualItem.quantity ;
+                var itemsSubTotal = individualItem.quantity * itemDetails.individItemUnitCost ;
+                grandTotal += itemsSubTotal ; 
+
+                emailOrderBodyHtml += `\t\t\t\t<td>${itemDetails.item_name}</td>\n`;
+                emailOrderBodyHtml += `\t\t\t\t<td>${individualItem.quantity}</td>\n`;
+                emailOrderBodyHtml += `\t\t\t\t<td>${itemDetails.unitPrice}</td>\n`;
+                emailOrderBodyHtml += `\t\t\t\t<td>$${itemsSubTotal}</td>\n`;
+                emailOrderBodyHtml += `\t\t\t</tr>\n`;
+               
+                var oneOrderItemInsertSQL = "INSERT INTO `order_category_items` VALUES(?, ?, ?, ?, ?, ?)";
+                var oneOrderItemInsertData = [
+                    order_category_items_id,
+                    order_id,
+                    itemDetails.category_id,
+                    individualItem.quantity,
+                    itemDetails.unitPrice,
+                    itemsSubTotal
+                ];
+                
+                transactionQueries.push(oneOrderItemInsertSQL);
+                transactionData.push(oneOrderItemInsertData);
+                console.log(`one item : oneOrderItemInsertSQL : ${transactionQueries.length} : ${transactionData.length}`);
+                /*
+                MySQLDBConnector.executeInTransactionMode(transactionQueries, transactionData);
+                */
+                con.execute('START TRANSACTION');
+                
+                for (var k = 0; k < transactionQueries.length; k++) {
+                    con.execute(transactionQueries[k], transactionData[k], function (error, results, fields) {
+                        if (error) {
+                            console.log(error);
+                            //con.execute('ROLLBACK');
+                            throw new Error(error);
+                        } 
+                    });
                 }
-            );
+                
+                
+                con.execute('COMMIT', function (error, results, fields) {
+                    if (error) {
+                        console.log(error);
+                        //con.execute('ROLLBACK');
+                        throw new Error(error);
+                    } 
+                });
+            } ;
             
 
         } catch (error) {
 
             console.error("Error loading data, reverting changes: ", error);
-            con.execute('ROLLBACK');//con.rollback();
+            var rollBack = await con.execute('ROLLBACK');
             
             return response.status(400).send({ message: `${error.message}`, responseText: 'Error processing your order' });
 
@@ -175,49 +212,7 @@ module.exports = () => {
         orderHtml += `\t\t\t\t</tr>\n`;
         orderHtml += `\t\t\t</thead>\n`;
         orderHtml += `\t\t<tbody>\n`;
-        var individualItemsInsert = [] ;
-    
-        var allIndividualItems = JSON.parse(JSON.stringify(userCart)) ;
-        for(var itemKey in allIndividualItems)  {
-            var order_individualItemID = await generateUniqueID(con=con, tableName="order_individualItems", keyFieldName="order_individItemID") ;
-            orderHtml += `\t\t\t<tr>\n`;
-            var individualItem = JSON.parse(JSON.stringify(allIndividualItems[itemKey])) ;
-            var itemDetails = JSON.parse(JSON.stringify(individualItem["itemDetails"])) ;
-            totalItems += individualItem.quantity ;
-            var itemsSubTotal = individualItem.quantity * itemDetails.individItemUnitCost ;
-            grandTotal += itemsSubTotal ; 
-            orderHtml += `\t\t\t\t<td>${itemDetails.item_name}</td>\n`;
-            orderHtml += `\t\t\t\t<td>${individualItem.quantity}</td>\n`;
-            orderHtml += `\t\t\t\t<td>${itemDetails.unitPrice}</td>\n`;
-            orderHtml += `\t\t\t\t<td>$${itemsSubTotal}</td>\n`;
-            orderHtml += `\t\t\t</tr>\n`;
-           
-            con.execute(
-                "INSERT INTO order_individualItems VALUES(?, ?, ?, ?, ?, ?)",
-                [
-                    order_individualItemID,
-                    order_id,
-                    itemDetails.individItemID,
-                    individualItem.quantity,
-                    itemDetails.individItemUnitCost,
-                    itemsSubTotal,
-                ],
-                async (err, results,fields) => {
-                    if (err) {
-                        console.error("Error inserting order_individualItems, reverting changes: ", err);
-                        await con.execute('ROLLBACK');//con.rollback();
-                        /* If an error occured, just tell the user something went wrong */
-                        return response.status(400).send({ message: `${err.message}`, responseText: 'Error processing your order' });
-                    };
-                }
-            );
-            
-        } ;
-           
-        con.execute('COMMIT'); //await con.commit();
-        
-        //con.end();
-         
+        orderHtml += `${emailOrderBodyHtml}`;
         orderHtml += `\t\t\t<tr>\n`;
         orderHtml += `\t\t\t\t<td colspan=2>\n`;
         orderHtml += `\t\t\t\t<b>Grand Total : </b>\n`;
