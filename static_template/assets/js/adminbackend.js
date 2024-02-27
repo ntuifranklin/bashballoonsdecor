@@ -1,7 +1,7 @@
 // This file is used to handle the admin backend page
 
 $(document).ready(function() {
-    reloadCategoryTable();
+   
 
 
     // will process order and send email to both customer and email.

@@ -32,129 +32,149 @@
         <% } else { %>
           <div class="row">
             <form class="woocommerce-cart-form">
-              <div class="row">
-                <div class="col-lg-8">
-                  <div style="overflow-x:auto;overflow-y: hidden;">
-                        <table class="shop_table table-responsive">
-                            <thead>
-                                <tr>
-                                    <th class="product-name">Party Rental Item</th>
-                                    <th class="product-price">Unit Price</th>
-                                    <th class="product-quantity">Quantity</th>
-                                    <th class="product-subtotal">Total Price</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            <% var grandTotal = 0 ; %>
-                            <% var totalItems = 0 ; %>
+                            
+                <div class="row">
+                    <div id="cartUpdateIndex" class="col-md-12 col-lg-12">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-8">
+                    <div style="overflow-x:auto;overflow-y: hidden;">
+                            <table class="shop_table table-responsive">
+                                <thead>
+                                    <tr>
+                                        <th class="product-name">Party Rental Item</th>
+                                        <th class="product-price">Unit Price</th>
+                                        <th class="product-quantity">Quantity</th>
+                                        <th class="product-subtotal">Total Price</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                <% var grandTotal = 0 ; %>
+                                <% var totalItems = 0 ; %>
 
-                            <% for(var itemKey in userCart)  { %>
-                                <% var cartItem = JSON.parse(JSON.stringify(userCart[itemKey])) ;%>
-                                <% var itemDetails = JSON.parse(JSON.stringify(cartItem["itemDetails"])) ;%>
-                               
-                                <tr class="product">
-                                    <td class="product-name">
-                                        <img alt="img" src="https://via.placeholder.com/70x70">
-                                        <div>
-                                            <span><%= itemDetails.item_name %></span>
-                                            <p><%= itemDetails.item_name %></p>
+                                <% for(var itemKey in userCart)  { %>
+                                    <% var cartItem = JSON.parse(JSON.stringify(userCart[itemKey])) ;%>
+                                    <% var itemDetails = JSON.parse(JSON.stringify(cartItem["itemDetails"])) ;%>
+                                
+                                    <tr class="product">
+                                        <td class="product-name">
+                                            <img alt="img" src="https://via.placeholder.com/70x70">
+                                            <div>
+                                                <span><%= itemDetails.item_name %></span>
+                                                <p><%= itemDetails.item_name %></p>
+                                                
+                                                <p>SKU: <%= itemDetails.category_webid %></p>
+                                            </div>
+                                        </td>
+                                        <td class="product-price">
+                                            <span class="woocommerce-Price-amount">
+                                                <bdi>
+                                                    <span class="woocommerce-Price-currencySymbol">$</span><%= itemDetails.unitPrice %>
+                                                </bdi>
+                                                </span>          
+                                        </td>
+                                        <%
+                                            /*
+                                                Add event that will update the quantity of an item in a cart
                                             
-                                            <p>SKU: <%= itemDetails.category_webid %></p>
-                                        </div>
-                                    </td>
-                                    <td class="product-price">
-                                        <span class="woocommerce-Price-amount">
-                                            <bdi>
-                                                <span class="woocommerce-Price-currencySymbol">$</span><%= itemDetails.unitPrice %>
-                                            </bdi>
-                                            </span>          
-                                    </td>
-                                    <td class="product-quantity">
-                                        Quantity<input type="number" class="input-text" value="<%= cartItem.quantity %>" min="1" >
-                                    </td>
-                                    <% totalItems += cartItem.quantity ; %>
-                                    <% var itemsSubTotal = cartItem.quantity * itemDetails.unitPrice ; %>
-                                    <td class="product-subtotal">
-                                        <span class="woocommerce-Price-amount">
-                                            <bdi>
-                                                <span class="woocommerce-Price-currencySymbol">$</span><%= itemsSubTotal %>
-                                            </bdi>
-                                        </span>
-                                    </td>
-                                    <% grandTotal += itemsSubTotal ; %>
-                                    <td class="product-remove">
-                                        <a href="#"><i class="fa-regular fa-circle-xmark"></i></a>
-                                    </td>
-                                </tr>
-                            <% } %>
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <td colspan="4">
-                                        <div class="d-flex align-items-center justify-content-between">
-                                            <h4><%= totalItems %> items</h4>
-                                            <h5>$<%= grandTotal %></h5>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                  </div>
+                                            */
+                                            var htmlID1 = cartItem.category_webid + "1"; 
+                                           
+                                            //'cartUpdateIndex' is the id of the div where the alert will be displayed
+                                        %>
+                                        
+                                        <td class="product-quantity">
+                                            Quantity<input type="number" id="<%= htmlID1 %>" onchange="changeItemQuantity('<%= itemDetails.item_id %>',source='#', htmlID='<%= htmlID1 %>', alertIndex='cartUpdateIndex')" class="input-text" value="<%= cartItem.quantity %>" min="1" >
+                                        </td>
+                                        <% totalItems += cartItem.quantity ; %>
+                                        <% var itemsSubTotal = cartItem.quantity * itemDetails.unitPrice ; %>
+                                        <td class="product-subtotal">
+                                            <span class="woocommerce-Price-amount">
+                                                <bdi>
+                                                    <span class="woocommerce-Price-currencySymbol">$</span><%= itemsSubTotal %>
+                                                </bdi>
+                                            </span>
+                                        </td>
+                                        <% grandTotal += itemsSubTotal ; %>
+
+                                        <td class="product-remove">
+                                            <a>
+                                                <i class="fa-regular fa-circle-xmark" onclick="deleteItem('<%= itemDetails.item_id %>',source='cart', htmlID='<%= htmlID1 %>', alertIndex='cartUpdateIndex')">
+
+                                                </i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                <% } %>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="4">
+                                            <div class="d-flex align-items-center justify-content-between">
+                                                <h4><%= totalItems %> items</h4>
+                                                <h5>$<%= grandTotal %></h5>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                    </div>
+                    </div>
+                    <div class="col-lg-4">
+                    <div class="coupon-area">
+                                <h3>Apply Coupon</h3>
+                                <div class="coupon">
+                                    <input type="text" name="coupon_code" class="input-text" placeholder="Coupon code">
+                                    <button type="submit" class="btn" name="apply_coupon"><span>Apply coupon</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="cart_totals">
+                                <h4>Payment Total</h4>
+                                <table class="shop_table_responsive">
+                                    <tbody>
+                                        <tr class="cart-subtotal">
+                                            <th>Subtotal:</th>
+                                            <td>
+                                                <span class="woocommerce-Price-amount">
+                                                <bdi>
+                                                    <span class="woocommerce-Price-currencySymbol">$</span><%= grandTotal %>
+                                                </bdi>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr class="Shipping">
+                                            <th>Shipping:</th>
+                                            <td>
+                                                <span class="woocommerce-Price-amount amount">
+                                                    free
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr class="Total">
+                                            <th>Total:</th>
+                                            <td>
+                                                <span class="woocommerce-Price-amount">
+                                                <bdi>
+                                                    <span>$</span><%= grandTotal %>
+                                                </bdi>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div class="wc-proceed-to-checkout">
+                                    <a href="/checkout" class="btn">
+                                    <span>
+                                        Proceed to checkout
+                                    </span>
+                                    </a>
+                                </div>
+                            </div>
+                    </div>
                 </div>
-                <div class="col-lg-4">
-                  <div class="coupon-area">
-                              <h3>Apply Coupon</h3>
-                              <div class="coupon">
-                                  <input type="text" name="coupon_code" class="input-text" placeholder="Coupon code">
-                                  <button type="submit" class="btn" name="apply_coupon"><span>Apply coupon</span>
-                                  </button>
-                              </div>
-                          </div>
-                          <div class="cart_totals">
-                              <h4>Payment Total</h4>
-                              <table class="shop_table_responsive">
-                                  <tbody>
-                                      <tr class="cart-subtotal">
-                                          <th>Subtotal:</th>
-                                          <td>
-                                              <span class="woocommerce-Price-amount">
-                                              <bdi>
-                                                  <span class="woocommerce-Price-currencySymbol">$</span><%= grandTotal %>
-                                              </bdi>
-                                              </span>
-                                          </td>
-                                      </tr>
-                                      <tr class="Shipping">
-                                          <th>Shipping:</th>
-                                          <td>
-                                              <span class="woocommerce-Price-amount amount">
-                                                  free
-                                              </span>
-                                           </td>
-                                      </tr>
-                                      <tr class="Total">
-                                          <th>Total:</th>
-                                          <td>
-                                              <span class="woocommerce-Price-amount">
-                                              <bdi>
-                                                  <span>$</span><%= grandTotal %>
-                                              </bdi>
-                                              </span>
-                                          </td>
-                                      </tr>
-                                  </tbody>
-                              </table>
-                              <div class="wc-proceed-to-checkout">
-                                <a href="/checkout" class="btn">
-                                  <span>
-                                      Proceed to checkout
-                                  </span>
-                                  </a>
-                              </div>
-                          </div>
-                </div>
-              </div>
             </form>
           </div>
         <% } %>

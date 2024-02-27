@@ -80,6 +80,11 @@
 	
 	<form class="checkout-meta donate-page" id="ordercheckout" method="POST" action="/checkout">
 		<!-- Begin listing cart items -->
+		
+		<div class="row">
+			<div id="checkoutUpdateIndex" class="col-md-12 col-lg-12">
+			</div>
+		</div>
 		<div class="row">
 			<div class="col-lg-12">
 			<div style="overflow-x:auto;overflow-y: hidden;">
@@ -117,9 +122,20 @@
 										</bdi>
 										</span>          
 								</td>
+								<%
+								/*
+									Add event that will update the quantity of an item in a cart
+								
+								*/
+								var htmlID2 = item.category_webid + "1"; 
+							   
+								//'cartUpdateIndex' is the id of the div where the alert will be displayed
+								%>
+							
 								<td class="product-quantity">
-									Quantity<input type="number" class="input-text" value="<%= item.quantity %>" min="1" >
+									Quantity<input type="number" id="<%= htmlID2 %>" onchange="changeItemQuantity('<%= itemDetails.item_id %>',source='#', htmlID='<%= htmlID2 %>', alertIndex='checkoutUpdateIndex')" class="input-text" value="<%= item.quantity %>" min="1" >
 								</td>
+								
 								<% totalItems += item.quantity ; %>
 								<% var itemsSubTotal = item.quantity * itemDetails.unitPrice %>
 								<td class="product-subtotal">
@@ -131,7 +147,11 @@
 								</td>
 								<% grandTotal += itemsSubTotal ; %>
 								<td class="product-remove">
-									<a href="#"><i class="fa-regular fa-circle-xmark"></i></a>
+									<a>
+										<i class="fa-regular fa-circle-xmark" onclick="deleteItem('<%= itemDetails.item_id %>',source='checkout', htmlID='<%= htmlID2 %>', alertIndex='checkoutUpdateIndex')">
+
+										</i>
+									</a>
 								</td>
 							</tr>
 						<% } %>
