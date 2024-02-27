@@ -52,7 +52,7 @@ module.exports = () => {
         const city = new String(request.body.city) ;
         const state = new String(request.body.state) ;
         const zipcode = new String(request.body.zipcode) ;
-        const phone = new String(request.body.phone) ;
+        const phone = new String(request.body.phone) ; 
         const street_address = new String(request.body.street_address) ;
         const order_note = new String(request.body.order_note);
 
@@ -160,7 +160,7 @@ module.exports = () => {
                 
                 transactionQueries.push(oneOrderItemInsertSQL);
                 transactionData.push(oneOrderItemInsertData);
-                console.log(`one item : oneOrderItemInsertSQL : ${transactionQueries.length} : ${transactionData.length}`);
+                //console.log(`one item : oneOrderItemInsertSQL : ${transactionQueries.length} : ${transactionData.length}`);
             } ;
 
             /*
@@ -272,7 +272,7 @@ module.exports = () => {
         if (request.session.userCart)
             userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
         
-        console.log('Passed cart : ' + JSON.stringify(userCart, null, 4));
+        //console.log('Passed cart : ' + JSON.stringify(userCart, null, 4));
         response.render('layout', 
             { 
                 pageTitle: 'Cart Checkout', 
