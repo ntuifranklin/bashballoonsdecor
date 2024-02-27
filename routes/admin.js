@@ -12,8 +12,9 @@ const {generateUniqueID, getCategoriesItems} = require('../database/controllers/
 const {MySQLDBConnector, defaultMySQLDBConnectorConfig} = require('../database/models/MySQLDBConnector');
 const { check,validationResult } = require('express-validator');
 var mysql2 = require('mysql2');
-const {getFakeCategoriesItems} = require('../utilities/fakedata');
+const {getFakeCategoriesItems,getFakeEmailObject} = require('../utilities/fakedata');
 const { fa } = require('@faker-js/faker');
+const {Email} = require('../utilities/email');
 
 const checkOutValidation = [
     check('itemName').isLength({ min: 3, max:255}).escape().notEmpty().withMessage('Please enter the item name.'),
@@ -32,6 +33,17 @@ module.exports = () => {
     var con = mysql2.createPool(defaultMySQLDBConnectorConfig);
     
     router.get('/', csrfProtection, async (request, response) => { 
+        /* Test sending an email wioth new email */
+        var email = new Email();
+        var emailObject = await getFakeEmailObject();
+        email.sendEmail('ntuifranklin2005@gmail.com', emailObject.subject, emailObject.html).
+        then(
+            (result) => {
+                console.log(`Email sent successfully: ${JSON.stringify(result)}`);
+            }
+        ).catch(err => {
+            console.log(`Error sending email: ${err}`);
+        });
         var categories = JSON.parse(JSON.stringify(request.session.categories));
     
         var userCart = {} ;

@@ -22,7 +22,9 @@ const {decode,encode} = require('html-entities');
 const mysql2 = require('mysql2');
 //read jquery file stream and css stream into a string 
 const jqueryCode = fs.readFileSync(`${process.env.BOOTSTRAP_JS_FILE}`).toString();
-const bootstrapCode = fs.readFileSync(`${process.env.BOOTSTRAP_CSS_FILE}`).toString(); ;
+const bootstrapCode = fs.readFileSync(`${process.env.BOOTSTRAP_CSS_FILE}`).toString(); 
+
+
 
 const checkOutValidation = [
     check('completename').isLength({ min: 5, max:255 }).withMessage('Please enter your full name.'),
