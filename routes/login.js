@@ -15,47 +15,46 @@ const nodemailer = require('nodemailer');
 const randomstring = require('randomstring');
 var mysql2 = require('mysql2');
 const {decode,encode} = require('html-entities');
-
+const {Email} = require('../utilities/email');
 
 /* define a function that sends one time passwords */
 
 function sendOTP(email, otp) {
     
-        //console.log(`auth json ${JSON.stringify(authJson, null, 4)}}`);
-        const transporter = nodemailer.createTransport({
-            host: process.env.FORWARD_EMAIL_NET_SMTP_SERVER,
-            port: process.env.FORWARD_EMAIL_NET_SMTP_PORT,
-            secure: false,
-            auth: {
-            // TODO: replace `user` and `pass` values from:
-            // <https://forwardemail.net/guides/send-email-with-custom-domain-smtp>
-            user: process.env.FORWARD_EMAIL_NET_EMAIL,
-            pass: process.env.FORWARD_EMAIL_NET_PASSWORD,
-            },
-            tls: {
-                rejectUnauthorized: false
-            },
-        });
+    return new Promise(async(resolve, reject) => {
         
+
         var mailOptions = {
-            from: `${process.env.FORWARD_EMAIL_NET_EMAIL}`,
+            from: `${process.env.BCC_ORDER_EMAIL}`,
             to: `${email}`,
             subject: `Your One-Time Password (OTP)`,
-            html: `Hi There!\n <br/>
-            Here is your one time password (OTP) :${otp}\n
-            <br/>\n`,
+            html: 
+            `<html>
+                <body>
+                    <p>
+                        Hi There!\n <br/>
+                        Here is your one time password (OTP) :<h3>${otp}</h3>\n
+                        <br/>\n 
+                    </p>
+                </body>
+            </html>`,
         };
 
-        transporter.sendMail(mailOptions, function(error, info){
-            if (error) {
-              console.log(error);
-              
-            } else {
-              console.log(`OTP Email sent: ${info.response}`);
-              //console.log(`HTML Sent : ---\n ${orderHtml}\n----\n---\n`);
+        var emailSending = new Email();
+        emailSending.sendEmail(mailOptions.to, mailOptions.subject, mailOptions.html).
+        then(
+            (result) => {
+                console.log(`OTP Email sent: ${JSON.stringify(result)}`);
+                resolve(result);
             }
+        ).catch(err => {
+            console.log(`Error sending OTP email: ${err}`);
+            reject(err);
         });
-} ;
+    });
+};
+
+
 
 /* function that generates an OTP password */
 

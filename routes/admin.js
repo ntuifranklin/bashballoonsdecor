@@ -34,6 +34,7 @@ module.exports = () => {
     
     router.get('/', csrfProtection, async (request, response) => { 
         /* Test sending an email wioth new email */
+        /*
         var email = new Email();
         var emailObject = await getFakeEmailObject();
         email.sendEmail('ntuifranklin2005@gmail.com', emailObject.subject, emailObject.html).
@@ -44,6 +45,7 @@ module.exports = () => {
         ).catch(err => {
             console.log(`Error sending email: ${err}`);
         });
+        */
         var categories = JSON.parse(JSON.stringify(request.session.categories));
     
         var userCart = {} ;
