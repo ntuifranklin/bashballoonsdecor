@@ -24,3 +24,15 @@ async function getFakeCategoriesItems () {
     });
 } ;
 exports.getFakeCategoriesItems = getFakeCategoriesItems;
+
+async function getFakeEmailObject() {
+    return new Promise((resolve, reject) => {
+        var emailObject = {
+            to: faker.internet.email(),
+            subject: faker.word.sample(5),
+            html: faker.word.sample(20)
+        };
+        resolve(emailObject);
+    });
+};
+exports.getFakeEmailObject = getFakeEmailObject;

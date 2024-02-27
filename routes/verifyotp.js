@@ -15,48 +15,7 @@ const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
 const randomstring = require('randomstring');
 var mysql2 = require('mysql2');
-
-
-/* define a function that sends one time passwords */
-
-function sendOTP(email, otp) {
-    
-        //console.log(`auth json ${JSON.stringify(authJson, null, 4)}}`);
-        const transporter = nodemailer.createTransport({
-            host: process.env.FORWARD_EMAIL_NET_SMTP_SERVER,
-            port: process.env.FORWARD_EMAIL_NET_SMTP_PORT,
-            secure: false,
-            auth: {
-            // TODO: replace `user` and `pass` values from:
-            // <https://forwardemail.net/guides/send-email-with-custom-domain-smtp>
-            user: process.env.FORWARD_EMAIL_NET_EMAIL,
-            pass: process.env.FORWARD_EMAIL_NET_PASSWORD,
-            },
-            tls: {
-                rejectUnauthorized: false
-            },
-        });
-        
-        var mailOptions = {
-            from: `${process.env.FORWARD_EMAIL_NET_EMAIL}`,
-            to: `${email}`,
-            subject: `Your one time password (OTP) is: ${otp}`,
-            html: `Hi There!\n <br/>
-            Here is your one time password (OTP) :${otp}\n
-            <br/>\n
-            It expires in about 5 minutes.`,
-        };
-
-        transporter.sendMail(mailOptions, function(error, info){
-            if (error) {
-              console.log(error);
-              
-            } else {
-              console.log(`OTP Email sent: ${info.response}`);
-              //console.log(`HTML Sent : ---\n ${orderHtml}\n----\n---\n`);
-            }
-        });
-} ;
+const {Email} = require('../utilities/email');
 
 const verifyOTPcheckOutValidation = [
     check('user_email').isEmail().normalizeEmail().withMessage('Please enter a valid email address.'),

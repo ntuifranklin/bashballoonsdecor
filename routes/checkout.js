@@ -22,7 +22,9 @@ const {decode,encode} = require('html-entities');
 const mysql2 = require('mysql2');
 //read jquery file stream and css stream into a string 
 const jqueryCode = fs.readFileSync(`${process.env.BOOTSTRAP_JS_FILE}`).toString();
-const bootstrapCode = fs.readFileSync(`${process.env.BOOTSTRAP_CSS_FILE}`).toString(); ;
+const bootstrapCode = fs.readFileSync(`${process.env.BOOTSTRAP_CSS_FILE}`).toString(); 
+const {Email} = require('../utilities/email');
+
 
 const checkOutValidation = [
     check('completename').isLength({ min: 5, max:255 }).withMessage('Please enter your full name.'),
@@ -82,6 +84,10 @@ module.exports = () => {
         
         var transactionQueries = [];
         var transactionData = [];
+        
+        var totalItems = 0 ;
+        
+        var grandTotal = 0.0 ;
         try {
             pool = await MySQLDBConnector.getPool();
             con = pool;
@@ -133,7 +139,7 @@ module.exports = () => {
                 var individualItem = JSON.parse(JSON.stringify(allIndividualItems[itemKey])) ;
                 var itemDetails = JSON.parse(JSON.stringify(individualItem["itemDetails"])) ;
                 totalItems += individualItem.quantity ;
-                var itemsSubTotal = individualItem.quantity * itemDetails.individItemUnitCost ;
+                var itemsSubTotal = individualItem.quantity * itemDetails.unitPrice ;
                 grandTotal += itemsSubTotal ; 
 
                 emailOrderBodyHtml += `\t\t\t\t<td>${itemDetails.item_name}</td>\n`;
@@ -155,30 +161,36 @@ module.exports = () => {
                 transactionQueries.push(oneOrderItemInsertSQL);
                 transactionData.push(oneOrderItemInsertData);
                 console.log(`one item : oneOrderItemInsertSQL : ${transactionQueries.length} : ${transactionData.length}`);
-                /*
-                MySQLDBConnector.executeInTransactionMode(transactionQueries, transactionData);
-                */
-                con.execute('START TRANSACTION');
-                
-                for (var k = 0; k < transactionQueries.length; k++) {
-                    con.execute(transactionQueries[k], transactionData[k], function (error, results, fields) {
-                        if (error) {
-                            console.log(error);
-                            //con.execute('ROLLBACK');
-                            throw new Error(error);
-                        } 
-                    });
-                }
-                
-                
-                con.execute('COMMIT', function (error, results, fields) {
+            } ;
+
+            /*
+            MySQLDBConnector.executeInTransactionMode(transactionQueries, transactionData);
+            */
+           //update grand total before starting transaction
+           orderInsertArray[3] = grandTotal ;
+            con.execute('START TRANSACTION');
+            
+            for (var k = 0; k < transactionQueries.length; k++) {
+                var query = transactionQueries[k];
+                var data = transactionData[k];
+                console.log(`Executing query: ${query} with params: ${data}`);
+                await con.execute(query, data, function (error, results, fields) {
                     if (error) {
                         console.log(error);
                         //con.execute('ROLLBACK');
                         throw new Error(error);
                     } 
                 });
-            } ;
+            }
+            
+            
+            con.execute('COMMIT', function (error, results, fields) {
+                if (error) {
+                    console.log(error);
+                    //con.execute('ROLLBACK');
+                    throw new Error(error);
+                } 
+            });
             
 
         } catch (error) {
@@ -189,9 +201,6 @@ module.exports = () => {
             return response.status(400).send({ message: `${error.message}`, responseText: 'Error processing your order' });
 
         };
-        var totalItems = 0 ;
-        
-        var grandTotal = 0.0 ;
         var orderHtml = `<html>\n`;
 
         orderHtml += `<head>\n`;
@@ -230,59 +239,28 @@ module.exports = () => {
         orderHtml += `</html>\n`;
         
         /* send the email */
-        const authJson = {
-            host: process.env.FORWARD_EMAIL_NET_SMTP_SERVER,
-            port: process.env.FORWARD_EMAIL_NET_SMTP_PORT,
-            secure: false,
-            auth: {
-            // TODO: replace `user` and `pass` values from:
-            // <https://forwardemail.net/guides/send-email-with-custom-domain-smtp>
-            user: process.env.FORWARD_EMAIL_NET_EMAIL,
-            pass: process.env.FORWARD_EMAIL_NET_PASSWORD,
-            },
-            tls: {
-                rejectUnauthorized: false
-            },
-        };
-        //console.log(`auth json ${JSON.stringify(authJson, null, 4)}}`);
-        const transporter = nodemailer.createTransport({
-            host: process.env.FORWARD_EMAIL_NET_SMTP_SERVER,
-            port: process.env.FORWARD_EMAIL_NET_SMTP_PORT,
-            secure: false,
-            auth: {
-            // TODO: replace `user` and `pass` values from:
-            // <https://forwardemail.net/guides/send-email-with-custom-domain-smtp>
-            user: process.env.FORWARD_EMAIL_NET_EMAIL,
-            pass: process.env.FORWARD_EMAIL_NET_PASSWORD,
-            },
-            tls: {
-                rejectUnauthorized: false
-            },
-        });
+        var emailSender = new Email();
         const orderConfirmationNumber = uuidv4() ;
-        var mailOptions = {
-            from: `${process.env.FORWARD_EMAIL_NET_EMAIL}`,
-            to: `${email}`,
-            bcc: `asong_nic@yahoo.com, ntuifranklin2005@gmail.com, ivoanu@gmail.com, ivoanu@yahoo.uk`,
-            subject: `bashballoonsrentals.com of Order Confirmation ${orderConfirmationNumber}`,
-            html: `${orderHtml}`
+        var mailOptions = { 
+            from: process.env.BCC_ORDER_EMAIL,
+            bcc: `${process.env.BCC_ORDER_EMAIL}, ${process.env.ADMIN_DEVELOPER_EMAIL}`,
+            subject: `Order Confirmation: ${orderConfirmationNumber}`,
+            to: email,
+            html: orderHtml
         };
-
-        transporter.sendMail(mailOptions, function(error, info){
-            if (error) {
-              console.log(error);
-            } else {
-              console.log(`Email sent: ${info.response}`);
-              //console.log(`HTML Sent : ---\n ${orderHtml}\n----\n---\n`);
+        emailSender.sendEmail(mailOptions.to, mailOptions.subject, mailOptions.html)
+        .then(
+            (result) => {
+                /* update the cart in the locals variable */
+                request.session.userCart = {} ;
+                request.session.save();
+                console.log(`Order Confirmation Email sent: ${JSON.stringify(result)}`);
+                return response.status(200).send({ message: `Order Confirmation Email sent: ${JSON.stringify(result)}`, responseText: 'Order processed successfully' });
             }
-        });
-        /* update the cart in the locals variable */
-        request.session.userCart = {} ;
-        
-        request.session.save();
-        return response.status(200).send({ 
-            message: `success`, 
-            responseText: 'Your order is currently being processed. You will receive an email confirmation shortly.' 
+        )
+        .catch((error) => {
+            console.log(`Error sending email: ${error}`);
+            return response.status(400).send({ message: `${error.message}`, responseText: 'Error processing your order' });
         });
 
     });

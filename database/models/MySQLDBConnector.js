@@ -99,7 +99,7 @@ class MySQLDBConnector{
                         var query = queries[i];
                         var params = multiple_params[i];
                         i++;
-                        console.log(`Executing query: ${query} with params: ${params}`);
+                        //console.log(`Executing query: ${query} with params: ${params}`);
                         
                         await pool.execute(query, params, (err, rows, fields) => {
                             if (err) {
