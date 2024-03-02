@@ -13,13 +13,19 @@
 <section class="gap no-bottom">
     <div class="container">
       <div class="row">
+          <div class="col-xl-12" id="contactFormAlertIndex">
+
+          </div>
+
+      </div>
+      <div class="row">
         <div class="col-xl-6">
           <div class="heading two">
             <h2>Let's Chat. Tell me about your Occasion.</h2>
             <p>contact us and one of our delightful team will be be happy to help.</p>
           </div>
           <div class="inner-response"></div>
-          <form class="contact-form" role="form" id="contact-form" method="post">
+          <form class="contact-form" action="/contact" role="form" id="contact-form" method="POST">
            
             <div class="row">
               <div class="col-lg-6 ps-lg-0">
@@ -28,10 +34,11 @@
               <div class="col-lg-6 pe-lg-0">
                 <input type="text" name="email" placeholder="Email Address" required>
               </div>
-              <input type="text" name="hone" placeholder="Phone No" required>
+              <input type="text" name="phone" placeholder="Phone No" required>
+              <input type="hidden" name="_csrf" value='<%= csrfToken %>'>
               <textarea placeholder="Your Comment" name="comment" required></textarea>
                 <button class="btn">
-                  <span>Send Message</span>
+                  <span id="contactFormSubmitButton">Send Message</span>
                 </button>
              </div>
            

@@ -45,6 +45,11 @@ INSERT INTO `categories` VALUES
  created_at, last_modified, current_timestamp(), 0, 
  user_type, account_status);
 
+insert into users values 
+ ( 'uMWMmhFMA1nmvZIpsXiOfjL4YQ8=', 'franklin', 
+ 'franklin@bashballoonsrentals.com', PASSWORD('<<>>**1aBB'), 
+ created_at, last_modified, current_timestamp(), 0, 
+ standard_admin, active);
 
 /*
 -- Generate OTP for a user
