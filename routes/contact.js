@@ -26,10 +26,12 @@ module.exports = () => {
         if (request.session.userCart) {
             userCart = await JSON.parse(JSON.stringify(request.session.userCart)) ;
         };
+        const google_recaptcha_site_key = process.env.GOOGLE_RECAPTCHA_SITE_KEY;
         response.render('layout', { 
             pageTitle: 'Contact Us', 
             template: 'contact',
             csrfToken: request.csrfToken(),
+            google_recaptcha_site_key:google_recaptcha_site_key,
             userCart: userCart,
             categories: categories,
             decode:decode,

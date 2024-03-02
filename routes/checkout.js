@@ -271,7 +271,7 @@ module.exports = () => {
         var categories = request.session.categories;
         if (request.session.userCart)
             userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
-        
+        const google_recaptcha_site_key = process.env.GOOGLE_RECAPTCHA_SITE_KEY;
         //console.log('Passed cart : ' + JSON.stringify(userCart, null, 4));
         response.render('layout', 
             { 
@@ -282,6 +282,7 @@ module.exports = () => {
                 success:null,
                 csrfToken: request.csrfToken(),
                 categories: categories,
+                google_recaptcha_site_key:google_recaptcha_site_key,
                 decode: decode,
                 encode: encode
                 
