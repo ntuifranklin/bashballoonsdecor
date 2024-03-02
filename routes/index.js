@@ -23,6 +23,18 @@ require('dotenv').config();
 module.exports = () => { 
         
     router.use(bodyParser.json());
+
+    router.use('/shop', shopRoute());
+    router.use('/checkout', checkoutRoute());
+    router.use('/cart', cartRoute());
+    router.use(['/rental-items-list'], rentalItemsListRoute());
+    router.use(['/contact','/contactus'], contactRoute());
+    router.use(['/product-details','/productdetails','/individual-items-details'], productDetailsRoute());
+    router.use(['/dashboard','/admin','/backend'], adminRoute());
+    router.use(['/login','/identify-your-self','/whoami'], loginRoute());
+    router.use(['/logout','/signout'], logoutRoute());
+    router.use(['/verifyotp','/verify-otp'], verifyOTPRoute());
+
     router.get('/', async (request, response) => { 
         /* must have been loaded in server.js file  */  
         var categories = request.session.categories;
@@ -47,18 +59,6 @@ module.exports = () => {
         });
         
     });
-
-    router.use('/shop', shopRoute());
-    router.use('/checkout', checkoutRoute());
-    router.use('/cart', cartRoute());
-    router.use(['/rental-items-list'], rentalItemsListRoute());
-    router.use(['/contact','/contactus'], contactRoute());
-    router.use(['/product-details','/productdetails','/individual-items-details'], productDetailsRoute());
-    router.use(['/dashboard','/admin','/backend'], adminRoute());
-    router.use(['/login','/identify-your-self','/whoami'], loginRoute());
-    router.use(['/logout','/signout'], logoutRoute());
-    router.use(['/verifyotp','/verify-otp'], verifyOTPRoute());
-
     /* this route allows someone to search for a list of items based on an item category name */
     router.get('/:category_name', async(request, response) => { 
         
