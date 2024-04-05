@@ -179,12 +179,18 @@ module.exports = () => {
                     }
 
                     // Send OTP via email
-                    sendOTP(user.email, otp);
+                    try {
+                        sendOTP(user.email, otp);
+                        response.send(
+                            `Login was successful. <br/>
+                             Please check your email and verify your one time password`
+                        );
+                    } catch (error) {
+                        console.log(`Error : ${error}`);
+                    } ;
+                    
 
-                    response.send(
-                        `Login was successful. <br/>
-                         Please check your email and verify your one time password`
-                    );
+                    
                 });
             } else {
                 return response.status(404).send('Ouch! login was invalid');

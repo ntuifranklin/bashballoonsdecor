@@ -34,11 +34,30 @@ const SMTP_EMAIL_AUTH_JSON = {
 };
 exports.SMTP_EMAIL_AUTH_JSON = SMTP_EMAIL_AUTH_JSON;
 
+const FORWARD_EMAIL_AUTH_JSON = {
+    
+    host: process.env.FORWARD_EMAIL_NET_SMTP_SERVER,
+    port: process.env.FORWARD_EMAIL_NET_SMTP_SECURE_OLD_PORT,
+    secure: true,
+    auth: {
+        user: process.env.FORWARD_EMAIL_NET_EMAIL,
+        pass: process.env.FORWARD_EMAIL_NET_PASSWORD,
+    },
+    tls: {
+        rejectUnauthorized: true,
+    },
+    debug: true,
+    logger: true,
+
+};
+
+exports.FORWARD_EMAIL_AUTH_JSON = FORWARD_EMAIL_AUTH_JSON ;
+
 class Email {
     
     constructor() {
         
-        this.authJson = SMTP_EMAIL_AUTH_JSON;
+        this.authJson = FORWARD_EMAIL_AUTH_JSON;
         this.transporter = nodemailer.createTransport(this.authJson);
     }
 
@@ -47,8 +66,8 @@ class Email {
         return new Promise(async(resolve, reject) => {
             try {
                 const mailOptions = {
-                    from: process.env.BCC_ORDER_EMAIL,
-                    bcc: `${process.env.BCC_ORDER_EMAIL}, ${process.env.ADMIN_DEVELOPER_EMAIL}`,
+                    from: process.env.FORWARD_EMAIL_NET_EMAIL,
+                    bcc: `${process.env.FORWARD_EMAIL_NET_EMAIL}`,
                     subject:subject,
                     to:to,
                     html:html
