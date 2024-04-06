@@ -23,7 +23,7 @@
                 <div class="box register">
                     <div class="parallax" style="background-image: url(/assets/img/patron.jpg)"></div>
                     <h3>Add Rental Item</h3>
-                    <form id="addItemForm" class="contact-form">
+                    <form id="addItemForm" class="contact-form" enctype="multipart/form-data" method="POST">
                                     
                         <div class="input-group sm-12">
                             <div class="input-group-append">
@@ -62,7 +62,11 @@
                             <!--  <label for="unitPrice">Unit Price:</label>  -->
                             <input type="number" id="unitPrice" name="unitPrice" step="0.01" placeholder="Price for one unit" value="0.01" required>
                         </div>
-    
+                        
+                        <div class="form-group">
+                            <label for="itemimgurl">Item Image</label>
+                            <input type="file" name="itemimgurl" id="itemimgurl" name="MAX_FILE_SIZE" value="1000000" required>
+                        </div>    
                         <button type="submit" class="btn two" id="addItemCategory"><span>Add Item</span></button>
                     </form>
                   </div>

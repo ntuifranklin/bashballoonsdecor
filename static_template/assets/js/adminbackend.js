@@ -7,7 +7,7 @@ $(document).ready(function() {
     // will process order and send email to both customer and email.
     // need email sender and stuff like that.
     
-    $("#addItemCategory").click(function (event) {
+    $("#addItemCategory").click(async function (event) {
         /* Start by clearing the previous error message if any */
         $(`#addItemResult`).html('');
 
@@ -25,10 +25,22 @@ $(document).ready(function() {
             'unitPrice': $('input[name="unitPrice"]').val(),
             'category_id': $('select[name="category_id"]').val(),
         } ;
-        $.ajax({
+        var formData = new FormData();
+        //itemimgurl is the file id of the inout file.
+        var files = $('#itemimgurl')[0].files[0]; 
+        formData.append('itemimgurl',files);
+        formData.append('_csrf', data._csrf);
+        formData.append('itemName', data.itemName);
+        formData.append('description', data.description);
+        formData.append('quantityAvailable', data.quantityAvailable);
+        formData.append('unitPrice', data.unitPrice);
+        formData.append('category_id', data.category_id);
+        await $.ajax({
             type: "POST",
             url: "/admin",
-            data: data,
+            data: formData,
+            contentType : false,
+					  processData : false,
             encode: true,
           }).done(function (data) {
             console.log(`${JSON.stringify(data)}`);

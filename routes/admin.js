@@ -1,9 +1,12 @@
 const express = require('express');
-const router = express.Router();
-
 const bodyParser = require('body-parser');
 var csrf = require('csurf');
-const csrfProtection = csrf({ cookie: true })
+const csrfProtection = csrf({ cookie: true }) ;
+
+const app = express();
+const {fileuploads} = require('../utilities/fileupload');
+app.use(fileuploads.single("itemimgurl")); // "itemimgurl" is the filename of the image on the form
+const router = express.Router();
 const {decode, encode} = require('html-entities');
 require('dotenv').config();
 const createError = require('http-errors');
@@ -15,6 +18,8 @@ var mysql2 = require('mysql2');
 const {getFakeCategoriesItems,getFakeEmailObject} = require('../utilities/fakedata');
 const { fa } = require('@faker-js/faker');
 const {Email} = require('../utilities/email');
+const { file } = require('googleapis/build/src/apis/file');
+
 
 const checkOutValidation = [
     check('itemName').isLength({ min: 3, max:255}).escape().notEmpty().withMessage('Please enter the item name.'),
@@ -32,20 +37,8 @@ module.exports = () => {
     /* generate a pool of mysql connection  */
     var con = mysql2.createPool(defaultMySQLDBConnectorConfig);
     
-    router.get('/', csrfProtection, async (request, response) => { 
-        /* Test sending an email wioth new email */
-        /*
-        var email = new Email();
-        var emailObject = await getFakeEmailObject();
-        email.sendEmail('ntuifranklin2005@gmail.com', emailObject.subject, emailObject.html).
-        then(
-            (result) => {
-                console.log(`Email sent successfully: ${JSON.stringify(result)}`);
-            }
-        ).catch(err => {
-            console.log(`Error sending email: ${err}`);
-        });
-        */
+    router.get('/', async (request, response) => { 
+       
         var categories = JSON.parse(JSON.stringify(request.session.categories));
     
         var userCart = {} ;
@@ -64,7 +57,6 @@ module.exports = () => {
         response.render('layout', { 
             pageTitle: 'Dashboard', 
             template: 'admin', 
-            csrfToken: request.csrfToken(),
             categories: categories,
             user: loggedInUser,
             userCart: userCart,
@@ -73,22 +65,33 @@ module.exports = () => {
         });
     });
 
-    router.post('/', csrfProtection,checkOutValidation, async(request, response) => {
+    router.post('/', checkOutValidation, async(request, response) => {
         
         var loggedInUser = {} ;
-
         //check if user is logged in
         if (request.session.user != {}) {
             loggedInUser = JSON.parse(JSON.stringify(request.session.user)) ;
         } else {
             return response.status(401).send(`You are not authorized to access this page`);
         };
+
         const formerrors = validationResult(request);
         if (!formerrors.isEmpty()) {
             const err_message = formerrors.array().map(i => i.msg).join('<br>');
             //console.log(`Error processing form: ${JSON.stringify(formerrors.array(), null, 4)}`);
             return response.status(400).send(`${JSON.parse(JSON.stringify(err_message))}`); 
         };
+        
+        /* then check if file uplod works  */
+
+        await fileuploads(request, response,  async function (err) {
+            if (err) {
+                // ERROR occurred (here it can be occurred due
+                // to uploading image of size greater than
+                // 1MB or uploading different file type)
+                return response.status(400).send(`${JSON.parse(JSON.stringify(err))}`);
+            }
+        }).single("itemimgurl"); // "itemimgurl" is the filename of the image on the form
         
         var itemName = new String(request.body.itemName);
         var description = new String(request.body.description);
@@ -129,7 +132,7 @@ module.exports = () => {
         
     });
 
-    router.post('/category_items', csrfProtection, apiCheckValidation,async (request, response) => { 
+    router.post('/category_items', apiCheckValidation,async (request, response) => { 
         
         var category_id = new String(request.body.category_id);
         var categoryItems = [] ;

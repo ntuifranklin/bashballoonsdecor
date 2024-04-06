@@ -39,13 +39,13 @@ module.exports = () => {
         keepAliveInitialDelay: 0
     });
     
-    router.post('/', csrfProtection,verifyOTPcheckOutValidation, (request, response) => {
+    router.post('/', csrfProtection,verifyOTPcheckOutValidation, async(request, response) => {
         
             const user_email = new String(request.body.user_email).trim();
             const otp = new String(request.body.otp).trim();
         
             // Verify OTP
-            con.execute('SELECT * FROM otp WHERE user_email = ? AND otp_code = ? AND expiration_time > NOW()', [user_email, otp], (err, results) => {
+            con.execute('SELECT * FROM otp WHERE user_email = ? AND otp_code = ? AND expiration_time >= NOW()', [user_email, otp], async(err, results) => {
                 if (err) {
                     console.log(err);
                     return response.status(500).send('Internal Server Error');
@@ -56,7 +56,7 @@ module.exports = () => {
                 }
         
                 // Delete OTP from the database
-                con.execute('DELETE FROM otp WHERE user_email = ?', [user_email], (err, results) => {
+                con.execute('DELETE FROM otp WHERE user_email = ?', [user_email], async(err, results) => {
                     if (err) {
                         console.log(err);
                         return response.status(500).send('Internal Server Error');
