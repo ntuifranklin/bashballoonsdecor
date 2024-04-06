@@ -1,5 +1,23 @@
+<%
+
+/* The function belows generates random number of reviews */
+function getRandomReviews() {
+  return Math.ceil(Math.random() * (300 - 100) + 100);
+}
+
+
+function getRandomPercentageOff() {
+  //between 12% and 18% off 
+  return Math.ceil(Math.random() * (18 - 12) + 12);
+}
+
+%>
 <section class="gap no-top" style="background-color: #f7f7f7 ;">
     <div class="container">
+      <div class="row">
+        <div id="productDetailsUpdateIndex" class="col-md-12">
+        </div>
+      </div>
       <div class="row">
         <div class="col-lg-6">
           <div class="pd-gallery">
@@ -30,8 +48,12 @@
         </div>
         <div class="col-lg-6">
           <div class="product-info">
-            <div class="d-flex align-items-center"><p>Save 16%</p><h5>SKU 25-0458</h5></div>
-            <h2>Red Heart Balloon Decoration</h2>
+            <% var percentOff = getRandomPercentageOff() ; %>
+            <div class="d-flex align-items-center">
+              <p>Save <%= percentOff %>%</p>
+              <h5>SKU-<%= item.category_webid %></h5>
+            </div>
+            <h2><%= item.item_name %></h2>
             
             <div class="star">
               <i class="fa-solid fa-star"></i>
@@ -39,27 +61,44 @@
               <i class="fa-solid fa-star"></i>
               <i class="fa-solid fa-star"></i>
               <i class="fa-solid fa-star"></i>
-              <span>( 12 Reviews )</span>
+              <span>( <%= getRandomReviews() %> Reviews )</span> 
             </div>
   
             <div class="price">
               <div>
-                <div class="d-flex"><h3>$16.69</h3><del>20.20</del></div>
-                <span class="dots">In stock, 21 units</span>
+                <div class="d-flex"><h3>$<%= item.unitPrice %></h3><del>$<%= Math.ceil(parseFloat(item.unitPrice) * (1 + (percentOff/100.0))) %></del></div>
+                <span class="dots">In stock, <%= parseInt(item.quantityAvailable) %> units</span>
                 <div class="quantity">
+                  <!-- 
                   <h6>colors:</h6>
                   <ul class="color">
                     <li class="purple"></li>
                     <li class="blue"></li>
                     <li class="orange"></li>
                   </ul>
+                  -->
                 </div>
+                <% 
+                  var cartItemQuantity = 1 ;
+                  // userCart[itemID]["quantity"] = integerQuantity ;
+                  var itemID = new String(item.item_id);
+                  if ( ( itemID in userCart) && ("quantity" in userCart[itemID]) )
+                    cartItemQuantity = userCart[itemID]["quantity"] ;
+                
+                %>
+                <% var htmlIDX = new String(item.item_id);  %>
                 <div class="quantity">
                   <h6>Quantity:</h6>
-                  <input type="number" class="input-text" step="1" min="1" name="quantity" value="1">
+                   <!-- the value productDetailsUpdateIndex is the Id of the DIV where to place the confirmation that the cart was updated -->
+                  <input type="number" class="input-text" id="<%= htmlIDX %>" onchange="changeItemQuantity('<%= item.item_id %>',source='#', htmlID='<%= htmlIDX %>', alertIndex='productDetailsUpdateIndex')" value="<%= cartItemQuantity %>" min="1" >
+                  
                 </div>
                 <div class="add-to-cart">
-                  <a href="#" class="btn"><span>Add to Cart</span></a>
+        
+                  <% var htmlID = new String(item.item_id);  %>
+                  <a id="<%= htmlID %>" class="btn" onclick='updateCart("<%= item.item_id %>", source="#", htmlID="<%= htmlID %>", alertIndex="productDetailsUpdateIndex")'>
+                    <span>Add to Cart</span>
+                  </a>
                   <a href="#" class="heart-wishlist">
                     <i class="fa-regular fa-heart"></i>
                   </a>
@@ -71,8 +110,8 @@
         <div class="col-lg-6">
           <div class="payment-methods">
             <h5>PAYMENT METHODS:</h5>
-            <a href="#">
-              <img alt="card" src="assets/img/card.png">
+            <a href="/assets/img/card.png">
+              <img alt="card" src="/assets/img/card.png">
             </a>
             <p>Your payment information is processed securely. We do not store credit card details nor have access to your credit card information.</p>
           </div>
@@ -80,19 +119,25 @@
         <div class="col-lg-6">
           <div class="payment-methods">
             <ul class="product_meta">
-                  <li><span class="theme-bg-clr">Category:</span>
+                  <li>
+                    <span class="theme-bg-clr"><%= item_category_name %>:</span>
                     <ul class="pd-cat">
-                      <li><a href="#">featured products</a>,
+                      <li>
+                        <a href="/<%= item_category_name %>">Similar products in this cateogry</a>
+                        <!-- 
                         <a href="#">balloon</a>,
-                          <a href="#">new products</a></li>          
+                        <a href="#">new products</a>
+                        -->
+                      </li>          
                     </ul>
                   </li>
             </ul>
             <ul class="social-media ">
-              <li><a href="#"><i class="fa-brands fa-facebook-f"></i></a></li>
-              <li><a href="#"><i class="fa-brands fa-instagram"></i></a></li>
-              <li><a href="#"><i class="fa-brands fa-twitter"></i></a></li>
-              <li><a href="#"><i class="fa-brands fa-youtube"></i></a></li>
+              <li><a href="<%= facebookLink %>"><i class="fa-brands fa-facebook-f"></i></a></li>
+              <li><a href="<%= instagramLink %>"><i class="fa-brands fa-instagram"></i></a></li>
+              <li><a href="<%= twitterLink %>"><i class="fa-brands fa-twitter"></i></a></li>
+              <li><a href="<%= youtubeLink %>"><i class="fa-brands fa-youtube"></i></a></li>
+              <li><a href="<%= mediumLink %>"><i class="fa-brands fa-medium"></i></a></li>
             </ul>
           </div>
         </div>
@@ -104,7 +149,10 @@
       <div class="comment mt-0">
         <h3>Description</h3>
         <div class="boder"></div>
-        <p>Nisl quam nestibulum ac quam nec odio elementu aucan ligula. Orci varius natoque pena tibus et ma urient monte nascete ridiculus mus nellente sque um ac quam nec odio rbine. Nisl quam nestibulum ac quam nec odio elementu aucan ligula. Orci varius natoque pena tibus et ma urient monte nascete ridiculus mus nellentesque um ac quam nec odio rbine. Nisl quam nestibulum ac quam nec odio elementu aucan ligula. Orci varius natoque pena tibus et ma urient monte nascete ridiculus mus nellentesque um ac quam nec odio rbine. Nisl quam nestibulum ac quam nec odio elementu aucan ligula. Orci varius natoque penac quam nec odio rbine.</p>
+        <p>
+          <%= item.description %>
+        </p>
+        <!-- 
         <div class="party-balloons">
           <ul>
             <li><img alt="chak" src="assets/img/chak.png">Wide Selection Of Foil Balloons</li>
@@ -112,8 +160,10 @@
             <li><img alt="chak" src="assets/img/chak.png">Best Options In Balloons Themes</li>
             <li><img alt="chak" src="assets/img/chak.png">completely elegant & classy for your loved one.</li>
           </ul>
-          </div>
+        </div>
+        -->
       </div>
+      <!-- 
       <div class="comment mt-0">
         <h3>Additional Information</h3>
         <div class="boder"></div>
@@ -123,6 +173,8 @@
           <li><h6>Colors</h6>Multiple Colors</li>
         </ul>
       </div>
+      -->
+      <!-- 
       <div class="row">
         <div class="col-lg-7">
           <div class="comment">
@@ -222,113 +274,45 @@
           </form>
         </div>
       </div>
+      -->
     </div>
   </section>
   <section class="gap no-top">
     <div class="container">
+      
+      <div class="row">
+        <div id="productDetailsUpdateIndex2" class="col-md-12">
+        </div>
+      </div>
       <div class="comment mt-0">
         <h3>You May Also Like</h3>
               <div class="boder"></div>
       </div>
       <div class="product-slider two owl-carousel owl-theme">
+        
+
+        <% for ( var i = 0 ; i < itemsWithSimilarCategoryID.length ; i++ ) { %>
+          <% var similar_item = itemsWithSimilarCategoryID[i] %>
         <div class="item">
           <div class="product-style">
             <img alt="img" src="https://via.placeholder.com/195x210">
-            <a href="#">
-              <h5>Love Script Silver Baloon</h5>
+            <a href="/product-details/<%= similar_item.category_webid %>">
+              <h5><%= similar_item.item_name %></h5>
             </a>
-              <h6>$28.61</h6>
-              <span>In stock, 21 units</span>
+              <h6>$<%= similar_item.unitPrice %></h6>
+              <span>In stock, <%= similar_item.quantityAvailable %> units</span>
               <div class="add-to-cart">
-                <a href="#" class="btn"><span>Add to Cart</span></a>
+
+                <% var htmlID2 = new String(item.item_id) + "2";  %>
+                <a id="<%= htmlID2 %>" class="btn" onclick='updateCart("<%= similar_item.item_id %>", source="#", htmlID="<%= htmlID2 %>", alertIndex="productDetailsUpdateIndex2")'><span>Add to Cart</span></a>
                 <a href="#" class="heart-wishlist">
                   <i class="fa-regular fa-heart"></i>
                 </a>
               </div>
           </div>
         </div>
-        <div class="item">
-          <div class="product-style">
-            <img alt="img" src="https://via.placeholder.com/195x210">
-            <h4>Save 16%</h4>
-            <a href="#">
-              <h5>Birthday Party Balloon Decoration</h5>
-            </a>
-              <div class="d-flex"><h6>$16.69</h6><del>20.20</del></div>
-              <span>In stock, 21 units</span>
-              <div class="add-to-cart">
-                <a href="#" class="btn"><span>Add to Cart</span></a>
-                <a href="#" class="heart-wishlist">
-                  <i class="fa-regular fa-heart"></i>
-                </a>
-              </div>
-          </div>
-        </div>
-        <div class="item">
-          <div class="product-style">
-            <img alt="img" src="https://via.placeholder.com/195x210">
-            <a href="#">
-              <h5>Party Love Box Balloon</h5>
-            </a>
-              <h6>$28.61</h6>
-              <span>In stock, 21 units</span>
-              <div class="add-to-cart">
-                <a href="#" class="btn"><span>Add to Cart</span></a>
-                <a href="#" class="heart-wishlist">
-                  <i class="fa-regular fa-heart"></i>
-                </a>
-              </div>
-          </div>
-        </div>
-        <div class="item">
-          <div class="product-style">
-            <img alt="img" src="https://via.placeholder.com/195x210">
-            <h4>Save 16%</h4>
-            <a href="#">
-              <h5>Red Heart Balloon Decoration</h5>
-            </a>
-              <div class="d-flex"><h6>$16.69</h6><del>20.20</del></div>
-              <span>In stock, 21 units</span>
-              <div class="add-to-cart">
-                <a href="#" class="btn"><span>Add to Cart</span></a>
-                <a href="#" class="heart-wishlist">
-                  <i class="fa-regular fa-heart"></i>
-                </a>
-              </div>
-          </div>
-        </div>
-        <div class="item">
-          <div class="product-style">
-            <img alt="img" src="https://via.placeholder.com/195x210">
-            <a href="#">
-              <h5>Mattalic Latex Balloons</h5>
-            </a>
-              <h6>$28.61</h6>
-              <span>In stock, 21 units</span>
-              <div class="add-to-cart">
-                <a href="#" class="btn"><span>Add to Cart</span></a>
-                <a href="#" class="heart-wishlist">
-                  <i class="fa-regular fa-heart"></i>
-                </a>
-              </div>
-          </div>
-        </div>
-        <div class="item">
-          <div class="product-style">
-            <img alt="img" src="https://via.placeholder.com/195x210">
-            <a href="#">
-              <h5>Party Love Box Balloon</h5>
-            </a>
-              <h6>$28.61</h6>
-              <span>In stock, 21 units</span>
-              <div class="add-to-cart">
-                <a href="#" class="btn"><span>Add to Cart</span></a>
-                <a href="#" class="heart-wishlist">
-                  <i class="fa-regular fa-heart"></i>
-                </a>
-              </div>
-          </div>
-        </div>
+        <% } %>
+       
       </div>
     </div>
   </section>

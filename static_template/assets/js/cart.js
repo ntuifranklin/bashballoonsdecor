@@ -42,7 +42,7 @@ function updateCart(productID, source='', htmlID='#', alertIndex='', action='a')
         $(`#cartResult`).html(successHtml);
     }).fail((data) => {
       
-      //console.log(`Failure data received : ${JSON.stringify(data)}`);
+      console.log(`Failure data received : ${JSON.stringify(data)}`);
       var errorHtml = ` 
       <div class="alert alert-danger alert-dismissible fade show" role="alert">
         <strong>Error!</strong> ${data.responseText}
@@ -87,6 +87,7 @@ function changeItemQuantity(itemID, source='', htmlID='#', alertIndex=''){
       $(`#${alertIndex}`).html(successHtml);
     else
       $(`#cartResult`).html(successHtml);
+    //reload page
     location.href = location.href;
   }).fail((data) => {
     

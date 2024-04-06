@@ -86,6 +86,7 @@
                                         %>
                                         
                                         <td class="product-quantity">
+                                            <!-- the value cartUpdateIndex is the Id of the DIV where to place the confirmation that the cart was updated -->
                                             Quantity<input type="number" id="<%= htmlID1 %>" onchange="changeItemQuantity('<%= itemDetails.item_id %>',source='#', htmlID='<%= htmlID1 %>', alertIndex='cartUpdateIndex')" class="input-text" value="<%= cartItem.quantity %>" min="1" >
                                         </td>
                                         <% totalItems += cartItem.quantity ; %>
