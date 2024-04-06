@@ -10,10 +10,10 @@ var csrfProtection = csrf({ cookie: true });
 const cookieSession = require('cookie-session');
 var parseForm = bodyParser.urlencoded({ extended: true });
 const { check,validationResult } = require('express-validator');
-
+const validEmailRegExp = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/ ;
 const contactFormValidation = [
     check('name').isLength({ min: 5, max:255 }).withMessage('Please enter your name.'),
-    check('email').isEmail().normalizeEmail().withMessage('Please enter a valid email address.'),
+    check('email').matches(validEmailRegExp).withMessage('Please enter a valid email address.'),
     check('comment').isLength({ min: 5, max:255 }).withMessage('Please a message.'),
     check('phone').isLength({ min: 5, max:16 }).withMessage('Please enter your phone number.'),
 ];
@@ -50,6 +50,7 @@ module.exports = () => {
             const err_message = formerrors.array().map(i => i.msg).join('<br>');
             //console.log(`Error processing form: ${JSON.stringify(formerrors.array(), null, 4)}`);
             return response.status(400).send(`${err_message}`); 
+            
         } ;
         /* send the email */
         var emailSender = new Email();
