@@ -35,7 +35,6 @@ const SMTP_EMAIL_AUTH_JSON = {
 exports.SMTP_EMAIL_AUTH_JSON = SMTP_EMAIL_AUTH_JSON;
 
 const FORWARD_EMAIL_AUTH_JSON = {
-    
     host: process.env.FORWARD_EMAIL_NET_SMTP_SERVER,
     port: process.env.FORWARD_EMAIL_NET_SMTP_SECURE_OLD_PORT,
     secure: true,

@@ -44,7 +44,7 @@ module.exports = () => {
         if (request.session.userCart)
             userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
         
-        console.log(`User cart : ${JSON.stringify(userCart)}`);
+        //console.log(`User cart : ${JSON.stringify(userCart)}`);
         response.render('layout', 
         { 
             pageTitle: request.locals.siteName, 
@@ -133,7 +133,7 @@ module.exports = () => {
         
     });
         
-    router.get('/*', async (request, response) => {
+    router.get(['/*','/f404'], async (request, response) => {
 
         var userCart = {} ;
         if (request.session.userCart)

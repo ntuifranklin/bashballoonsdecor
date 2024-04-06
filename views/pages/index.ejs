@@ -53,7 +53,6 @@
 				</div>
 			<% } %>
 			
-			
 		</div>
 	</div>
 </section>
@@ -205,20 +204,20 @@
 			<% var individual_item = list_of_items[i] %>
 			<div class="item">
 				<div class="product-style">
-				<img alt="img" src="https://via.placeholder.com/195x210">
-				<a href="/product-details#">
-					<h5><%= individual_item.item_name %></h5>
-				</a>
-				<h6>$<%= individual_item.unitPrice %></h6>
-				<span>In stock, <%= individual_item.quantityAvailable %> units</span>
-				<div class="add-to-cart">
+					<img alt="img" src="https://via.placeholder.com/195x210">
+					<a href="/product-details/<%= individual_item.category_webid %>">
+						<h5><%= individual_item.item_name %></h5>
+					</a>
+					<h6>$<%= individual_item.unitPrice %></h6>
+					<span>In stock, <%= individual_item.quantityAvailable %> units</span>
+					<div class="add-to-cart">
 
-				<% var htmlID = new String(individual_item.category_webid) + "1";  %>
-				<a id="<%= htmlID %>" class="btn" onclick='updateCart("<%= individual_item.item_id %>", source="#", htmlID="<%= htmlID %>")'><span>Add to Cart</span></a>
-				<a href="#" class="heart-wishlist">
-					<i class="fa-regular fa-heart"></i>
-				</a>
-				</div>
+						<% var htmlID = new String(individual_item.category_webid) + "1";  %>
+						<a id="<%= htmlID %>" class="btn" onclick='updateCart("<%= individual_item.item_id %>", source="#", htmlID="<%= htmlID %>")'><span>Add to Cart</span></a>
+						<a href="#" class="heart-wishlist">
+							<i class="fa-regular fa-heart"></i>
+						</a>
+					</div>
 				</div>
 			</div>
 		<% } %>
@@ -280,7 +279,7 @@
 						<img alt="img" src="https://via.placeholder.com/140x165">
 						</div>
 						<div>
-						<a href="/product-details#">
+						<a href="/product-details/<%= individual_item.category_webid %>">
 							<h5><%= individual_item.item_name %></h5>
 						</a>
 						<h6>$<%= individual_item.unitPrice %></h6>
@@ -311,9 +310,12 @@
 							<img alt="img" src="https://via.placeholder.com/140x165">
 						</div>
 						<div>
-							<a href="#">
+							
+							<a href="/product-details/<%= individual_item.category_webid %>">
 								<h5><%= individual_item.item_name %></h5>
 							</a>
+
+
 							<h6>$<%= individual_item.unitPrice %></h6>
 							<span>In stock, <%= individual_item.quantityAvailable %> units</span>
 							<div class="add-to-cart">
@@ -342,7 +344,7 @@
 					<img alt="img" src="https://via.placeholder.com/140x165">
 					</div>
 					<div>
-					<a href="#">
+					<a href="/product-details/<%= individual_item.category_webid %>">
 						<h5><%= individual_item.item_name %></h5>
 					</a>
 					<h6>$<%= individual_item.unitPrice %></h6>
@@ -376,7 +378,7 @@
 					<img alt="img" src="https://via.placeholder.com/140x165">
 					</div>
 					<div>
-					<a href="#">
+					<a href="/product-details/<%= individual_item.category_webid %>">
 						<h5><%= individual_item.item_name %></h5>
 					</a>
 					<h6>$<%= individual_item.unitPrice %></h6>
@@ -405,12 +407,12 @@
 					
 				<% var individual_item = list_of_items[i] %>
 				<div class="col-lg-6">
-				<div class="product-style two">
+					<div class="product-style two">
+						<div>
+						<img alt="img" src="https://via.placeholder.com/140x165">
+						</div>
 					<div>
-					<img alt="img" src="https://via.placeholder.com/140x165">
-					</div>
-					<div>
-					<a href="#">
+					<a href="/product-details/<%= individual_item.category_webid %>">
 						<h5><%= individual_item.item_name %></h5>
 					</a>
 					<h6>$<%= individual_item.unitPrice %></h6>

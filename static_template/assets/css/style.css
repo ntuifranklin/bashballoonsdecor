@@ -415,7 +415,7 @@ header {
     content: "";
     width: 25px;
     height: 25px;
-    background-image: url('../img/remove.svg');
+    background-image: url('/assets/img/remove.svg');
     background-repeat: no-repeat;
     position: absolute;
     top: -5px;
@@ -4278,7 +4278,7 @@ li.menu-item-has-children.active {
     content: "";
     width: 35px;
     height: 35px;
-    background-image: url('../img/remove.svg');
+    background-image: url('/assets/img/remove.svg');
     background-repeat: no-repeat;
     position: absolute;
     top: 15px;
