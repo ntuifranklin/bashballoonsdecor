@@ -10,7 +10,8 @@ var csrfProtection = csrf({ cookie: true });
 const cookieSession = require('cookie-session');
 var parseForm = bodyParser.urlencoded({ extended: true });
 const { check,validationResult } = require('express-validator');
-const validEmailRegExp = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/ ;
+const {VALID_EMAIL_REGEXP} = require('../utilities/email');
+const validEmailRegExp = VALID_EMAIL_REGEXP ;
 const contactFormValidation = [
     check('name').isLength({ min: 5, max:255 }).withMessage('Please enter your name.'),
     check('email').matches(validEmailRegExp).withMessage('Please enter a valid email address.'),

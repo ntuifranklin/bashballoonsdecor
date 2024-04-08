@@ -6,7 +6,7 @@ async function getFakeCategoriesItems () {
     return new Promise((resolve, reject) => {
         var items_array = [] ;
         var item = {} ;
-        var numberOfItems = faker.number.int({ min: 50, max: 100 });
+        var numberOfItems = faker.number.int({ min: 10, max: 30 });
         for (var i=0; i < numberOfItems; i++) {
             item = {
                 item_id: faker.string.uuid(),

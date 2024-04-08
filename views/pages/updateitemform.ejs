@@ -1,0 +1,68 @@
+<section class="banner" style="background-image:url(https://via.placeholder.com/1920x300)" >
+    <div class="container">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="/">Home</a>
+        </li>
+          <li class="breadcrumb-item active" aria-current="page">Back Office</li>
+      </ol>
+      <h2>Back Office</h2>
+    </div>
+</section>
+
+<section class="gap">
+    <div class="container">
+        
+        <div class="row">
+            <div class="col-md-12" id="updateItemResult">
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box login">
+                    <!-- style="background-image: url(/assets/img/patron.jpg)" -->
+                    <!-- <div class="parallax"></div> -->
+                    <h3>Update Rental Item</h3>
+                    <form id="updateItemForm" class="contact-form" enctype="multipart/form-data" method="POST">
+                                    
+                        <input type="hidden" name="category_webid" value="<%= item.category_webid %>">                                    
+                        <input type="hidden" name="item_id" value="<%= item.item_id %>">
+                        <div class="form-group">
+                            <!-- <label for="itemName"><h3>Item Name:</h3></label> -->
+                            <input type="text" id="itemName" name="itemName" value="<%=item.item_name%>"  placeholder="Item Name" required>
+                        </div>
+                        <div class="form-group">
+                            <!-- <label for="description">Description:</label> -->
+                            <textarea  id="description" name="description" placeholder="Give a description of the item" rows="5" cols="33">
+                                <%= decode(item.description) %>
+                            </textarea>
+                        </div>
+                        <div class="form-group">
+                            <!-- <label for="quantityAvailable">Quantity Available:</label> --> 
+                           
+                            <input type="number" id="quantityAvailable" name="quantityAvailable"  placeholder="Quantity Available in Inventory"  value="<%= item.quantityAvailable %>" required>
+                        </div>
+                        <div class="form-group">
+                            <!--  <label for="unitPrice">Unit Price:</label>  -->
+                            <input type="number" id="unitPrice" name="unitPrice" step="0.01" placeholder="Price for one unit" value="<%= item.unitPrice%>" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+                        </div>
+                        <div class="form-group">
+                            <img alt="<%= 'Image for ' + (new String(item.item_name)).slice(0,20) %>" src="<%= IMG_DIR_FOR_WEB + item.imageurl %>" width="110" height="118" />
+                            <label for="itemimgurl">Item Image</label>
+                            <input type="file" name="itemimgurl" id="itemimgurl" name="MAX_FILE_SIZE" value="52428800" > <!-- 50 MB -->
+                        </div>    
+                        <button type="submit" class="btn two" id="updateItemCategory"><span>Update Item Item</span></button>
+                    </form>
+                  </div>
+
+            </div>
+            
+        </div>
+      </div>
+</section>

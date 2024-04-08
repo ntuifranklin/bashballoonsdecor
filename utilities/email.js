@@ -97,3 +97,7 @@ class Email {
     }
 };
 exports.Email = Email;
+
+
+const VALID_EMAIL_REGEXP = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/ ;
+exports.VALID_EMAIL_REGEXP = VALID_EMAIL_REGEXP ;
