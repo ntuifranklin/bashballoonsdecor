@@ -44,16 +44,22 @@ module.exports = () => {
              
         var userCart = {} ;
         if (request.session.userCart)
-            userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
+            userCart = await JSON.parse(JSON.stringify(request.session.userCart)) ;
         
+        
+        var items_array = cache.get('items_array');
+        if (!items_array) {
+            items_array = await JSON.parse(JSON.stringify(request.session.items_array));
+            cache.set('items_array', items_array);
+        }
         //console.log(`User cart : ${JSON.stringify(userCart)}`);
         response.render('layout', 
         { 
             pageTitle: request.locals.siteName, 
             template: 'index', 
             userCart : userCart,
-            categories: request.session.categories,
-            items_array: request.session.items_array,
+            categories: categories,
+            items_array: items_array,
             IMG_DIR_FOR_WEB : request.session.IMG_DIR_FOR_WEB,
             csrfToken: request.csrfToken(),
             customers_feedback: request.locals.customers_feedback,
@@ -82,7 +88,7 @@ module.exports = () => {
         //console.log(`Category Name Encoded : ${category_name}`);
         var userCart = {} ;
         if (request.session.userCart)
-            userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
+            userCart = await JSON.parse(JSON.stringify(request.session.userCart)) ;
         
         category_name = category_name.toLocaleLowerCase();
         
