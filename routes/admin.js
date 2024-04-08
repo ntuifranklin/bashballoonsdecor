@@ -255,7 +255,7 @@ module.exports = () => {
 
     });
     
-    router.post('/updateitem/',csrfProtection, itemUpdateCheckValidation, async(request, response) => {
+    router.post('/updateitem/:category_webid',csrfProtection, itemUpdateCheckValidation, async(request, response) => {
         /* A non logged in user cannot access this page */
         var loggedInUser = {} ;
         //check if user is logged in
@@ -265,7 +265,7 @@ module.exports = () => {
             return response.status(401).send(`Go Away !!!`);
         };
 
-        var category_webid = new String(request.body.category_webid) ;
+        var category_webid = new String(request.params.category_webid) ;
         
         var itemsByCategoryWebID = cache.get('itemsByCategoryWebID');
         if (!itemsByCategoryWebID) {
@@ -301,7 +301,7 @@ module.exports = () => {
 
         /* An item gets updated if its old value is different from its new value */
         var oldItem = JSON.parse(JSON.stringify(itemsByCategoryWebID[category_webid]));
-        item_id = new string(oldItem.item_id) ;
+        item_id = new String(oldItem.item_id) ;
         var category_id = new String(oldItem.category_id);
         
 
@@ -466,11 +466,13 @@ module.exports = () => {
                 itemsByCategoryWebID[category_webid] = {} ;  
             } ;
             itemsByCategoryWebID[category_webid] = JSON.parse(JSON.stringify(itemObjectJson));
-            
+            //Flush the cache and start over
+            cache.flushAll();
             cache.set('categories', categories);
             cache.set('items_array',items_array);
             cache.set('itemsByCategoryID',itemsByCategoryID);
             cache.set('itemsByCategoryWebID',itemsByCategoryWebID);
+            cache.set('itemsByID', itemsByID);
 
             request.session.items_array = JSON.parse(JSON.stringify(items_array)); 
             request.session.itemsByID = JSON.parse(JSON.stringify(itemsByID)) ;
@@ -525,7 +527,7 @@ module.exports = () => {
         }
 
         response.render('layout', { 
-            pageTitle: 'Dashboard', 
+            pageTitle: `Updating ${decode(itemToUpdate.item_name).slice(0,20)}`, 
             template: 'updateitemform', 
             categories: categories,
             user: loggedInUser,

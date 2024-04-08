@@ -15,8 +15,13 @@ const nodemailer = require('nodemailer');
 const randomstring = require('randomstring');
 var mysql2 = require('mysql2');
 const {decode,encode} = require('html-entities');
-const {Email} = require('../utilities/email');
+const {Email,VALID_EMAIL_REGEXP} = require('../utilities/email');
 
+/* This is the only email regular expression used to check emails  */
+const loginCheckOutValidation = [
+    check('email').matches(VALID_EMAIL_REGEXP).withMessage('Please enter a valid email address.'),
+    check('password').isLength({ min: 1 }).withMessage('Please enter a password.'),
+];
 /* For caching data to increase speed */
 const NodeCache = require( "node-cache" );
 const cache = new NodeCache();
@@ -68,11 +73,6 @@ function generateOTP() {
     });
   }
 
-
-const loginCheckOutValidation = [
-    check('email').isEmail().withMessage('Please enter a valid email address.'),
-    check('password').isLength({ min: 1 }).withMessage('Please enter a password.'),
-];
 module.exports = () => { 
     
     /* generate a pool of mysql connection  */
