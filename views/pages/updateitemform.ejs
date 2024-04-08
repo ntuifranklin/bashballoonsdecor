@@ -55,7 +55,7 @@
                         <div class="form-group">
                             <img alt="<%= 'Image for ' + (new String(item.item_name)).slice(0,20) %>" src="<%= IMG_DIR_FOR_WEB + item.imageurl %>" width="110" height="118" />
                             <label for="itemimgurl">Item Image</label>
-                            <input type="file" name="itemimgurl" id="itemimgurl" name="MAX_FILE_SIZE" value="1000000" required>
+                            <input type="file" name="itemimgurl" id="itemimgurl" name="MAX_FILE_SIZE" value="52428800" > <!-- 50 MB -->
                         </div>    
                         <button type="submit" class="btn two" id="updateItemCategory"><span>Update Item Item</span></button>
                     </form>

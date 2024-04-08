@@ -76,7 +76,6 @@ $(document).ready(function() {
       /* Start by clearing the previous error message if any */
       $(`#updateItemResult`).html('');
 
-      
       $.ajaxSetup({
           headers: {
               'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
