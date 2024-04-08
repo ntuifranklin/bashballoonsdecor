@@ -25,6 +25,7 @@ module.exports = () => {
             categories: categories,
             csrfToken: request.csrfToken(),
             decode: decode,
+            encode:encode
         });
     });
      

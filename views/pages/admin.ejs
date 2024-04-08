@@ -21,7 +21,8 @@
         <div class="row">
             <div class="col-md-4">
                 <div class="box register">
-                    <div class="parallax" style="background-image: url(/assets/img/patron.jpg)"></div>
+                    <!-- style="background-image: url(/assets/img/patron.jpg)" -->
+                    <div class="parallax"></div>
                     <h3>Add Rental Item</h3>
                     <form id="addItemForm" class="contact-form" enctype="multipart/form-data" method="POST">
                                     
@@ -63,6 +64,10 @@
                             <input type="number" id="unitPrice" name="unitPrice" step="0.01" placeholder="Price for one unit" value="0.01" required>
                         </div>
                         
+                        <div class="form-group">
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+                        </div>
                         <div class="form-group">
                             <label for="itemimgurl">Item Image</label>
                             <input type="file" name="itemimgurl" id="itemimgurl" name="MAX_FILE_SIZE" value="1000000" required>

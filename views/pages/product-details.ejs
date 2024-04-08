@@ -24,10 +24,12 @@ function getRandomPercentageOff() {
             <ul class="pd-imgs">
                   <li class="li-pd-imgs nav-active">
                       <a href="JavaScript:void(0)">
-                        <img alt="ballon" src="https://via.placeholder.com/384x320">
+                        <img alt="<%= 'Image for ' + decode(item.item_name).slice(0.20) %>" src="<%= IMG_DIR_FOR_WEB + item.imageurl %>" width="384" height="320" />
+                        <!-- <img alt="ballon" src="https://via.placeholder.com/384x320"> -->
                       </a>
   
                   </li>
+                  <!--
                   <li class="li-pd-imgs">
                     <a href="JavaScript:void(0)">
                       <img alt="ballon" src="https://via.placeholder.com/384x320">
@@ -39,9 +41,11 @@ function getRandomPercentageOff() {
                     </a>
   
                   </li>
+                -->
               </ul>
               <div class="pd-main-img">
-                <img id="NZoomImg" alt="ballon" src="https://via.placeholder.com/384x320" >
+                <!-- <img id="NZoomImg" alt="ballon" src="https://via.placeholder.com/384x320" > -->
+                <img id="NZoomImg" alt="<%= 'Image for ' + decode(item.item_name).slice(0,20) %>" src="<%= IMG_DIR_FOR_WEB + item.imageurl %>" width="384" height="320" />
                 
               </div>
           </div>
@@ -53,7 +57,7 @@ function getRandomPercentageOff() {
               <p>Save <%= percentOff %>%</p>
               <h5>SKU-<%= item.category_webid %></h5>
             </div>
-            <h2><%= item.item_name %></h2>
+            <h2><%= decode(item.item_name) %></h2>
             
             <div class="star">
               <i class="fa-solid fa-star"></i>
@@ -293,24 +297,29 @@ function getRandomPercentageOff() {
 
         <% for ( var i = 0 ; i < itemsWithSimilarCategoryID.length ; i++ ) { %>
           <% var similar_item = itemsWithSimilarCategoryID[i] %>
-        <div class="item">
-          <div class="product-style">
-            <img alt="img" src="https://via.placeholder.com/195x210">
-            <a href="/product-details/<%= similar_item.category_webid %>">
-              <h5><%= similar_item.item_name %></h5>
-            </a>
-              <h6>$<%= similar_item.unitPrice %></h6>
-              <span>In stock, <%= similar_item.quantityAvailable %> units</span>
-              <div class="add-to-cart">
+          <% if (item.item_id == similar_item.item_id ) { %>
+          <% continue ; %>
+          <% } %>
+          <div class="item">
+            <div class="product-style">
 
-                <% var htmlID2 = new String(item.item_id) + "2";  %>
-                <a id="<%= htmlID2 %>" class="btn" onclick='updateCart("<%= similar_item.item_id %>", source="#", htmlID="<%= htmlID2 %>", alertIndex="productDetailsUpdateIndex2")'><span>Add to Cart</span></a>
-                <a href="#" class="heart-wishlist">
-                  <i class="fa-regular fa-heart"></i>
-                </a>
-              </div>
+              <img alt="<%= 'Image for ' + (similar_item.item_name).slice(0.20) %>" src="<%= IMG_DIR_FOR_WEB + similar_item.imageurl %>" width="195" height="210" />
+          
+              <a href="/product-details/<%= similar_item.category_webid %>">
+                <h5><%= decode(similar_item.item_name) %></h5>
+              </a>
+                <h6>$<%= similar_item.unitPrice %></h6>
+                <span>In stock, <%= similar_item.quantityAvailable %> units</span>
+                <div class="add-to-cart">
+
+                  <% var htmlID2 = new String(item.item_id) + "2";  %>
+                  <a id="<%= htmlID2 %>" class="btn" onclick='updateCart("<%= similar_item.item_id %>", source="#", htmlID="<%= htmlID2 %>", alertIndex="productDetailsUpdateIndex2")'><span>Add to Cart</span></a>
+                  <a href="#" class="heart-wishlist">
+                    <i class="fa-regular fa-heart"></i>
+                  </a>
+                </div>
+            </div>
           </div>
-        </div>
         <% } %>
        
       </div>

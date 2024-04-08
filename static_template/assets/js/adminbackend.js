@@ -11,12 +11,13 @@ $(document).ready(function() {
         /* Start by clearing the previous error message if any */
         $(`#addItemResult`).html('');
 
-        /* get the form data */
+        
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
+        
         const data = {
             '_csrf': $('input[name="_csrf"]').val(),
             'itemName': $('input[name="itemName"]').val(),
@@ -25,6 +26,8 @@ $(document).ready(function() {
             'unitPrice': $('input[name="unitPrice"]').val(),
             'category_id': $('select[name="category_id"]').val(),
         } ;
+        console.log(`data : ${JSON.stringify(data)}`);
+        console.log(`csrf : ${data._csrf}`);
         var formData = new FormData();
         //itemimgurl is the file id of the inout file.
         var files = $('#itemimgurl')[0].files[0]; 
@@ -37,11 +40,11 @@ $(document).ready(function() {
         formData.append('category_id', data.category_id);
         await $.ajax({
             type: "POST",
-            url: "/admin",
+            url: `/admin`,//form upload causes csrf error
             data: formData,
             contentType : false,
 					  processData : false,
-            encode: true,
+            //encode: true,
           }).done(function (data) {
             console.log(`${JSON.stringify(data)}`);
             var d = JSON.parse(JSON.stringify(data));
@@ -89,12 +92,13 @@ function reloadCategoryTable() {
    var valueSelected  = optionSelected.val();
    var textSelected   = optionSelected.text();
    
-    /* get the form data */
+    
     $.ajaxSetup({
       headers: {
          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
       }
     });
+    
    const data = {
     '_csrf': $('input[name="_csrf"]').val(),
     'category_id': valueSelected,

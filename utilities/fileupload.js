@@ -1,5 +1,7 @@
 const multer = require('multer');
-const upload_folder = '../static_template/assets/img/itemimgs/';
+const IMG_DIR_FOR_WEB = `/assets/img/itemimgs/`;
+module.exports.IMG_DIR_FOR_WEB = IMG_DIR_FOR_WEB ;
+const upload_folder = `../static_template${IMG_DIR_FOR_WEB}`;
 // Set up storage for uploaded files
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -10,7 +12,7 @@ const storage = multer.diskStorage({
   }
 });
 
-const maxSize = 1 * 1000 * 1000;
+const maxSize = 1 * 1024 * 1024; // 1MB
 // Create the multer instance
 const fileuploads = multer({ 
     storage: storage,
@@ -29,9 +31,9 @@ const fileuploads = multer({
         }
  
         cb(
-            "Error: File upload only supports the " +
+            new Error("Error: File upload only supports the " +
                 "following filetypes - " +
-                filetypes
+                filetypes)
         );
     },
 }); // .single("itemimgurl")

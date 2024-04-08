@@ -7,7 +7,6 @@ const cartRoute = require('./cart');
 const rentalItemsListRoute = require('./rental-items-list');
 const contactRoute = require('./contact');
 const productDetailsRoute = require('./product-details');
-const listItemsByCategoryNameRoute = require('./list_items_by_category_name');
 const adminRoute = require('./admin');
 const loginRoute = require('./login');
 const logoutRoute = require('./logout');
@@ -45,6 +44,7 @@ module.exports = () => {
             userCart : userCart,
             categories: request.session.categories,
             items_array: request.session.items_array,
+            IMG_DIR_FOR_WEB : request.session.IMG_DIR_FOR_WEB,
             csrfToken: request.csrfToken(),
             customers_feedback: request.locals.customers_feedback,
             decode: decode,
@@ -52,6 +52,8 @@ module.exports = () => {
         });
         
     });
+    
+    /* the routes below have to be here before the /:category_name route else things dont work properly */
     router.use('/shop', shopRoute());
     router.use('/checkout', checkoutRoute());
     router.use('/cart', cartRoute());
@@ -62,9 +64,82 @@ module.exports = () => {
     router.use(['/login','/identify-your-self','/whoami'], loginRoute());
     router.use(['/logout','/signout'], logoutRoute());
     router.use(['/verifyotp','/verify-otp'], verifyOTPRoute());
-
+    
     /* this route allows someone to search for a list of items based on an item category name */
-    router.use('/:category_name',listItemsByCategoryNameRoute())
+    router.get('/:category_name',csrfProtection, async(request, response) => { 
+        
+        var category_name = new String(request.params.category_name);
+        //console.log(`Category Name Encoded : ${category_name}`);
+        var userCart = {} ;
+        if (request.session.userCart)
+            userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
+        
+        category_name = category_name.toLocaleLowerCase();
+        var categories = await JSON.parse(JSON.stringify(request.session.categories));
+        
+        var itemsByCategoryID = await JSON.parse(JSON.stringify(request.session.itemsByCategoryID));
+        
+        var category = {} ;
+        var index = -1;
+        var categoryID = "";
+        category_name = encode(category_name);
+        for (var i = 0; i < categories.length; i++) {
+            var one_category = await JSON.parse(JSON.stringify(categories[i]));
+            
+            //console.log(`Category Name Encoded : ${category_name}`);
+            if (encode(one_category.category_name.toLocaleLowerCase()) === category_name) {
+                category = one_category;
+                index = i;
+                categoryID = new String(JSON.parse(JSON.stringify(one_category.category_id)));
+                break;
+            }
+        }
+        
+        if (category == {} || index == -1 || categoryID == "") { 
+                        
+            response.status(200).redirect('/'); 
+            
+        } else {
+           
+            
+            var category_items = [] ;
+            if (categoryID in itemsByCategoryID) { 
+                category_items = itemsByCategoryID[categoryID];
+                response.status(200).render('layout',
+                {
+                    pageTitle: decode(category.category_name),
+                    template: 'rental-items-list',
+                    categories: categories,
+                    items_array: request.session.items_array,
+                    userCart: userCart,
+                    IMG_DIR_FOR_WEB : request.session.IMG_DIR_FOR_WEB,
+                    category: decode(category.category_name),
+                    category_id: category.category_id,
+                    category_items: category_items,
+                    csrfToken: request.csrfToken(),
+                    decode: decode,
+                    encode: encode,
+                });
+            } else {
+                response.status(200).render('layout',
+                {
+                    pageTitle: "No Items Found in " + decode(category.category_name) + " Category",
+                    template: 'noitems',
+                    categories: categories,
+                    category_items: category_items,
+                    userCart: userCart,
+                    category: decode(category.category_name),
+                    csrfToken: request.csrfToken(),
+                    decode: decode,
+                    encode: encode,
+                });
+            } ;
+            
+        }
+        
+    });
+
+
     
     router.use(['/*','/f404'], f404Route());
     
