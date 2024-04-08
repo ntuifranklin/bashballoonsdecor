@@ -17,10 +17,14 @@ const MySQLStore = require('express-mysql-session')(session);
 require('dotenv').config();
 
 const {session_database_options} = require('./sessionmanagement/session') ;
-
 const cookieParser = require('cookie-parser');
 const {getCategories,getCategoriesItems} = require('./database/controllers/database');
 
+/* File upload  */
+const fileUpload = require('express-fileupload');
+app.use(fileUpload({
+    limits: { fileSize: 50 * 1024 * 1024 }, //maximum 1 MB
+}));
 
 /* dynamically detect the folder we are running from,
  then select port accordingly */
@@ -127,6 +131,8 @@ var index = 0 ;
 const customers_feedback = require(process.env.CUSTOMERS_FEEDBACK_FILE);
 app.locals.customers_feedback = customers_feedback ;
 
+/* location where images are being sotred */
+const {IMG_DIR_FOR_WEB} = require('./utilities/fileupload');
 
 app.use(parseForm, csrfProtection, async(request, response, next) => { 
 
@@ -186,7 +192,8 @@ app.use(parseForm, csrfProtection, async(request, response, next) => {
         request.session.itemsByID = JSON.parse(JSON.stringify(itemsByID)) ;
         request.session.itemsByCategoryID = JSON.parse(JSON.stringify(itemsByCategoryID));
         request.session.itemsByCategoryWebID = JSON.parse(JSON.stringify(itemsByCategoryWebID));
-        //console.log(`Items By Category WebID : ${request.session.itemsByCategoryWebID}`);
+        //console.log(`Items By Category WebID : ${JSON.stringify(request.session.itemsByCategoryWebID)}`);
+        //console.log(`Items By Category ID : ${JSON.stringify(request.session.itemsByCategoryID)}`);
         request.session.save();
     } ;
 
@@ -205,7 +212,9 @@ app.use(parseForm, csrfProtection, async(request, response, next) => {
     } ;
 
     request.session.userCart = JSON.parse(JSON.stringify(userCart)) ;
+    request.session.IMG_DIR_FOR_WEB = IMG_DIR_FOR_WEB ;
     request.session.save();
+    response.locals.csrfToken = request.csrfToken();
     request.locals = app.locals ;
    
     return next();

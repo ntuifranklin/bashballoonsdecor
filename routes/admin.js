@@ -1,9 +1,9 @@
 const express = require('express');
-const router = express.Router();
-
 const bodyParser = require('body-parser');
 var csrf = require('csurf');
-const csrfProtection = csrf({ cookie: true })
+const csrfProtection = csrf({ cookie: true }) ;
+const {fileuploads} = require('../utilities/fileupload');
+const router = express.Router();
 const {decode, encode} = require('html-entities');
 require('dotenv').config();
 const createError = require('http-errors');
@@ -15,6 +15,8 @@ var mysql2 = require('mysql2');
 const {getFakeCategoriesItems,getFakeEmailObject} = require('../utilities/fakedata');
 const { fa } = require('@faker-js/faker');
 const {Email} = require('../utilities/email');
+const { file } = require('googleapis/build/src/apis/file');
+
 
 const checkOutValidation = [
     check('itemName').isLength({ min: 3, max:255}).escape().notEmpty().withMessage('Please enter the item name.'),
@@ -28,24 +30,15 @@ const apiCheckValidation = [
     check('category_id').isLength({ min: 1 }).escape().isAlphanumeric().withMessage('Please select a category')
 ];
 
+//image directory for item images relative to the /routes directory
+const IMG_DIR = __dirname + "/" + "../static_template/assets/img/itemimgs/";
+
 module.exports = () => { 
     /* generate a pool of mysql connection  */
     var con = mysql2.createPool(defaultMySQLDBConnectorConfig);
     
     router.get('/', csrfProtection, async (request, response) => { 
-        /* Test sending an email wioth new email */
-        /*
-        var email = new Email();
-        var emailObject = await getFakeEmailObject();
-        email.sendEmail('ntuifranklin2005@gmail.com', emailObject.subject, emailObject.html).
-        then(
-            (result) => {
-                console.log(`Email sent successfully: ${JSON.stringify(result)}`);
-            }
-        ).catch(err => {
-            console.log(`Error sending email: ${err}`);
-        });
-        */
+        
         var categories = JSON.parse(JSON.stringify(request.session.categories));
     
         var userCart = {} ;
@@ -58,37 +51,50 @@ module.exports = () => {
         if (request.session.user && request.session.user != {}) {
             loggedInUser = JSON.parse(JSON.stringify(request.session.user)) ;
         } else {
-            return response.status(401).send(`You are not authorized to access this page`);
+            return response.status(401).send(`Go Away !!!`);
         };
 
         response.render('layout', { 
             pageTitle: 'Dashboard', 
             template: 'admin', 
-            csrfToken: request.csrfToken(),
             categories: categories,
             user: loggedInUser,
             userCart: userCart,
+            csrfToken: request.csrfToken(),
             decode: decode,
             encode: encode,
         });
     });
 
-    router.post('/', csrfProtection,checkOutValidation, async(request, response) => {
+    router.post('/',csrfProtection, checkOutValidation, async(request, response) => {
         
         var loggedInUser = {} ;
-
         //check if user is logged in
-        if (request.session.user != {}) {
+        if (request.session.user && request.session.user != {}) {
             loggedInUser = JSON.parse(JSON.stringify(request.session.user)) ;
         } else {
-            return response.status(401).send(`You are not authorized to access this page`);
+            return response.status(401).send(`Go Away !!!`);
         };
+
+        //console.log(`Before checking the files array length`);
+        if (!request.files || Object.keys(request.files).length === 0) {
+            return response.status(400).send('No image was uploaded.');
+        } ;
+        //.log(`\nChecked the files array successful\nChecking the image type`);
+        /* check the mimetype of the file */
+        var acceptedImageTypes = /^jpeg|jpg|png|gif$/;
+        var correct_mimetype = acceptedImageTypes.test(request.files.itemimgurl.mimetype);
+        if (!correct_mimetype) {
+            console.log(`Error uploaded wrong file`);
+            return response.status(400).send(`Only images of this type ${acceptedImageTypes} are accepted`);
+        }
+        
         const formerrors = validationResult(request);
         if (!formerrors.isEmpty()) {
             const err_message = formerrors.array().map(i => i.msg).join('<br>');
-            //console.log(`Error processing form: ${JSON.stringify(formerrors.array(), null, 4)}`);
             return response.status(400).send(`${JSON.parse(JSON.stringify(err_message))}`); 
         };
+        
         
         var itemName = new String(request.body.itemName);
         var description = new String(request.body.description);
@@ -101,24 +107,85 @@ module.exports = () => {
         /* generate an item_id that does not exist */
         var item_id = await generateUniqueID(con, 'category_items', 'item_id');
         item_id = item_id.substring(0,16);
+        /* rename the image url to have the id as part of the image */
+        //console.log(`current directory name  : ${__dirname}`);
+        
+        // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
+        const sampleFile = request.files.itemimgurl;
+        const uploadPath = `${IMG_DIR}` + item_id + '-' + sampleFile.name;
+
+        // Use the mv() method to place the file somewhere on your server
+        sampleFile.mv(uploadPath, function(errMoveImg) {
+            if (errMoveImg) {
+                console.log(`Error moving image : ${errMoveImg}`);
+                return response.status(500).send(errMoveImg);
+
+            }
+
+            //response.send('File uploaded!');
+        });
+        const imageurl = item_id + '-' + sampleFile.name;
         /* generate a category_web id  that does not exist */
         var category_webid = await generateUniqueID(con, 'category_items', 'category_webid');
         category_webid = category_webid.substring(0,8);
         try {
             var sql = `INSERT INTO category_items VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
-            var itemArray = [item_id, itemName, description, category_id, category_webid, '', quantityAvailable, unitPrice]; 
-            await con.execute(sql,itemArray, 
-                async(err, results,fields) => {
-                    if (err) {
-                        console.error("Error inserting category_items, reverting changes: ", err);
-                        con.execute('ROLLBACK');//con.rollback();
-                        throw err ;
-                        
-                    };
+            var itemArray = [item_id, itemName, description, category_id, category_webid, imageurl, quantityAvailable, unitPrice]; 
+            con.execute(sql,itemArray, 
+                (errInsertingItem, results,fields) => {
+                if (errInsertingItem) {
+                    console.error("Error inserting category_items, reverting changes: ", errInsertingItem);
+                    con.execute('ROLLBACK');//con.rollback();
+                    throw errInsertingItem ;
+                    
+                };
             });
 
             con.execute('COMMIT'); //await con.commit();
+            /* get session array variables */
+                    
+            var items_array = JSON.parse(JSON.stringify(request.session.items_array)) ;
+            var itemsByID = JSON.parse(JSON.stringify(request.session.itemsByID));
+            /* itemsByCategoryID should be an array  */
+            var itemsByCategoryID = JSON.parse(JSON.stringify(request.session.itemsByCategoryID));
+            var itemsByCategoryWebID = JSON.parse(JSON.stringify(request.session.itemsByCategoryWebID)) ;
+
+            //console.log(`itemsByCategoryID: ${JSON.stringify(itemsByCategoryID)}`);
+
+            /* update session variables */
+            items_array.push(itemArray);
+            if (!(item_id in itemsByID)) {
+                itemsByID[item_id] = {} ;  
+            } ;
+            const itemObjectJson = {
+                "item_id" : item_id,
+                "item_name":itemName,
+                "description":description,
+                "category_id":category_id,
+                "category_webid":category_webid,
+                "imageurl":imageurl,
+                "quantityAvailable":quantityAvailable,
+                "unitPrice":unitPrice
+            } ;
+            itemsByID[item_id]["itemDetails"] = JSON.parse(JSON.stringify(itemObjectJson)) ;
+
             
+            if (!(category_id in itemsByCategoryID)) {
+                itemsByCategoryID[category_id] = [] ;  
+            } ;
+            itemsByCategoryID[category_id].push(itemObjectJson);
+            
+            if (!(category_webid in itemsByCategoryWebID)) {
+                itemsByCategoryWebID[category_webid] = {} ;  
+            } ;
+            itemsByCategoryWebID[category_webid] = JSON.parse(JSON.stringify(itemObjectJson));
+
+            request.session.items_array = JSON.parse(JSON.stringify(items_array)); 
+            request.session.itemsByID = JSON.parse(JSON.stringify(itemsByID)) ;
+            request.session.itemsByCategoryID = JSON.parse(JSON.stringify(itemsByCategoryID));
+            request.session.itemsByCategoryWebID = JSON.parse(JSON.stringify(itemsByCategoryWebID));
+
+            request.session.save();
             
             return response.status(200).send(`Item added to cart successfully`);
         } catch (error) {

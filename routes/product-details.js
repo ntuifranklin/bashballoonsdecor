@@ -68,6 +68,7 @@ module.exports = () => {
             csrfToken: request.csrfToken(),
             userCart:userCart,
             item:item,
+            IMG_DIR_FOR_WEB : request.session.IMG_DIR_FOR_WEB,
             decode: decode,
             encode: encode,
             categories: categories,

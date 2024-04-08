@@ -216,7 +216,9 @@
                 <% var item_name = decode(individual_item.item_name);  %>
                   <li class="grid-list  <%- ( i == category_items.length - 1 ) ? 'end' : '' %>" >
                     <div class="d-flex align-items-center">
-                      <img alt="product" src="https://via.placeholder.com/110x118">
+                      <!-- <img alt="product" src="https://via.placeholder.com/110x118"> -->
+                      <img alt="<%= 'Image for ' + (new String(item_name)).slice(0,20) %>" src="<%= IMG_DIR_FOR_WEB + individual_item.imageurl %>" width="110" height="118" />
+                      
                       <div class="weekly-sellers-text">
                         <span><%= item_name %></span>
                         <a href="/product-details/<%= individual_item.category_webid %>"><h5><%= item_name %></h5></a>
@@ -280,7 +282,8 @@
                 <div class="col-md-4 col-sm-6">
                   <div class="recent-product-two">
                     <div class="recent-product-two-img">
-                      <img alt="product" src="https://via.placeholder.com/174x190">
+                      <!-- <img alt="product" src="https://via.placeholder.com/174x190"> -->
+                      <img alt="<%= 'Image for ' + (new String(box_item_name)).slice(0,20) %>"  src="<%= IMG_DIR_FOR_WEB + individual_item_box.imageurl %>" width="174" height="190" />
                     </div>
                     <div class="weekly-sellers-text">
                         <span><%= box_item_name %></span>

@@ -50,6 +50,12 @@ insert into users values
  'franklin@bashballoonsrentals.com', PASSWORD('<<>>**1aBB'), 
  created_at, last_modified, current_timestamp(), 0, 
  standard_admin, active);
+ 
+insert into users values 
+ ( 'ba719890e6e762564eef1a', 'franklin', 
+ 'franklin.nkokam.ngongang@gmail.com', PASSWORD('<<>>**1aBB'), 
+ created_at, last_modified, current_timestamp(), 0, 
+ 'standard_admin', 'active');
 
 /*
 -- Generate OTP for a user

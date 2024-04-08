@@ -204,7 +204,11 @@
 			<% var individual_item = list_of_items[i] %>
 			<div class="item">
 				<div class="product-style">
-					<img alt="img" src="https://via.placeholder.com/195x210">
+					<!-- <img alt="img" src="https://via.placeholder.com/195x210"> -->
+					
+					<img alt="<%= 'Image for ' + (individual_item.item_name).slice(0,14) %>" src="<%= IMG_DIR_FOR_WEB + individual_item.imageurl %>" width="195" height="210" />
+          
+
 					<a href="/product-details/<%= individual_item.category_webid %>">
 						<h5><%= individual_item.item_name %></h5>
 					</a>
@@ -276,7 +280,9 @@
 				<div class="col-lg-6">
 					<div class="product-style two">
 						<div>
-						<img alt="img" src="https://via.placeholder.com/140x165">
+							<!-- <img alt="img" src="https://via.placeholder.com/140x165"> -->
+							<img alt="<%= 'Image for ' + (individual_item.item_name).slice(0,14) %>" src="<%= IMG_DIR_FOR_WEB + individual_item.imageurl %>" width="140" height="165" />
+          
 						</div>
 						<div>
 						<a href="/product-details/<%= individual_item.category_webid %>">
@@ -307,7 +313,8 @@
 				<div class="col-lg-6">
 					<div class="product-style two">
 						<div>
-							<img alt="img" src="https://via.placeholder.com/140x165">
+							<!-- <img alt="img" src="https://via.placeholder.com/140x165"> -->
+							<img alt="<%= 'Image for ' + (individual_item.item_name).slice(0,14) %>" src="<%= IMG_DIR_FOR_WEB + individual_item.imageurl %>" width="140" height="165" />
 						</div>
 						<div>
 							
@@ -341,7 +348,8 @@
 				<div class="col-lg-6">
 				<div class="product-style two mb-lg-0">
 					<div>
-					<img alt="img" src="https://via.placeholder.com/140x165">
+						<!-- <img alt="img" src="https://via.placeholder.com/140x165"> -->
+						<img alt="<%= 'Image for ' + (individual_item.item_name).slice(0,14)  %>" src="<%= IMG_DIR_FOR_WEB + individual_item.imageurl %>" width="140" height="165" />
 					</div>
 					<div>
 					<a href="/product-details/<%= individual_item.category_webid %>">
@@ -375,7 +383,8 @@
 				<div class="col-lg-6">
 				<div class="product-style two">
 					<div>
-					<img alt="img" src="https://via.placeholder.com/140x165">
+						<!-- <img alt="img" src="https://via.placeholder.com/140x165"> -->
+						<img alt="<%= 'Image for ' + (individual_item.item_name).slice(0,14) %>" src="<%= IMG_DIR_FOR_WEB + individual_item.imageurl %>" width="140" height="165" />
 					</div>
 					<div>
 					<a href="/product-details/<%= individual_item.category_webid %>">
@@ -409,7 +418,8 @@
 				<div class="col-lg-6">
 					<div class="product-style two">
 						<div>
-						<img alt="img" src="https://via.placeholder.com/140x165">
+							<!-- <img alt="img" src="https://via.placeholder.com/140x165"> -->
+							<img alt="<%=  'Image for ' + (individual_item.item_name).slice(0,14) %>" src="<%= IMG_DIR_FOR_WEB + individual_item.imageurl %>" width="140" height="165" />
 						</div>
 					<div>
 					<a href="/product-details/<%= individual_item.category_webid %>">
@@ -553,7 +563,7 @@
 					<div class="d-flex align-items-center justify-content-between">
 						<div class="d-flex align-items-center">
 							<span>Starting From:</span>
-							<h3>$<%= themeTotal %></h3>
+							<h3>$<%= themeTotal.toFixed(2) %></h3>
 						</div>
 						<div class="star">
 							<i class="fa-solid fa-star"></i>
@@ -593,7 +603,7 @@
 					<div class="d-flex align-items-center justify-content-between">
 					<div class="d-flex align-items-center">
 						<span>Starting From:</span>
-						<h3>$<%= themeTotal %></h3>
+						<h3>$<%= themeTotal.toFixed(2) %></h3>
 					</div>
 					<div class="star">
 						<i class="fa-solid fa-star"></i>
@@ -632,7 +642,7 @@
 					<div class="d-flex align-items-center justify-content-between">
 					<div class="d-flex align-items-center">
 						<span>Starting From:</span>
-						<h3>$<%= themeTotal %></h3>
+						<h3>$<%= themeTotal.toFixed(2) %></h3>
 					</div>
 					<div class="star">
 						<i class="fa-solid fa-star"></i>
@@ -671,7 +681,7 @@
 					<div class="d-flex align-items-center justify-content-between">
 					<div class="d-flex align-items-center">
 						<span>Starting From:</span>
-						<h3>$<%= themeTotal %></h3>
+						<h3>$<%= themeTotal.toFixed(2) %></h3>
 					</div>
 					<div class="star">
 						<i class="fa-solid fa-star"></i>

@@ -34,6 +34,7 @@ function sendOTP(email, otp) {
                     <p>
                         Hi There!\n <br/>
                         Here is your one time password (OTP) :<h3>${otp}</h3>\n
+                        It expires in 15 minutes.
                         <br/>\n 
                     </p>
                 </body>
@@ -41,7 +42,7 @@ function sendOTP(email, otp) {
         };
 
         var emailSending = new Email();
-        emailSending.sendEmail(mailOptions.to, mailOptions.subject, mailOptions.html).
+        await emailSending.sendEmail(mailOptions.to, mailOptions.subject, mailOptions.html).
         then(
             (result) => {
                 console.log(`OTP Email sent: ${JSON.stringify(result)}`);
@@ -54,14 +55,12 @@ function sendOTP(email, otp) {
     });
 };
 
-
-
 /* function that generates an OTP password */
 
 // Generate OTP
 function generateOTP() {
     return randomstring.generate({
-      length: 6,
+      length: 9,
       charset: 'numeric'
     });
   }
@@ -89,7 +88,7 @@ module.exports = () => {
     });
 
     
-    router.get('/', csrfProtection, (request, response) => { 
+    router.get('/', csrfProtection, async(request, response) => { 
         var categories = request.session.categories;
         var userCart = {} ;
 
@@ -172,7 +171,7 @@ module.exports = () => {
                 // Store OTP in the database
                 con.execute('INSERT INTO otp \
                         (id, user_email, otp_code, expiration_time) \
-                        VALUES (id, ?, ?, NOW() + INTERVAL 5 MINUTE)',
+                        VALUES (id, ?, ?, NOW() + INTERVAL 15 MINUTE)',
                       [user.email, otp], (err, results) => {
                     if (err) {
                         return response.status(500).send('Internal Server Error');

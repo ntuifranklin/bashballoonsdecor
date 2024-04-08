@@ -40,6 +40,7 @@ function updateCart(productID, source='', htmlID='#', alertIndex='', action='a')
         $(`#${alertIndex}`).html(successHtml);
       else
         $(`#cartResult`).html(successHtml);
+      location.href = location.href;
     }).fail((data) => {
       
       console.log(`Failure data received : ${JSON.stringify(data)}`);
@@ -53,6 +54,7 @@ function updateCart(productID, source='', htmlID='#', alertIndex='', action='a')
         $(`#${alertIndex}`).html(errorHtml);
       else
         $(`#cartResult`).html(errorHtml);
+       
     });
 }
 
