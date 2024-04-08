@@ -18,10 +18,20 @@ const contactFormValidation = [
     check('phone').isLength({ min: 5, max:16 }).withMessage('Please enter your phone number.'),
 ];
 
+/* For caching data to increase speed */
+const NodeCache = require( "node-cache" );
+const cache = new NodeCache();
+
 module.exports = () => { 
     
     router.get('/', csrfProtection, async(request, response) => { 
-        var categories = request.session.categories;
+        
+        var categories = cache.get('categories');
+        if (!categories) {
+            categories = await JSON.parse(JSON.stringify(request.session.categories));
+            cache.set('categories', categories);
+        }
+         
         var userCart = {} ;
         if (request.session.userCart) {
             userCart = await JSON.parse(JSON.stringify(request.session.userCart)) ;

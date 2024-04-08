@@ -26,6 +26,10 @@ const bootstrapCode = fs.readFileSync(`${process.env.BOOTSTRAP_CSS_FILE}`).toStr
 const {Email} = require('../utilities/email');
 
 
+/* For caching data to increase speed */
+const NodeCache = require( "node-cache" );
+const cache = new NodeCache();
+
 const checkOutValidation = [
     check('completename').isLength({ min: 5, max:255 }).withMessage('Please enter your full name.'),
     check('email').isEmail().normalizeEmail().withMessage('Please enter a valid email address.'),
@@ -268,7 +272,12 @@ module.exports = () => {
     router.get('/', csrfProtection,async(request, response) => { 
         
         var userCart = {} ;
-        var categories = request.session.categories;
+        
+        var categories = cache.get('categories');
+        if (!categories) {
+            categories = await JSON.parse(JSON.stringify(request.session.categories));
+            cache.set('categories', categories);
+        } ;
         if (request.session.userCart)
             userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
         

@@ -23,15 +23,25 @@ const {decode, encode} = require('html-entities');
 
 require('dotenv').config();
 
+
+/* For caching data to increase speed */
+const NodeCache = require( "node-cache" );
+const cache = new NodeCache();
+
 module.exports = () => { 
         
     router.use(bodyParser.json());
 
     router.get('/', csrfProtection, async (request, response) => { 
         /* must have been loaded in server.js file  */  
-        var categories = request.session.categories;
-        var categories_items = request.session.categoriesItemsHash;
+              
         
+        var categories = cache.get('categories');
+        if (!categories) {
+            categories = await JSON.parse(JSON.stringify(request.session.categories));
+            cache.set('categories', categories);
+        }
+             
         var userCart = {} ;
         if (request.session.userCart)
             userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
@@ -75,9 +85,19 @@ module.exports = () => {
             userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
         
         category_name = category_name.toLocaleLowerCase();
-        var categories = await JSON.parse(JSON.stringify(request.session.categories));
         
-        var itemsByCategoryID = await JSON.parse(JSON.stringify(request.session.itemsByCategoryID));
+        var categories = cache.get('categories');
+        if (!categories) {
+            categories = await JSON.parse(JSON.stringify(request.session.categories));
+            cache.set('categories', categories);
+        }
+         
+        var itemsByCategoryID = cache.get('itemsByCategoryID');
+        if (!itemsByCategoryID) {
+            itemsByCategoryID = await JSON.parse(JSON.stringify(request.session.itemsByCategoryID)) ;
+            cache.set('itemsByCategoryID',itemsByCategoryID);
+        };
+        
         
         var category = {} ;
         var index = -1;
@@ -140,6 +160,7 @@ module.exports = () => {
     });
 
 
+    /* This should be the last route to catch errors */
     
     router.use(['/*','/f404'], f404Route());
     

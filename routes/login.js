@@ -17,6 +17,9 @@ var mysql2 = require('mysql2');
 const {decode,encode} = require('html-entities');
 const {Email} = require('../utilities/email');
 
+/* For caching data to increase speed */
+const NodeCache = require( "node-cache" );
+const cache = new NodeCache();
 /* define a function that sends one time passwords */
 
 function sendOTP(email, otp) {
@@ -89,7 +92,13 @@ module.exports = () => {
 
     
     router.get('/', csrfProtection, async(request, response) => { 
-        var categories = request.session.categories;
+        
+        var categories = cache.get('categories');
+        if (!categories) {
+            categories = await JSON.parse(JSON.stringify(request.session.categories));
+            cache.set('categories', categories);
+        }
+         
         var userCart = {} ;
 
         //console.log(`user ${request.session.user} userCart ${request.session.userCart}`);

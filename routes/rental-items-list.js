@@ -3,15 +3,23 @@ const router = express.Router();
 const {decode,encode} = require('html-entities');
 
 
+/* For caching data to increase speed */
+const NodeCache = require( "node-cache" );
+const cache = new NodeCache();
 
 module.exports = () => {
         
-    router.get('/', async (request, response) => { 
+    router.get('/', async(request, response) => { 
         var userCart = {} ;
         if (request.session.userCart) {
             userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
         };
-        var categories = request.session.categories;
+        
+        var categories = cache.get('categories');
+        if (!categories) {
+            categories = await JSON.parse(JSON.stringify(request.session.categories));
+            cache.set('categories', categories);
+        };
         response.render('layout', { 
             pageTitle: 'Individual Items | Individual Products', 
             template: 'rental-items-list',
