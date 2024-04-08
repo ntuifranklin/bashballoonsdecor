@@ -18,6 +18,10 @@ const {Email} = require('../utilities/email');
 const { file } = require('googleapis/build/src/apis/file');
 
 
+/* For caching data to increase speed */
+const NodeCache = require( "node-cache" );
+const cache = new NodeCache();
+
 const checkOutValidation = [
     check('itemName').isLength({ min: 3, max:255}).escape().notEmpty().withMessage('Please enter the item name.'),
     check('description').isLength({ min: 3, max:1024 }).escape().notEmpty().withMessage('Please enter the item description.'),
@@ -39,8 +43,14 @@ module.exports = () => {
     
     router.get('/', csrfProtection, async (request, response) => { 
         
-        var categories = JSON.parse(JSON.stringify(request.session.categories));
-    
+       
+        
+        var categories = cache.get('categories');
+        if (!categories) {
+            categories = await JSON.parse(JSON.stringify(request.session.categories));
+            cache.set('categories', categories);
+        }
+         
         var userCart = {} ;
         if (request.session.userCart)
             userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;

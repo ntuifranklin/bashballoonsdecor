@@ -20,10 +20,14 @@ const {session_database_options} = require('./sessionmanagement/session') ;
 const cookieParser = require('cookie-parser');
 const {getCategories,getCategoriesItems} = require('./database/controllers/database');
 
+/* For caching data to increase speed */
+const NodeCache = require( "node-cache" );
+const cache = new NodeCache();
+
 /* File upload  */
 const fileUpload = require('express-fileupload');
 app.use(fileUpload({
-    limits: { fileSize: 50 * 1024 * 1024 }, //maximum 1 MB
+    limits: { fileSize: 50 * 1024 * 1024 }, //maximum 50 MB
 }));
 
 /* dynamically detect the folder we are running from,
@@ -151,7 +155,8 @@ app.use(parseForm, csrfProtection, async(request, response, next) => {
         userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
     
     var item = null ;
-    if (!request.session.items_array || request.session.items_array == null || request.session.items_array == {}) {
+    items_array = cache.get('items_array');
+    if (!items_array) {
         itemsByID = {} ;
         itemsByCategoryID = {} ;
         itemsByCategoryWebID = {};
@@ -187,7 +192,12 @@ app.use(parseForm, csrfProtection, async(request, response, next) => {
             itemsByID[itemID]["itemDetails"] = JSON.parse(JSON.stringify(item)) ;
         } ;
 
-        
+        /* Saving data on cache */
+        cache.set('items_array', items_array);
+        cache.set('itemsByID', itemsByID);
+        cache.set('itemsByCategoryID',itemsByCategoryID);
+        cache.set('itemsByCategoryWebID',itemsByCategoryWebID);
+
         request.session.items_array = JSON.parse(JSON.stringify(items_array));
         request.session.itemsByID = JSON.parse(JSON.stringify(itemsByID)) ;
         request.session.itemsByCategoryID = JSON.parse(JSON.stringify(itemsByCategoryID));
@@ -198,15 +208,15 @@ app.use(parseForm, csrfProtection, async(request, response, next) => {
     } ;
 
     //console.log(`itemsByID in server.js: ${JSON.stringify(request.session.itemsByID,null,4)}`);
-    
-    if (!request.session.categories || request.session.categories == null) {
+    categories = cache.get('categories');
+    if (!categories ) {
         categories = await getCategories (tableName='categories') ;
         for (var i = 0; i <  categories.length; i++) {
             var category = JSON.parse(JSON.stringify( categories[i]));
             category.category_name = decode(category.category_name);
             //categories[i].category_name = category.category_name;
         };
-
+        cache.set('categories', categories);
         request.session.categories = JSON.parse(JSON.stringify(categories));
         request.session.save();
     } ;
