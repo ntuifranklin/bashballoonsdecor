@@ -113,14 +113,14 @@ module.exports = () => {
         if (request.session.userCart)
             userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
         //console.log('User Cart in cart.js: ' + JSON.stringify(userCart, null, 4));
-        const google_recaptcha_site_key = process.env.GOOGLE_RECAPTCHA_SITE_KEY;
+        const google_recaptcha_secret_key = process.env.GOOGLE_RECAPTCHA_SECRET_KEY;
         response.render('layout', { 
             pageTitle: 'Login Page', 
             template: 'login', 
             userCart: userCart,
             csrfToken: request.csrfToken(),
             categories: categories,
-            google_recaptcha_site_key:google_recaptcha_site_key,
+            google_recaptcha_secret_key:google_recaptcha_secret_key,
             user: user,
             decode:decode,
             encode:encode
