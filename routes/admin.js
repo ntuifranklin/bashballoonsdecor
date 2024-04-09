@@ -18,10 +18,6 @@ const {Email} = require('../utilities/email');
 const { file } = require('googleapis/build/src/apis/file');
 
 
-/* For caching data to increase speed */
-const NodeCache = require( "node-cache" );
-const cache = new NodeCache();
-
 const checkOutValidation = [
     check('itemName').isLength({ min: 3, max:255}).escape().notEmpty().withMessage('Please enter the item name.'),
     check('description').isLength({ min: 3, max:1024 }).escape().notEmpty().withMessage('Please enter the item description.'),
@@ -52,11 +48,8 @@ module.exports = () => {
     router.get('/', csrfProtection, async (request, response) => { 
         
 
-        var categories = cache.get('categories');
-        if (!categories) {
-            categories = await JSON.parse(JSON.stringify(request.session.categories));
-            cache.set('categories', categories);
-        }
+        var categories = await JSON.parse(JSON.stringify(request.session.categories));
+       
          
         var userCart = {} ;
         if (request.session.userCart)
@@ -68,7 +61,8 @@ module.exports = () => {
         if (request.session.user && request.session.user != {}) {
             loggedInUser = JSON.parse(JSON.stringify(request.session.user)) ;
         } else {
-            return response.status(401).send(`Go Away !!!`);
+            response.status(401).send(`Go Away !!!`);
+            return ;
         };
 
         response.render('layout', { 
@@ -91,26 +85,30 @@ module.exports = () => {
         if (request.session.user && request.session.user != {}) {
             loggedInUser = JSON.parse(JSON.stringify(request.session.user)) ;
         } else {
-            return response.status(401).send(`Go Away !!!`);
+            response.status(401).send(`Go Away !!!`);
+            return ;
         };
 
         //console.log(`Before checking the files array length`);
         if (!request.files || Object.keys(request.files).length === 0) {
-            return response.status(400).send('No image was uploaded.');
+            response.status(400).send('No image was uploaded.');
+            return ;
         } ;
         //.log(`\nChecked the files array successful\nChecking the image type`);
         /* check the mimetype of the file */
-        var acceptedImageTypes = /^jpeg|jpg|png|gif$/;
+        var acceptedImageTypes = /jpeg|jpg|png|gif/;
         var correct_mimetype = acceptedImageTypes.test(request.files.itemimgurl.mimetype);
         if (!correct_mimetype) {
-            console.log(`Error uploaded wrong file`);
-            return response.status(400).send(`Only images of this type ${acceptedImageTypes} are accepted`);
+            console.log(`Error wrong file type uploaded`);
+            response.status(400).send(`Only images of this type ${acceptedImageTypes} are accepted`);
+            return ;
         }
         
         const formerrors = validationResult(request);
         if (!formerrors.isEmpty()) {
             const err_message = formerrors.array().map(i => i.msg).join('<br>');
-            return response.status(400).send(`${JSON.parse(JSON.stringify(err_message))}`); 
+            response.status(400).send(`${JSON.parse(JSON.stringify(err_message))}`); 
+            return ;
         };
         
         
@@ -130,19 +128,22 @@ module.exports = () => {
         
         // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
         const sampleFile = request.files.itemimgurl;
-        const uploadPath = `${IMG_DIR}` + item_id + '-' + sampleFile.name;
+        //get extension of the file 
+        var ext = sampleFile.name.split('.').pop();
+        const uploadPath = `${IMG_DIR}` + item_id + '.' + ext;
 
         // Use the mv() method to place the file somewhere on your server
         sampleFile.mv(uploadPath, function(errMoveImg) {
             if (errMoveImg) {
                 console.log(`Error moving image : ${errMoveImg}`);
-                return response.status(500).send(errMoveImg);
+                response.status(500).send(errMoveImg);
+                return ;
 
             }
 
             //response.send('File uploaded!');
         });
-        const imageurl = item_id + '-' + sampleFile.name;
+        const imageurl = item_id + '.' + ext;
         /* generate a category_web id  that does not exist */
         var category_webid = await generateUniqueID(con, 'category_items', 'category_webid');
         category_webid = category_webid.substring(0,8);
@@ -205,11 +206,13 @@ module.exports = () => {
 
             request.session.save();
             
-            return response.status(200).send(`Item added to cart successfully`);
+            response.status(200).send(`Item added to cart successfully`);
+            return ;
         } catch (error) {
             console.log(`Error in admin.js inserting new item: ${error.message}`);
             con.execute('ROLLBACK');//con.rollback();
-            return response.status(500).send(`Error processing form`);
+            response.status(500).send(`Error processing form`);
+            return ;
         }
         
     });
@@ -234,21 +237,21 @@ module.exports = () => {
             //console.log("User is not logged in. Might be a bot trying to access this route. Generating fake data for this bot to eat");
            
             errorCode = 401 ;
-            return response.status(401).json(fakeCategoryItems);
+            response.status(401).json(fakeCategoryItems);
+            return ;
         } else {
             loggedInUser = JSON.parse(JSON.stringify(request.session.user)) ;
-            var itemsByCategoryID = cache.get('itemsByCategoryID');
-            if (!itemsByCategoryID) {
-                itemsByCategoryID = JSON.parse(JSON.stringify(request.session.itemsByCategoryID)) ;
-                cache.set('itemsByCategoryID',itemsByCategoryID);
-            }
+            var itemsByCategoryID = JSON.parse(JSON.stringify(request.session.itemsByCategoryID)) ;
+            
             if (category_id in itemsByCategoryID) {
                 
                 categoryItems = JSON.parse(JSON.stringify(itemsByCategoryID[category_id]));
-                return  response.status(200).json(categoryItems);
+                response.status(200).json(categoryItems);
+                return ;
                
             } else {
-                return  response.status(401).json(fakeCategoryItems);
+                response.status(401).json(fakeCategoryItems);
+                return ;
             }
 
         } ;   
@@ -262,30 +265,21 @@ module.exports = () => {
         if (request.session.user && request.session.user != {}) {
             loggedInUser = JSON.parse(JSON.stringify(request.session.user)) ;
         } else {
-            return response.status(401).send(`Go Away !!!`);
+            response.status(401).send(`Go Away !!!`);
+            return ;
         };
 
         var category_webid = new String(request.params.category_webid) ;
-        
-        var itemsByCategoryWebID = cache.get('itemsByCategoryWebID');
-        if (!itemsByCategoryWebID) {
-            itemsByCategoryWebID = await JSON.parse(JSON.stringify(request.session.itemsByCategoryWebID)) ;
-            cache.set('itemsByCategoryWebID',itemsByCategoryWebID);
-        };
+        var itemsByCategoryWebID = await JSON.parse(JSON.stringify(request.session.itemsByCategoryWebID)) ;
          
         if (!(category_webid in itemsByCategoryWebID)) {
             console.log(`Posting to /admin/updateitem/ with category_webid : ${category_webid}. \n
              This category_webid was not found`);
-            return response.status(401).send(`An error occured`);
+            response.status(401).send(`An error occured`);
+            return ;
         }
         /* get cached or session array variables if necessary */
-        var itemsByID = cache.get('itemsByID');
-        /* We will be using caches because we want to speed up stuffs  */
-        if (!itemsByID) {
-            itemsByID = await JSON.parse(JSON.stringify(request.session.itemsByID)) ;
-            cache.set('itemsByID',itemsByID);
-
-        } ;
+        var itemsByID = await JSON.parse(JSON.stringify(request.session.itemsByID)) ;
         
         var item_id = "";
         var item_name = new String(request.body.itemName);
@@ -296,61 +290,58 @@ module.exports = () => {
         const formerrors = validationResult(request);
         if (!formerrors.isEmpty()) {
             const err_message = formerrors.array().map(i => i.msg).join('<br>');
-            return response.status(400).send(`${JSON.parse(JSON.stringify(err_message))}`); 
+            response.status(400).send(`${JSON.parse(JSON.stringify(err_message))}`); 
+            return ;
         };
 
         /* An item gets updated if its old value is different from its new value */
-        var oldItem = JSON.parse(JSON.stringify(itemsByCategoryWebID[category_webid]));
+        var oldItem = await JSON.parse(JSON.stringify(itemsByCategoryWebID[category_webid]));
         item_id = new String(oldItem.item_id) ;
         var category_id = new String(oldItem.category_id);
         
 
-        var itemsByCategoryID = cache.get('itemsByCategoryID');
-        if (!itemsByCategoryID) {
-            itemsByCategoryID = await JSON.parse(JSON.stringify(request.session.itemsByCategoryID)) ;
-            cache.set('itemsByCategoryID',itemsByCategoryID);
-            
-        };
-         
+        var itemsByCategoryID = await JSON.parse(JSON.stringify(request.session.itemsByCategoryID)) ;
+                 
         
-        var categories = cache.get('categories');
-        if (!categories) {
-            categories = await JSON.parse(JSON.stringify(request.session.categories));
-            cache.set('categories', categories);
-            
-        }
-
+        //var categories = await JSON.parse(JSON.stringify(request.session.categories));
+       
         /* 
             For the item image we just update the image in case an image was uploaded 
             We will not deal with checking if the file name is the same or is different.
         */
         var imageurl = oldItem.imageurl;
         //console.log(`Before checking the files array length`);
+        var sampleFile = null;
+        var uploadPath = "";
         if (request.files && Object.keys(request.files).length != 0) {
             //.log(`\nChecked the files array successful\nChecking the image type`);
             /* check the mimetype of the file */
-            var acceptedImageTypes = /^jpeg|jpg|png|gif$/;
+            var acceptedImageTypes = /jpeg|jpg|png|gif/;
             var correct_mimetype = acceptedImageTypes.test(request.files.itemimgurl.mimetype);
             if (!correct_mimetype) {
                 console.log(`Error uploaded wrong file`);
-                return response.status(400).send(`Only images of this type ${acceptedImageTypes} are accepted`);
+                response.status(400).send(`Only images of this type ${acceptedImageTypes} are accepted`);
+                return ;
             } ;
                 
             // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
-            const sampleFile = request.files.itemimgurl;
-            const uploadPath = `${IMG_DIR}` + oldItem.item_id + '-' + sampleFile.name;
+            sampleFile = request.files.itemimgurl;
+            //get extension of the file 
+            var ext = sampleFile.name.split('.').pop();
+            uploadPath = `${IMG_DIR}` + item_id + '.' + ext;
 
             
             // Use the mv() method to place the file somewhere on your server
             sampleFile.mv(uploadPath, function(errMoveImg) {
                 if (errMoveImg) {
                     console.log(`Error moving image : ${errMoveImg}`);
-                    return response.status(500).send(errMoveImg);
+                    response.status(500).send(errMoveImg);
+                    return ;
                 }
 
                 //response.send('File uploaded!');
             });
-            imageurl = item_id + '-' + sampleFile.name;
+            imageurl = item_id + '.' + ext;
         } ;
         
         
@@ -390,6 +381,11 @@ module.exports = () => {
                 values.push([unitPrice, oldItem.item_id]);
             } ;
 
+            if (oldItem.imageurl != imageurl) {
+                
+                queries.push(`UPDATE category_items SET imageurl = ? WHERE item_id=?`);
+                values.push([imageurl, oldItem.item_id]);
+            };
             
             for (var k = 0; k < queries.length; k++) {
                 var query = queries[k];
@@ -421,11 +417,8 @@ module.exports = () => {
                 "unitPrice":unitPrice
             } ;
             /* update cache and or session variables */
-            var items_array = cache.get('items_array');
-            if (!items_array) {
-                items_array = JSON.parse(JSON.stringify(request.session.items_array));
-                cache.set('items_array', items_array);
-            }
+            var items_array = await JSON.parse(JSON.stringify(request.session.items_array));
+           
             /* find old item in array and get rid of it */
             var indexToDelete = -1 ;
             for (var j=0 ; j < items_array.length; j++) {
@@ -443,7 +436,7 @@ module.exports = () => {
             if (!(item_id in itemsByID)) {
                 itemsByID[item_id] = {} ;  
             } ;
-            itemsByID[item_id]["itemDetails"] = JSON.parse(JSON.stringify(itemObjectJson)) ;
+            itemsByID[item_id]["itemDetails"] = await JSON.parse(JSON.stringify(itemObjectJson)) ;
 
             
             if (!(category_id in itemsByCategoryID)) {
@@ -465,14 +458,8 @@ module.exports = () => {
             if (!(category_webid in itemsByCategoryWebID)) {
                 itemsByCategoryWebID[category_webid] = {} ;  
             } ;
-            itemsByCategoryWebID[category_webid] = JSON.parse(JSON.stringify(itemObjectJson));
-            //Flush the cache and start over
-            cache.flushAll();
-            cache.set('categories', categories);
-            cache.set('items_array',items_array);
-            cache.set('itemsByCategoryID',itemsByCategoryID);
-            cache.set('itemsByCategoryWebID',itemsByCategoryWebID);
-            cache.set('itemsByID', itemsByID);
+            itemsByCategoryWebID[category_webid] = await JSON.parse(JSON.stringify(itemObjectJson));
+            
 
             request.session.items_array = JSON.parse(JSON.stringify(items_array)); 
             request.session.itemsByID = JSON.parse(JSON.stringify(itemsByID)) ;
@@ -481,11 +468,13 @@ module.exports = () => {
 
             request.session.save();
             
-            return response.status(200).send(`Item updated successfully`);
+            response.status(200).send(`Item updated successfully`);
+            return ;
         } catch (error) {
             console.log(`Error in admin.js updating item: ${error.message}`);
             con.execute('ROLLBACK');//con.rollback();
-            return response.status(500).send(`Error processing update item form`);
+            response.status(500).send(`Error processing update item form`);
+            return ;
         }
         
     });
@@ -500,31 +489,25 @@ module.exports = () => {
         if (request.session.user && request.session.user != {}) {
             loggedInUser = JSON.parse(JSON.stringify(request.session.user)) ;
         } else {
-            return response.status(401).send(`Go Away !!!`);
+            response.status(401).send(`Go Away !!!`);
+            return ;
         };
         
-        var itemsByCategoryWebID = cache.get('itemsByCategoryWebID');
-        /* We will be using caches becausse we want to speed up stuffs  */
-        if (!itemsByCategoryWebID) {
-            itemsByCategoryWebID = await JSON.parse(JSON.stringify(request.session.itemsByCategoryWebID)) ;
-            cache.set('itemsByCategoryWebID',itemsByCategoryWebID);
-
-        } ;
+        var itemsByCategoryWebID =  await JSON.parse(JSON.stringify(request.session.itemsByCategoryWebID)) ;
+       
         var category_webid = new String(request.params.category_webid);
         if (!(category_webid in itemsByCategoryWebID)) {
             console.log(`An update occured in ${__filename} with a category_webid that was not found in cache or session.`);
-            return response.status(401).send(`An Error Occured`);
+            response.status(401).send(`An Error Occured`);
+            return ;
         };
-        const itemToUpdate = JSON.parse(JSON.stringify(itemsByCategoryWebID[category_webid]));
+        const itemToUpdate = await JSON.parse(JSON.stringify(itemsByCategoryWebID[category_webid]));
         var userCart = {} ;
         if (request.session.userCart)
             userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
 
-        var categories = cache.get('categories');
-        if (!categories) {
-            categories = await JSON.parse(JSON.stringify(request.session.categories));
-            cache.set('categories', categories);
-        }
+        var categories = await JSON.parse(JSON.stringify(request.session.categories));
+        
 
         response.render('layout', { 
             pageTitle: `Updating ${decode(itemToUpdate.item_name).slice(0,20)}`, 

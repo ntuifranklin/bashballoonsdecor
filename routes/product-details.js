@@ -10,9 +10,6 @@ var parseForm = bodyParser.urlencoded({ extended: true });
 const {MySQLDBConnector} = require('../database/models/MySQLDBConnector');
 const {decode, encode} = require('html-entities');
 
-/* For caching data to increase speed */
-const NodeCache = require( "node-cache" );
-const cache = new NodeCache();
 
 module.exports = () => { 
     
@@ -42,33 +39,22 @@ module.exports = () => {
 
         //Send to product-details page the item and all items in the same category
         var category_webid = new String(request.params.category_webid);
-        var itemsByCategoryWebID = cache.get('itemsByCategoryWebID');
-        /* We will be using caches becausse we want to speed up stuffs  */
-        if (!itemsByCategoryWebID) {
-            itemsByCategoryWebID = await JSON.parse(JSON.stringify(request.session.itemsByCategoryWebID)) ;
-            cache.set('itemsByCategoryWebID',itemsByCategoryWebID);
-
-        } ;
-        var itemsByCategoryID = cache.get('itemsByCategoryID');
-        if (!itemsByCategoryID) {
-            itemsByCategoryID = await JSON.parse(JSON.stringify(request.session.itemsByCategoryID)) ;
-            cache.set('itemsByCategoryID',itemsByCategoryID);
-        };
+        var itemsByCategoryWebID = await JSON.parse(JSON.stringify(request.session.itemsByCategoryWebID)) ;
+       
+        var itemsByCategoryID = await JSON.parse(JSON.stringify(request.session.itemsByCategoryID)) ;
+        
          
         //console.log(`itemsByCategoryWebID : ${JSON.stringify(itemsByCategoryWebID)}`);
         var  item = null ;
         
         if (!(category_webid in itemsByCategoryWebID) ) {
             response.redirect('/f404');
-            return router;
+            return ;
         };
         item = await JSON.parse(JSON.stringify(itemsByCategoryWebID[category_webid])) ;
         
-        var categories = cache.get('categories');
-        if (!categories) {
-            categories = await JSON.parse(JSON.stringify(request.session.categories));
-            cache.set('categories', categories);
-        }
+        var categories = await JSON.parse(JSON.stringify(request.session.categories));
+       
          
         var userCart = {} ;
         if (request.session.userCart)

@@ -24,10 +24,6 @@ const {decode, encode} = require('html-entities');
 require('dotenv').config();
 
 
-/* For caching data to increase speed */
-const NodeCache = require( "node-cache" );
-const cache = new NodeCache();
-
 module.exports = () => { 
         
     router.use(bodyParser.json());
@@ -36,22 +32,15 @@ module.exports = () => {
         /* must have been loaded in server.js file  */  
               
         
-        var categories = cache.get('categories');
-        if (!categories) {
-            categories = await JSON.parse(JSON.stringify(request.session.categories));
-            cache.set('categories', categories);
-        }
+        var categories = await JSON.parse(JSON.stringify(request.session.categories));
              
         var userCart = {} ;
         if (request.session.userCart)
             userCart = await JSON.parse(JSON.stringify(request.session.userCart)) ;
         
         
-        var items_array = cache.get('items_array');
-        if (!items_array) {
-            items_array = await JSON.parse(JSON.stringify(request.session.items_array));
-            cache.set('items_array', items_array);
-        }
+        var items_array = await JSON.parse(JSON.stringify(request.session.items_array));
+       
         //console.log(`User cart : ${JSON.stringify(userCart)}`);
         response.render('layout', 
         { 
@@ -92,18 +81,9 @@ module.exports = () => {
         
         category_name = category_name.toLocaleLowerCase();
         
-        var categories = cache.get('categories');
-        if (!categories) {
-            categories = await JSON.parse(JSON.stringify(request.session.categories));
-            cache.set('categories', categories);
-        }
-         
-        var itemsByCategoryID = cache.get('itemsByCategoryID');
-        if (!itemsByCategoryID) {
-            itemsByCategoryID = await JSON.parse(JSON.stringify(request.session.itemsByCategoryID)) ;
-            cache.set('itemsByCategoryID',itemsByCategoryID);
-        };
-        
+        var categories = categories = await JSON.parse(JSON.stringify(request.session.categories));
+        var itemsByCategoryID =  itemsByCategoryID = await JSON.parse(JSON.stringify(request.session.itemsByCategoryID)) ;
+       
         
         var category = {} ;
         var index = -1;

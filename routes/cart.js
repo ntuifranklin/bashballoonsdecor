@@ -10,9 +10,6 @@ require('dotenv').config();
 const createError = require('http-errors');
 //const {getCategoriesItems} = require('../database/controllers/database');
 
-/* For caching data to increase speed */
-const NodeCache = require( "node-cache" );
-const cache = new NodeCache();
 
 module.exports = () => { 
     
@@ -20,12 +17,8 @@ module.exports = () => {
        
        
         
-        var categories = cache.get('categories');
-        if (!categories) {
-            categories = await JSON.parse(JSON.stringify(request.session.categories));
-            cache.set('categories', categories);
-        }
-         
+        var categories = await JSON.parse(JSON.stringify(request.session.categories));
+                
         //var categories_items = request.locals.categoriesItemsHash ;
         var userCart = {} ;
         if (request.session.userCart)
