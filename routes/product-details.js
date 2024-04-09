@@ -44,6 +44,9 @@ module.exports = () => {
         var itemsByCategoryID = await JSON.parse(JSON.stringify(request.session.itemsByCategoryID)) ;
         
          
+        var user = {} ;
+        if (request.session.user && request.session.user.email)
+            user = JSON.parse(JSON.stringify(request.session.user)) ;
         //console.log(`itemsByCategoryWebID : ${JSON.stringify(itemsByCategoryWebID)}`);
         var  item = null ;
         
@@ -74,6 +77,7 @@ module.exports = () => {
             template: 'product-details',
             csrfToken: request.csrfToken(),
             userCart:userCart,
+            user:user,
             item:item,
             IMG_DIR_FOR_WEB : request.session.IMG_DIR_FOR_WEB,
             decode: decode,
