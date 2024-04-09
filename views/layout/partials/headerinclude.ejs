@@ -35,7 +35,7 @@
 	  <div class="center-ber">
 		<div class="logo">
 		  <a href="/">
-			<img alt="logo" src="assets/img/logo.png">
+			<img alt="logo" src="/assets/img/logo.png">
 		  </a>
 		</div>
 		
@@ -78,7 +78,7 @@
 			
 									<div class="p-data">
 			
-									<h3 class="font-semi-bold"><%= itemDetails["item_name"] %></h3>
+									<h3 class="font-semi-bold"><%= decode(itemDetails["item_name"]) %></h3>
 			
 									<p class="theme-clr font-semi-bold"><%= item["quantity"] %> x $<%= itemDetails["unitPrice"] %></p>
 									<% grandTotal = grandTotal + (item["quantity"] * itemDetails["unitPrice"]) ; %>
@@ -138,7 +138,7 @@
 					  <li class="navbar-dropdown menu-item-children">
 						<a href="/">
 							<i>
-						  		<img alt="home" src="assets/img/home.png">
+						  		<img alt="home" src="/assets/img/home.png">
 							</i>Home
 						</a>
 					  </li>
@@ -203,7 +203,7 @@
 	<div class="mobile-nav hmburger-menu" id="mobile-nav" style="display:block;">
 		<div class="res-log">
 		  <a href="/">
-			<img src="assets/img/logo-b.png" alt="Responsive Logo">
+			<img src="/assets/img/logo-b.png" alt="Responsive Logo">
 		  </a>
 		</div>
 		  <ul>

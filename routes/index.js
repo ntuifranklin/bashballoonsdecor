@@ -14,16 +14,51 @@ const verifyOTPRoute = require('./verifyotp');
 const { ExpressValidator } = require('express-validator');
 const bodyParser = require('body-parser');
 var mysql2 = require('mysql2');
+var csrf = require('csurf');
+// csrf protection
+var csrfProtection = csrf({ cookie: true });
 const {getCategoriesItems} = require('../database/controllers/database');
 
 const {decode, encode} = require('html-entities');
 
 require('dotenv').config();
 
+
 module.exports = () => { 
         
     router.use(bodyParser.json());
 
+    router.get('/', csrfProtection, async (request, response) => { 
+        /* must have been loaded in server.js file  */  
+              
+        
+        var categories = await JSON.parse(JSON.stringify(request.session.categories));
+             
+        var userCart = {} ;
+        if (request.session.userCart)
+            userCart = await JSON.parse(JSON.stringify(request.session.userCart)) ;
+        
+        
+        var items_array = await JSON.parse(JSON.stringify(request.session.items_array));
+       
+        //console.log(`User cart : ${JSON.stringify(userCart)}`);
+        response.render('layout', 
+        { 
+            pageTitle: request.locals.siteName, 
+            template: 'index', 
+            userCart : userCart,
+            categories: categories,
+            items_array: items_array,
+            IMG_DIR_FOR_WEB : request.session.IMG_DIR_FOR_WEB,
+            csrfToken: request.csrfToken(),
+            customers_feedback: request.locals.customers_feedback,
+            decode: decode,
+            encode: encode,
+        });
+        
+    });
+    
+    /* the routes below have to be here before the /:category_name route else things dont work properly */
     router.use('/shop', shopRoute());
     router.use('/checkout', checkoutRoute());
     router.use('/cart', cartRoute());
@@ -34,44 +69,21 @@ module.exports = () => {
     router.use(['/login','/identify-your-self','/whoami'], loginRoute());
     router.use(['/logout','/signout'], logoutRoute());
     router.use(['/verifyotp','/verify-otp'], verifyOTPRoute());
-
-    router.get('/', async (request, response) => { 
-        /* must have been loaded in server.js file  */  
-        var categories = request.session.categories;
-        var categories_items = request.session.categoriesItemsHash;
-        
-        var userCart = {} ;
-        if (request.session.userCart)
-            userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
-        
-        console.log(`User cart : ${JSON.stringify(userCart)}`);
-        response.render('layout', 
-        { 
-            pageTitle: request.locals.siteName, 
-            template: 'index', 
-            userCart : userCart,
-            categories: request.session.categories,
-            items_array: request.session.items_array,
-            csrfToken: request.csrfToken(),
-            customers_feedback: request.locals.customers_feedback,
-            decode: decode,
-            encode: encode,
-        });
-        
-    });
+    
     /* this route allows someone to search for a list of items based on an item category name */
-    router.get('/:category_name', async(request, response) => { 
+    router.get('/:category_name',csrfProtection, async(request, response) => { 
         
         var category_name = new String(request.params.category_name);
         //console.log(`Category Name Encoded : ${category_name}`);
         var userCart = {} ;
         if (request.session.userCart)
-            userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
+            userCart = await JSON.parse(JSON.stringify(request.session.userCart)) ;
         
         category_name = category_name.toLocaleLowerCase();
-        var categories = await JSON.parse(JSON.stringify(request.session.categories));
         
-        var itemsByCategoryID = await JSON.parse(JSON.stringify(request.session.itemsByCategoryID));
+        var categories = categories = await JSON.parse(JSON.stringify(request.session.categories));
+        var itemsByCategoryID =  itemsByCategoryID = await JSON.parse(JSON.stringify(request.session.itemsByCategoryID)) ;
+       
         
         var category = {} ;
         var index = -1;
@@ -85,7 +97,6 @@ module.exports = () => {
                 category = one_category;
                 index = i;
                 categoryID = new String(JSON.parse(JSON.stringify(one_category.category_id)));
-               
                 break;
             }
         }
@@ -107,6 +118,7 @@ module.exports = () => {
                     categories: categories,
                     items_array: request.session.items_array,
                     userCart: userCart,
+                    IMG_DIR_FOR_WEB : request.session.IMG_DIR_FOR_WEB,
                     category: decode(category.category_name),
                     category_id: category.category_id,
                     category_items: category_items,
@@ -132,28 +144,11 @@ module.exports = () => {
         }
         
     });
-        
-    router.get('/*', async (request, response) => {
 
-        var userCart = {} ;
-        if (request.session.userCart)
-            userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
-        
-        var categories = [] ;
-        var categories = await JSON.parse(JSON.stringify(request.session.categories));
-        response.status(404).render('layout', 
-        { 
-            pageTitle: 'Sorry We Could Not Find What You Are Looking For', 
-            template: 'f404',
-            category_items: categories,
-            userCart: userCart, 
-            categories: categories,
-            csrfToken: request.csrfToken(),
-            decode: decode,
-        });
-    });
+
+    /* This should be the last route to catch errors */
     
-    router.use('/*', f404Route());
+    router.use(['/*','/f404'], f404Route());
     
     return router;
 };

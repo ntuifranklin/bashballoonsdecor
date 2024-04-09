@@ -15,8 +15,13 @@ const nodemailer = require('nodemailer');
 const randomstring = require('randomstring');
 var mysql2 = require('mysql2');
 const {decode,encode} = require('html-entities');
-const {Email} = require('../utilities/email');
+const {Email,VALID_EMAIL_REGEXP} = require('../utilities/email');
 
+/* This is the only email regular expression used to check emails  */
+const loginCheckOutValidation = [
+    check('email').matches(VALID_EMAIL_REGEXP).withMessage('Please enter a valid email address.'),
+    check('password').isLength({ min: 1 }).withMessage('Please enter a password.'),
+];
 /* define a function that sends one time passwords */
 
 function sendOTP(email, otp) {
@@ -34,6 +39,7 @@ function sendOTP(email, otp) {
                     <p>
                         Hi There!\n <br/>
                         Here is your one time password (OTP) :<h3>${otp}</h3>\n
+                        It expires in 15 minutes.
                         <br/>\n 
                     </p>
                 </body>
@@ -41,7 +47,7 @@ function sendOTP(email, otp) {
         };
 
         var emailSending = new Email();
-        emailSending.sendEmail(mailOptions.to, mailOptions.subject, mailOptions.html).
+        await emailSending.sendEmail(mailOptions.to, mailOptions.subject, mailOptions.html).
         then(
             (result) => {
                 console.log(`OTP Email sent: ${JSON.stringify(result)}`);
@@ -54,23 +60,16 @@ function sendOTP(email, otp) {
     });
 };
 
-
-
 /* function that generates an OTP password */
 
 // Generate OTP
 function generateOTP() {
     return randomstring.generate({
-      length: 6,
+      length: 9,
       charset: 'numeric'
     });
   }
 
-
-const loginCheckOutValidation = [
-    check('email').isEmail().withMessage('Please enter a valid email address.'),
-    check('password').isLength({ min: 1 }).withMessage('Please enter a password.'),
-];
 module.exports = () => { 
     
     /* generate a pool of mysql connection  */
@@ -89,8 +88,11 @@ module.exports = () => {
     });
 
     
-    router.get('/', csrfProtection, (request, response) => { 
-        var categories = request.session.categories;
+    router.get('/', csrfProtection, async(request, response) => { 
+        
+        var categories = await JSON.parse(JSON.stringify(request.session.categories));
+       
+         
         var userCart = {} ;
 
         //console.log(`user ${request.session.user} userCart ${request.session.userCart}`);
@@ -174,19 +176,25 @@ module.exports = () => {
                 // Store OTP in the database
                 con.execute('INSERT INTO otp \
                         (id, user_email, otp_code, expiration_time) \
-                        VALUES (id, ?, ?, NOW() + INTERVAL 5 MINUTE)',
+                        VALUES (id, ?, ?, NOW() + INTERVAL 15 MINUTE)',
                       [user.email, otp], (err, results) => {
                     if (err) {
                         return response.status(500).send('Internal Server Error');
                     }
 
                     // Send OTP via email
-                    sendOTP(user.email, otp);
+                    try {
+                        sendOTP(user.email, otp);
+                        response.send(
+                            `Login was successful. <br/>
+                             Please check your email and verify your one time password`
+                        );
+                    } catch (error) {
+                        console.log(`Error : ${error}`);
+                    } ;
+                    
 
-                    response.send(
-                        `Login was successful. <br/>
-                         Please check your email and verify your one time password`
-                    );
+                    
                 });
             } else {
                 return response.status(404).send('Ouch! login was invalid');

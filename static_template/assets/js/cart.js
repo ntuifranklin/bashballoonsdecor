@@ -40,9 +40,10 @@ function updateCart(productID, source='', htmlID='#', alertIndex='', action='a')
         $(`#${alertIndex}`).html(successHtml);
       else
         $(`#cartResult`).html(successHtml);
+      location.href = location.href;
     }).fail((data) => {
       
-      //console.log(`Failure data received : ${JSON.stringify(data)}`);
+      console.log(`Failure data received : ${JSON.stringify(data)}`);
       var errorHtml = ` 
       <div class="alert alert-danger alert-dismissible fade show" role="alert">
         <strong>Error!</strong> ${data.responseText}
@@ -53,6 +54,7 @@ function updateCart(productID, source='', htmlID='#', alertIndex='', action='a')
         $(`#${alertIndex}`).html(errorHtml);
       else
         $(`#cartResult`).html(errorHtml);
+       
     });
 }
 
@@ -87,6 +89,7 @@ function changeItemQuantity(itemID, source='', htmlID='#', alertIndex=''){
       $(`#${alertIndex}`).html(successHtml);
     else
       $(`#cartResult`).html(successHtml);
+    //reload page
     location.href = location.href;
   }).fail((data) => {
     

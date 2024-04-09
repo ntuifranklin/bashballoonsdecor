@@ -10,12 +10,15 @@ require('dotenv').config();
 const createError = require('http-errors');
 //const {getCategoriesItems} = require('../database/controllers/database');
 
+
 module.exports = () => { 
     
     router.get('/', csrfProtection, async (request, response) => { 
        
-        var categories = await JSON.parse(JSON.stringify(request.session.categories));
+       
         
+        var categories = await JSON.parse(JSON.stringify(request.session.categories));
+                
         //var categories_items = request.locals.categoriesItemsHash ;
         var userCart = {} ;
         if (request.session.userCart)

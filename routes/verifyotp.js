@@ -16,6 +16,7 @@ const nodemailer = require('nodemailer');
 const randomstring = require('randomstring');
 var mysql2 = require('mysql2');
 const {Email} = require('../utilities/email');
+const {MySQLDBConnector, defaultMySQLDBConnectorConfig} = require('../database/models/MySQLDBConnector');
 
 const verifyOTPcheckOutValidation = [
     check('user_email').isEmail().normalizeEmail().withMessage('Please enter a valid email address.'),
@@ -25,62 +26,41 @@ const verifyOTPcheckOutValidation = [
 module.exports = () => { 
     
     /* generate a pool of mysql connection  */
-    var con = mysql2.createPool({
-        host: process.env.DATABASE_HOST,
-        user: process.env.DATABASE_USER,
-        password: process.env.DATABASE_PASSWORD,
-        database: process.env.DATABASE_UPGRADED_NAME,
-        waitForConnections: true,
-        connectionLimit: 5,
-        maxIdle: 4, // max idle connections, the default value is the same as `connectionLimit`
-        idleTimeout: 60000, // idle connections timeout, in milliseconds, the default value 60000
-        queueLimit: 0,
-        enableKeepAlive: true,
-        keepAliveInitialDelay: 0
-    });
+    const mysqlDbConnector = MySQLDBConnector ;
     
-    router.post('/', csrfProtection,verifyOTPcheckOutValidation, (request, response) => {
+    
+    router.post('/', csrfProtection,verifyOTPcheckOutValidation, async(request, response) => {
         
             const user_email = new String(request.body.user_email).trim();
             const otp = new String(request.body.otp).trim();
         
-            // Verify OTP
-            con.execute('SELECT * FROM otp WHERE user_email = ? AND otp_code = ? AND expiration_time > NOW()', [user_email, otp], (err, results) => {
-                if (err) {
-                    console.log(err);
-                    return response.status(500).send('Internal Server Error');
-                }
-                if (results.length == 0) {
-                    console.log(`Results given : ${JSON.parse(JSON.stringify(results))}`);
-                    return response.status(401).send('Invalid or expired OTP');
-                }
+            try {
+                // Verify OTP
+                const verify_otp_query = "SELECT * FROM otp WHERE user_email = ? AND otp_code = ? AND expiration_time >= NOW()";
+                const otp_results = await mysqlDbConnector.execute(verify_otp_query, [user_email, otp]) ;
+                const delete_otp_query = "DELETE FROM otp WHERE user_email = ?";
+                const delete_old_otp = await mysqlDbConnector.execute(delete_otp_query, [user_email]);
+                request.session.user = {
+                    email: user_email,
+                    password: null,
+                    authenticated: true
+                } ;
+
+                request.session.save();
         
-                // Delete OTP from the database
-                con.execute('DELETE FROM otp WHERE user_email = ?', [user_email], (err, results) => {
-                    if (err) {
-                        console.log(err);
-                        return response.status(500).send('Internal Server Error');
-                    }
-
-                    /* Add user as a new session user */
-                    request.session.user = {
-                        email: user_email,
-                        password: null,
-                        authenticated: true
-                    } ;
-
-                    request.session.save();
-            
-                    return response.status(200).send(
-                        `OTP successfully verified\n<br/>
-                        You are logged in as ${user_email}\n
-                        Click <a href="/logout">here</a> to logout\n<br>
-                        Click <a href="/admin">here</a> to head to your dashboard\n<br>`
-                    );
-                });
-            
-            });     
-    
+                return response.status(200).send(
+                    `OTP successfully verified\n<br/>
+                    You are logged in as ${user_email}\n<br/>
+                    <a href="/admin">Click here to head to your dashboard</a>\n <br/>
+                    or <br/>
+                    <a href="/logout"> Click here to logout</a> \n<br>`
+                );
+            } catch(err) {
+                console.log(err);
+                response.status(400).send('An Error Occure');
+                return ;
+            }
+                
         
     });
 

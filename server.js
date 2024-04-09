@@ -17,10 +17,16 @@ const MySQLStore = require('express-mysql-session')(session);
 require('dotenv').config();
 
 const {session_database_options} = require('./sessionmanagement/session') ;
-
 const cookieParser = require('cookie-parser');
 const {getCategories,getCategoriesItems} = require('./database/controllers/database');
 
+
+
+/* File upload  */
+const fileUpload = require('express-fileupload');
+app.use(fileUpload({
+    limits: { fileSize: 50 * 1024 * 1024 }, //maximum 50 MB
+}));
 
 /* dynamically detect the folder we are running from,
  then select port accordingly */
@@ -122,11 +128,11 @@ app.locals.googleMapsFrameLink = process.env.GOOGLE_MAPS_FRAME_LINK ;
 /* now loop through the list_of_items */
 var index = 0 ;
 
-
-
 const customers_feedback = require(process.env.CUSTOMERS_FEEDBACK_FILE);
 app.locals.customers_feedback = customers_feedback ;
 
+/* location where images are being sotred */
+const {IMG_DIR_FOR_WEB} = require('./utilities/fileupload');
 
 app.use(parseForm, csrfProtection, async(request, response, next) => { 
 
@@ -139,14 +145,18 @@ app.use(parseForm, csrfProtection, async(request, response, next) => {
     var itemsByID = null ;
     var itemsByCategoryID = {}
     var categories = null ;
+    var itemsByCategoryWebID = {};
 
     if (request.session.userCart)
         userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
     
     var item = null ;
-    if (!request.session.items_array || request.session.items_array == null || request.session.items_array == {}) {
+   
+    if (!items_array) {
         itemsByID = {} ;
         itemsByCategoryID = {} ;
+        itemsByCategoryWebID = {};
+        
         items_array = await getCategoriesItems ();
         
         for (var j=0 ; j < items_array.length; j++ ) {
@@ -163,32 +173,50 @@ app.use(parseForm, csrfProtection, async(request, response, next) => {
                 itemsByID[itemID] = {} ;
             } ;
 
+            var category_webid = new String(item.category_webid);
+            
+            var category_id = new String(item.category_id);
+            //console.log(`category_webid : ${category_webid}`);
+
+            if (!(category_webid in itemsByCategoryWebID)) {
+                itemsByCategoryWebID[category_webid] = {};
+            } ;
+
+           
+            itemsByCategoryWebID[category_webid] = JSON.parse(JSON.stringify(item)) ;
+
             itemsByID[itemID]["itemDetails"] = JSON.parse(JSON.stringify(item)) ;
         } ;
 
-        
+      
+
         request.session.items_array = JSON.parse(JSON.stringify(items_array));
         request.session.itemsByID = JSON.parse(JSON.stringify(itemsByID)) ;
         request.session.itemsByCategoryID = JSON.parse(JSON.stringify(itemsByCategoryID));
+        request.session.itemsByCategoryWebID = JSON.parse(JSON.stringify(itemsByCategoryWebID));
+        //console.log(`Items By Category WebID : ${JSON.stringify(request.session.itemsByCategoryWebID)}`);
+        //console.log(`Items By Category ID : ${JSON.stringify(request.session.itemsByCategoryID)}`);
         request.session.save();
     } ;
 
     //console.log(`itemsByID in server.js: ${JSON.stringify(request.session.itemsByID,null,4)}`);
     
-    if (!request.session.categories || request.session.categories == null) {
+    if (!categories ) {
         categories = await getCategories (tableName='categories') ;
         for (var i = 0; i <  categories.length; i++) {
             var category = JSON.parse(JSON.stringify( categories[i]));
             category.category_name = decode(category.category_name);
             //categories[i].category_name = category.category_name;
         };
-
-        request.session.categories = JSON.parse(JSON.stringify(categories));
+        
+        request.session.categories = await JSON.parse(JSON.stringify(categories));
         request.session.save();
     } ;
 
-    request.session.userCart = JSON.parse(JSON.stringify(userCart)) ;
+    request.session.userCart = await JSON.parse(JSON.stringify(userCart)) ;
+    request.session.IMG_DIR_FOR_WEB = IMG_DIR_FOR_WEB ;
     request.session.save();
+    response.locals.csrfToken = request.csrfToken();
     request.locals = app.locals ;
    
     return next();

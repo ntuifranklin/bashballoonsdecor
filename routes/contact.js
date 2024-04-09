@@ -10,18 +10,23 @@ var csrfProtection = csrf({ cookie: true });
 const cookieSession = require('cookie-session');
 var parseForm = bodyParser.urlencoded({ extended: true });
 const { check,validationResult } = require('express-validator');
-
+const {VALID_EMAIL_REGEXP} = require('../utilities/email');
+const validEmailRegExp = VALID_EMAIL_REGEXP ;
 const contactFormValidation = [
     check('name').isLength({ min: 5, max:255 }).withMessage('Please enter your name.'),
-    check('email').isEmail().normalizeEmail().withMessage('Please enter a valid email address.'),
+    check('email').matches(validEmailRegExp).withMessage('Please enter a valid email address.'),
     check('comment').isLength({ min: 5, max:255 }).withMessage('Please a message.'),
     check('phone').isLength({ min: 5, max:16 }).withMessage('Please enter your phone number.'),
 ];
 
+
 module.exports = () => { 
     
     router.get('/', csrfProtection, async(request, response) => { 
-        var categories = request.session.categories;
+        
+        var categories = await JSON.parse(JSON.stringify(request.session.categories));
+        
+         
         var userCart = {} ;
         if (request.session.userCart) {
             userCart = await JSON.parse(JSON.stringify(request.session.userCart)) ;
@@ -51,7 +56,9 @@ module.exports = () => {
         if (!formerrors.isEmpty()) {
             const err_message = formerrors.array().map(i => i.msg).join('<br>');
             //console.log(`Error processing form: ${JSON.stringify(formerrors.array(), null, 4)}`);
-            return response.status(400).send(`${err_message}`); 
+           response.status(400).send(`${err_message}`); 
+           return ;
+            
         } ;
         /* send the email */
         var emailSender = new Email();
@@ -63,11 +70,13 @@ module.exports = () => {
         emailSender.sendEmail(emailObject.to, emailObject.subject, emailObject.html).
         then((result) => {
             console.log(`Email sent: ${result}`);
-            return response.status(200).send(`Message sent successfully`);
+            response.status(200).send(`Message sent successfully`);
+            return ;
         }).
         catch((err) => {
             console.log(`Error occured sending email: ${err}`);
-            return response.status(400).send(`An Error Occured while sending the email.`);
+            response.status(400).send(`An Error Occured while sending the email.`);
+            return ;
         });
         
         

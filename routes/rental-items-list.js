@@ -2,18 +2,22 @@ const express = require('express');
 const router = express.Router();
 const {decode,encode} = require('html-entities');
 
+
+
 module.exports = () => {
         
-    router.get('/', async (request, response) => { 
+    router.get('/', async(request, response) => { 
         var userCart = {} ;
         if (request.session.userCart) {
             userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
         };
-        var categories = request.session.categories;
+        
+        var categories = await JSON.parse(JSON.stringify(request.session.categories));
+       
         response.render('layout', { 
             pageTitle: 'Individual Items | Individual Products', 
             template: 'rental-items-list',
-            //list_of_items : request.locals.list_of_items,
+            IMG_DIR_FOR_WEB : request.session.IMG_DIR_FOR_WEB,
             category: 'Individual Party Rental Items',
             csrfToken: request.csrfToken(),
             categories: categories,

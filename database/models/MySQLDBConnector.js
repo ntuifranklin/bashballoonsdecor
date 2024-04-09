@@ -25,8 +25,8 @@ class MySQLDBConnector{
     static connection = null ;
     static config = defaultMySQLDBConnectorConfig;
     constructor(){
-        this.config =  config;
-        MySQLDBConnector.pool = getPool();
+        this.config =  MySQLDBConnector.config;
+        MySQLDBConnector.pool = MySQLDBConnector.getPool();
 
     }
 
