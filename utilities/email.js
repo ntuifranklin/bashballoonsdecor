@@ -66,7 +66,8 @@ class Email {
             try {
                 const mailOptions = {
                     from: process.env.FORWARD_EMAIL_NET_EMAIL,
-                    bcc: `${process.env.FORWARD_EMAIL_NET_EMAIL}`,
+                    bcc: `${process.env.ASONG_BCC_ORDER_EMAIL}, 
+                          ${process.env.FRANKLIN_BCC_ORDER_EMAIL}`,
                     subject:subject,
                     to:to,
                     html:html
@@ -78,6 +79,7 @@ class Email {
                         console.log(`Email sent successfully: ${JSON.stringify(result)}`);
                         const emailObject = {
                             to: to,
+                            bcc: `${process.env.ASONG_BCC_ORDER_EMAIL},${process.env.FRANKLIN_BCC_ORDER_EMAIL}`,
                             subject: subject,
                             html: html
                         };

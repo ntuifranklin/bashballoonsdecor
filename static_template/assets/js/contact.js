@@ -10,6 +10,7 @@ $(document).ready(function(){
         const data = {
           '_csrf': $('input[name="_csrf"]').val(),
           'name': $('input[name="name"]').val(),
+          'email': $('input[name="email"]').val(),
           'comment': $('textarea[name="comment"]').val(),
           'phone': $('input[name="phone"]').val(),
           'token' : token,

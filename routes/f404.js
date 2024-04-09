@@ -15,7 +15,10 @@ module.exports = () => {
         if (request.session.userCart)
             userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
         
-        
+    
+        var user = {} ;
+        if (request.session.user && request.session.user.email)
+            user = JSON.parse(JSON.stringify(request.session.user)) ;
         var categories = await JSON.parse(JSON.stringify(request.session.categories));
        
         response.status(404).render('layout', 
@@ -24,6 +27,7 @@ module.exports = () => {
             template: 'f404',
             category_items: categories,
             userCart: userCart, 
+            user:user,
             categories: categories,
             csrfToken: request.csrfToken(),
             decode: decode,

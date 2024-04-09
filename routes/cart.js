@@ -16,6 +16,9 @@ module.exports = () => {
     router.get('/', csrfProtection, async (request, response) => { 
        
        
+        var user = {} ;
+        if (request.session.user && request.session.user.email)
+            user = JSON.parse(JSON.stringify(request.session.user)) ;
         
         var categories = await JSON.parse(JSON.stringify(request.session.categories));
                 
@@ -28,6 +31,7 @@ module.exports = () => {
             pageTitle: 'Your Shopping Cart', 
             template: 'cart', 
             userCart: userCart,
+            user:user,
             csrfToken: request.csrfToken(),
             categories: categories,
             decode:decode,
