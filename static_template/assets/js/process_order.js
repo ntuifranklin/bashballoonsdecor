@@ -27,6 +27,20 @@ $(document).ready(function() {
             data: data,
             encode: true,
           }).done(function (data) {
+            
+            var successHtml = ` 
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+              <strong>Success!</strong> 
+              <p>${data.responseText}</p>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>`;
+            //Then disable the submit button for the form
+            $("#orderCheckoutSubmitButton").attr('disabled', true) ;
+            //disable the table that
+            $("#checkoutTableListItems").remove();
+            //Then show success message
+            $(`#processOrderResult`).html(successHtml);
+            
 
           }).fail(function (data) { 
             var errorHtml = ` 

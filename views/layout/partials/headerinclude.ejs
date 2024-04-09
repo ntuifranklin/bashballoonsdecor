@@ -45,84 +45,103 @@
 			<li><a href="<%= mediumLink %>"><i class="fa-brands fa-medium"></i></a></li>
 	   
 		  </ul>
+		<!-- 
 		<form>
 		  <input type="text" name="Search" placeholder="Search Our Bloon Selection">
 		  <button><i class="fa-solid fa-magnifying-glass"></i></button>
 		</form>
+		-->
 		
 		<div class="login-bar d-flex">
+			<% if (user && user.email ) { %>
+				
+				<div>
+					<a class="d-flex">
+						<i class="bi bi-person"></i>
+						<%= user.email %>
+					</a>
+					<a class="d-flex" href="/admin">Admin Dashboard</a>
+					<a class="d-flex" href="/logout">Logout</a>
+				</div>
+
+			<%  } else { %>
+				
+				<div>
+					<a class="d-flex" href="/login">login</a>
+				</div>
+			<% } %>
 		 
-		  <div class="donation">
-				  
-				  <a href="JavaScript:void(0)" class="pr-cart">
-					Cart
-					<svg enable-background="new 0 0 512 512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><g><path d="m452 120h-60.946c-7.945-67.478-65.477-120-135.054-120s-127.109 52.522-135.054 120h-60.946c-11.046 0-20 8.954-20 20v352c0 11.046 8.954 20 20 20h392c11.046 0 20-8.954 20-20v-352c0-11.046-8.954-20-20-20zm-196-80c47.484 0 87.019 34.655 94.659 80h-189.318c7.64-45.345 47.175-80 94.659-80zm176 432h-352v-312h40v60c0 11.046 8.954 20 20 20s20-8.954 20-20v-60h192v60c0 11.046 8.954 20 20 20s20-8.954 20-20v-60h40z"></path></g></svg>
-				  </a>
-				 
-				  <div class="cart-popup">
-					<% var grandTotal = 0 ; %>
-					<% var totalItems = 0 ; %>
-					<% var keysList = [...Object.keys(userCart)]; %>
-					<% var noKeys = keysList; %>
-					<% if (userCart != null && noKeys.length > 0 ) { %>
-						<ul>
-							<% for (var itemKey in userCart ) { %>
-								<% var item = JSON.parse(JSON.stringify(userCart[itemKey])) ;%>
-								<% var itemDetails = JSON.parse(JSON.stringify(item["itemDetails"])) ; %>
-								<li class="d-flex align-items-center position-relative">
-									<div class="p-img light-bg">
-									<img alt="img" src="https://via.placeholder.com/75x75">
-									</div>
-			
-									<div class="p-data">
-			
-									<h3 class="font-semi-bold"><%= decode(itemDetails["item_name"]) %></h3>
-			
-									<p class="theme-clr font-semi-bold"><%= item["quantity"] %> x $<%= itemDetails["unitPrice"] %></p>
-									<% grandTotal = grandTotal + (item["quantity"] * itemDetails["unitPrice"]) ; %>
-									</div>
-			
-									<a href="JavaScript:void(0)" id="crosss"></a>
-			
-								</li>
-							<% } %>
-						
-						</ul>
-  
-						<div class="cart-total d-flex align-items-center justify-content-between">
-
-						<span class="font-semi-bold">Total:</span>
-
-						<span class="font-semi-bold">$<%= grandTotal %></span>
-
-						</div>
-
-						<div class="cart-btns d-flex align-items-center justify-content-between">
-
-						<a class="font-bold" href="/cart">View Cart</a>
-
-						<a class="font-bold theme-bg-clr text-white checkout" href="/checkout">Checkout</a>
-
-						</div>
-
-					<% } else { %>
-						<ul>
-							<li>
-								<div class="alert alert-dark" role="alert">
-									<hr>
-									<h4 class="alert-heading">Sorry. Your Cart is Empty!</h4>
-									<hr>
-									<p class="mb-0">Please add some items to your cart.</p>
-									<hr>
-								</div>
-							</li>
-						</ul>
-							
-					<% } %>
+			<div class="donation">
 					
-				  </div>
-  
-		  </div>
+					<a href="JavaScript:void(0)" class="pr-cart">
+						Cart
+						<svg enable-background="new 0 0 512 512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><g><path d="m452 120h-60.946c-7.945-67.478-65.477-120-135.054-120s-127.109 52.522-135.054 120h-60.946c-11.046 0-20 8.954-20 20v352c0 11.046 8.954 20 20 20h392c11.046 0 20-8.954 20-20v-352c0-11.046-8.954-20-20-20zm-196-80c47.484 0 87.019 34.655 94.659 80h-189.318c7.64-45.345 47.175-80 94.659-80zm176 432h-352v-312h40v60c0 11.046 8.954 20 20 20s20-8.954 20-20v-60h192v60c0 11.046 8.954 20 20 20s20-8.954 20-20v-60h40z"></path></g></svg>
+					</a>
+					
+					<div class="cart-popup">
+						<% var grandTotal = 0 ; %>
+						<% var totalItems = 0 ; %>
+						<% var keysList = [...Object.keys(userCart)]; %>
+						<% var noKeys = keysList; %>
+						<% if (userCart != null && noKeys.length > 0 ) { %>
+							<ul>
+								<% for (var itemKey in userCart ) { %>
+									<% var item = JSON.parse(JSON.stringify(userCart[itemKey])) ;%>
+									<% var itemDetails = JSON.parse(JSON.stringify(item["itemDetails"])) ; %>
+									<li class="d-flex align-items-center position-relative">
+										<div class="p-img light-bg">
+										<img alt="img" src="https://via.placeholder.com/75x75">
+										</div>
+				
+										<div class="p-data">
+				
+										<h3 class="font-semi-bold"><%= decode(itemDetails["item_name"]) %></h3>
+				
+										<p class="theme-clr font-semi-bold"><%= item["quantity"] %> x $<%= itemDetails["unitPrice"] %></p>
+										<% grandTotal = grandTotal + (item["quantity"] * itemDetails["unitPrice"]) ; %>
+										</div>
+				
+										<a href="JavaScript:void(0)" id="crosss"></a>
+				
+									</li>
+								<% } %>
+							
+							</ul>
+	
+							<div class="cart-total d-flex align-items-center justify-content-between">
+
+							<span class="font-semi-bold">Total:</span>
+
+							<span class="font-semi-bold">$<%= grandTotal %></span>
+
+							</div>
+
+							<div class="cart-btns d-flex align-items-center justify-content-between">
+
+							<a class="font-bold" href="/cart">View Cart</a>
+
+							<a class="font-bold theme-bg-clr text-white checkout" href="/checkout">Checkout</a>
+
+							</div>
+
+						<% } else { %>
+							<ul>
+								<li>
+									<div class="alert alert-dark" role="alert">
+										<hr>
+										<h4 class="alert-heading">Sorry. Your Cart is Empty!</h4>
+										<hr>
+										<p class="mb-0">Please add some items to your cart.</p>
+										<hr>
+									</div>
+								</li>
+							</ul>
+								
+						<% } %>
+						
+					</div>
+	
+			</div>
 		</div>
 		<div class="bar-menu">
 			<i class="fa-solid fa-bars"></i>

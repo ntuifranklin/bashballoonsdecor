@@ -35,6 +35,10 @@ module.exports = () => {
         var categories = await JSON.parse(JSON.stringify(request.session.categories));
              
         var userCart = {} ;
+        var user = {} ;
+        if (request.session.user && request.session.user.email)
+            user = JSON.parse(JSON.stringify(request.session.user)) ;
+
         if (request.session.userCart)
             userCart = await JSON.parse(JSON.stringify(request.session.userCart)) ;
         
@@ -47,6 +51,7 @@ module.exports = () => {
             pageTitle: request.locals.siteName, 
             template: 'index', 
             userCart : userCart,
+            user:user,
             categories: categories,
             items_array: items_array,
             IMG_DIR_FOR_WEB : request.session.IMG_DIR_FOR_WEB,
@@ -84,6 +89,9 @@ module.exports = () => {
         var categories = categories = await JSON.parse(JSON.stringify(request.session.categories));
         var itemsByCategoryID =  itemsByCategoryID = await JSON.parse(JSON.stringify(request.session.itemsByCategoryID)) ;
        
+        var user = {} ;
+        if (request.session.user && request.session.user.email)
+            user = JSON.parse(JSON.stringify(request.session.user)) ;
         
         var category = {} ;
         var index = -1;
@@ -118,6 +126,7 @@ module.exports = () => {
                     categories: categories,
                     items_array: request.session.items_array,
                     userCart: userCart,
+                    user:user,
                     IMG_DIR_FOR_WEB : request.session.IMG_DIR_FOR_WEB,
                     category: decode(category.category_name),
                     category_id: category.category_id,
@@ -134,6 +143,7 @@ module.exports = () => {
                     categories: categories,
                     category_items: category_items,
                     userCart: userCart,
+                    user:user,
                     category: decode(category.category_name),
                     csrfToken: request.csrfToken(),
                     decode: decode,

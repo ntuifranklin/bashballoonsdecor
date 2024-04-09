@@ -88,7 +88,7 @@
 		<div class="row">
 			<div class="col-lg-12">
 			<div style="overflow-x:auto;overflow-y: hidden;">
-					<table class="shop_table table-responsive">
+					<table class="shop_table table-responsive" id="checkoutTableListItems">
 						<thead>
 							<tr>
 								<th class="product-name">Rental Item Name</th>
@@ -363,7 +363,7 @@
 								</label>
 							</li>
 						</ul>
-						<button type="submit" class="btn"><span>Place Order</span></button>
+						<button id="orderCheckoutSubmitButton" type="submit" class="btn"><span>Place Order</span></button>
 						<input type="hidden" name="_csrf" value='<%= csrfToken %>'>
 					</div>
 				</div>

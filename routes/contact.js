@@ -26,6 +26,9 @@ module.exports = () => {
         
         var categories = await JSON.parse(JSON.stringify(request.session.categories));
         
+        var user = {} ;
+        if (request.session.user && request.session.user.email)
+            user = JSON.parse(JSON.stringify(request.session.user)) ;
          
         var userCart = {} ;
         if (request.session.userCart) {
@@ -36,6 +39,7 @@ module.exports = () => {
             template: 'contact',
             csrfToken: request.csrfToken(),
             userCart: userCart,
+            user:user,
             categories: categories,
             decode:decode,
             encode:encode,

@@ -63,8 +63,8 @@ module.exports = () => {
         if (!formerrors.isEmpty()) {
             const err_message = formerrors.array().map(i => i.msg).join('<br>');
             //console.log(`Error processing form: ${JSON.stringify(formerrors.array(), null, 4)}`);
-            response.status(400).send(`${err_message}`); 
-            return ;
+            return response.status(400).send(`${err_message}`); 
+            
         };
         /* End Sanitize form data  */
         //============================================
@@ -200,8 +200,8 @@ module.exports = () => {
             console.error("Error loading data, reverting changes: ", error);
             var rollBack = await con.execute('ROLLBACK');
             
-            response.status(400).send({ message: `${error.message}`, responseText: 'Error processing your order' });
-            return ;
+            return response.status(400).send({ message: `${error.message}`, responseText: 'Error processing your order' });
+            
 
         };
         var orderHtml = `<html>\n`;
@@ -246,7 +246,6 @@ module.exports = () => {
         const orderConfirmationNumber = uuidv4() ;
         var mailOptions = { 
             from: process.env.BCC_ORDER_EMAIL,
-            bcc: `${process.env.BCC_ORDER_EMAIL}, ${process.env.ADMIN_DEVELOPER_EMAIL}`,
             subject: `Order Confirmation: ${orderConfirmationNumber}`,
             to: email,
             html: orderHtml
@@ -257,15 +256,15 @@ module.exports = () => {
                 /* update the cart in the locals variable */
                 request.session.userCart = {} ;
                 request.session.save();
-                console.log(`Order Confirmation Email sent: ${JSON.stringify(result)}`);
-                response.status(200).send({ message: `Order Confirmation Email sent: ${JSON.stringify(result)}`, responseText: 'Order processed successfully' });
-                return ;
+                //console.log(`Order Confirmation Email sent: ${JSON.stringify(result)}`);
+                return response.status(200).send({ message: `Order Confirmation Email sent: ${JSON.stringify(result)}`, responseText: 'Order processed successfully' });
+            
             }
         )
         .catch((error) => {
             console.log(`Error sending email: ${error}`);
-            response.status(400).send({ message: `${error.message}`, responseText: 'Error processing your order' });
-            return ;
+            return response.status(400).send({ message: `${error.message}`, responseText: 'Error processing your order' });
+            
         });
 
     });
@@ -279,6 +278,9 @@ module.exports = () => {
         if (request.session.userCart)
             userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
         
+        var user = {} ;
+        if (request.session.user && request.session.user.email)
+            user = JSON.parse(JSON.stringify(request.session.user)) ;
         //console.log('Passed cart : ' + JSON.stringify(userCart, null, 4));
         response.render('layout', 
             { 
@@ -287,6 +289,7 @@ module.exports = () => {
                 userCart: userCart,
                 error: null,
                 success:null,
+                user:user,
                 csrfToken: request.csrfToken(),
                 categories: categories,
                 decode: decode,
