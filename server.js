@@ -20,9 +20,7 @@ const {session_database_options} = require('./sessionmanagement/session') ;
 const cookieParser = require('cookie-parser');
 const {getCategories,getCategoriesItems} = require('./database/controllers/database');
 
-/* For caching data to increase speed */
-const NodeCache = require( "node-cache" );
-const cache = new NodeCache();
+
 
 /* File upload  */
 const fileUpload = require('express-fileupload');
@@ -130,8 +128,6 @@ app.locals.googleMapsFrameLink = process.env.GOOGLE_MAPS_FRAME_LINK ;
 /* now loop through the list_of_items */
 var index = 0 ;
 
-
-
 const customers_feedback = require(process.env.CUSTOMERS_FEEDBACK_FILE);
 app.locals.customers_feedback = customers_feedback ;
 
@@ -155,7 +151,7 @@ app.use(parseForm, csrfProtection, async(request, response, next) => {
         userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
     
     var item = null ;
-    items_array = cache.get('items_array');
+   
     if (!items_array) {
         itemsByID = {} ;
         itemsByCategoryID = {} ;
@@ -192,11 +188,7 @@ app.use(parseForm, csrfProtection, async(request, response, next) => {
             itemsByID[itemID]["itemDetails"] = JSON.parse(JSON.stringify(item)) ;
         } ;
 
-        /* Saving data on cache */
-        cache.set('items_array', items_array);
-        cache.set('itemsByID', itemsByID);
-        cache.set('itemsByCategoryID',itemsByCategoryID);
-        cache.set('itemsByCategoryWebID',itemsByCategoryWebID);
+      
 
         request.session.items_array = JSON.parse(JSON.stringify(items_array));
         request.session.itemsByID = JSON.parse(JSON.stringify(itemsByID)) ;
@@ -208,7 +200,7 @@ app.use(parseForm, csrfProtection, async(request, response, next) => {
     } ;
 
     //console.log(`itemsByID in server.js: ${JSON.stringify(request.session.itemsByID,null,4)}`);
-    categories = cache.get('categories');
+    
     if (!categories ) {
         categories = await getCategories (tableName='categories') ;
         for (var i = 0; i <  categories.length; i++) {
@@ -216,12 +208,12 @@ app.use(parseForm, csrfProtection, async(request, response, next) => {
             category.category_name = decode(category.category_name);
             //categories[i].category_name = category.category_name;
         };
-        cache.set('categories', categories);
-        request.session.categories = JSON.parse(JSON.stringify(categories));
+        
+        request.session.categories = await JSON.parse(JSON.stringify(categories));
         request.session.save();
     } ;
 
-    request.session.userCart = JSON.parse(JSON.stringify(userCart)) ;
+    request.session.userCart = await JSON.parse(JSON.stringify(userCart)) ;
     request.session.IMG_DIR_FOR_WEB = IMG_DIR_FOR_WEB ;
     request.session.save();
     response.locals.csrfToken = request.csrfToken();

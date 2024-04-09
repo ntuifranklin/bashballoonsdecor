@@ -22,9 +22,6 @@ const loginCheckOutValidation = [
     check('email').matches(VALID_EMAIL_REGEXP).withMessage('Please enter a valid email address.'),
     check('password').isLength({ min: 1 }).withMessage('Please enter a password.'),
 ];
-/* For caching data to increase speed */
-const NodeCache = require( "node-cache" );
-const cache = new NodeCache();
 /* define a function that sends one time passwords */
 
 function sendOTP(email, otp) {
@@ -93,11 +90,8 @@ module.exports = () => {
     
     router.get('/', csrfProtection, async(request, response) => { 
         
-        var categories = cache.get('categories');
-        if (!categories) {
-            categories = await JSON.parse(JSON.stringify(request.session.categories));
-            cache.set('categories', categories);
-        }
+        var categories = await JSON.parse(JSON.stringify(request.session.categories));
+       
          
         var userCart = {} ;
 

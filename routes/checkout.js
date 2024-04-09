@@ -26,9 +26,6 @@ const bootstrapCode = fs.readFileSync(`${process.env.BOOTSTRAP_CSS_FILE}`).toStr
 const {Email} = require('../utilities/email');
 
 
-/* For caching data to increase speed */
-const NodeCache = require( "node-cache" );
-const cache = new NodeCache();
 
 const checkOutValidation = [
     check('completename').isLength({ min: 5, max:255 }).withMessage('Please enter your full name.'),
@@ -66,7 +63,8 @@ module.exports = () => {
         if (!formerrors.isEmpty()) {
             const err_message = formerrors.array().map(i => i.msg).join('<br>');
             //console.log(`Error processing form: ${JSON.stringify(formerrors.array(), null, 4)}`);
-            return response.status(400).send(`${err_message}`); 
+            response.status(400).send(`${err_message}`); 
+            return ;
         };
         /* End Sanitize form data  */
         //============================================
@@ -202,7 +200,8 @@ module.exports = () => {
             console.error("Error loading data, reverting changes: ", error);
             var rollBack = await con.execute('ROLLBACK');
             
-            return response.status(400).send({ message: `${error.message}`, responseText: 'Error processing your order' });
+            response.status(400).send({ message: `${error.message}`, responseText: 'Error processing your order' });
+            return ;
 
         };
         var orderHtml = `<html>\n`;
@@ -259,12 +258,14 @@ module.exports = () => {
                 request.session.userCart = {} ;
                 request.session.save();
                 console.log(`Order Confirmation Email sent: ${JSON.stringify(result)}`);
-                return response.status(200).send({ message: `Order Confirmation Email sent: ${JSON.stringify(result)}`, responseText: 'Order processed successfully' });
+                response.status(200).send({ message: `Order Confirmation Email sent: ${JSON.stringify(result)}`, responseText: 'Order processed successfully' });
+                return ;
             }
         )
         .catch((error) => {
             console.log(`Error sending email: ${error}`);
-            return response.status(400).send({ message: `${error.message}`, responseText: 'Error processing your order' });
+            response.status(400).send({ message: `${error.message}`, responseText: 'Error processing your order' });
+            return ;
         });
 
     });
@@ -273,11 +274,8 @@ module.exports = () => {
         
         var userCart = {} ;
         
-        var categories = cache.get('categories');
-        if (!categories) {
-            categories = await JSON.parse(JSON.stringify(request.session.categories));
-            cache.set('categories', categories);
-        } ;
+        var categories = await JSON.parse(JSON.stringify(request.session.categories));
+        
         if (request.session.userCart)
             userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
         
