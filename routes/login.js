@@ -190,11 +190,9 @@ module.exports = () => {
                     // Send OTP via email
                     try {
                         sendOTP(user.email, otp);
-                        response.send({
-                            message:'success',
-                            responseText:`Login was successful. <br/>
-                            Please check your email and verify your one time password`
-                        });
+                        response.status(200).send(`Login was successful. <br/>
+                        Please check your email and verify your one time password`);
+                        return;
                     } catch (error) {
                         console.log(`Error : ${error}`);
                         response.send({
