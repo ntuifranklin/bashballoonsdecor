@@ -4,7 +4,17 @@
 <% var all_items_array = JSON.parse(JSON.stringify(items_array)) ;%>
 <% //console.log(`On index page received categories : ${c}`) ;%>
 <% //console.log(`On index page received category_items : ${all_items_array}`) ;%>
+<%
+	
+	function trimItemName(name="",size=20) {
+		const n = new String(name);
+		if (n.length >= size )
+			return n.slice(0,(size-4)) + " ..." ;
+		
+		return n ;
 
+	}
+%>
 <section class="slider-home-1 owl-carousel owl-theme">
 	<div class="hero-section item" style="background-image: url(https://via.placeholder.com/1920x640);">
 	  <div class="container">
@@ -205,12 +215,16 @@
 			<div class="item">
 				<div class="product-style">
 					<!-- <img alt="img" src="https://via.placeholder.com/195x210"> -->
-					
-					<img alt="<%= 'Image for ' + (individual_item.item_name).slice(0,14) %>" src="<%= IMG_DIR_FOR_WEB + individual_item.imageurl %>" width="195" height="210" />
-          
+					<% if (individual_item.imageurl != "" ) {%>
+						<!-- width x height = 195 x 210 , scaled down by 0.7 -->
+						<img src="<%= IMG_DIR_FOR_WEB + individual_item.imageurl %>" width=137 height=147 />
+					<% } else { %>
+						<img src="https://via.placeholder.com/137x147" />
+						<!-- https://via.placeholder.com/195x210 -->
+					<% } %>
 
 					<a href="/product-details/<%= individual_item.category_webid %>">
-						<h5><%= individual_item.item_name %></h5>
+						<h5><%= trimItemName(name=individual_item.item_name)  %></h5>
 					</a>
 					<h6>$<%= individual_item.unitPrice %></h6>
 					<span>In stock, <%= individual_item.quantityAvailable %> units</span>
@@ -281,12 +295,13 @@
 					<div class="product-style two">
 						<div>
 							<!-- <img alt="img" src="https://via.placeholder.com/140x165"> -->
-							<img alt="<%= 'Image for ' + (individual_item.item_name).slice(0,14) %>" src="<%= IMG_DIR_FOR_WEB + individual_item.imageurl %>" width="140" height="165" />
+							<% const altImage = trimItemName(name=individual_item.item_name) ; %>
+							<img alt="<%= 'Image for ' + altImage %>" src="<%= IMG_DIR_FOR_WEB + individual_item.imageurl %>" width=140 height=165 />
           
 						</div>
 						<div>
 						<a href="/product-details/<%= individual_item.category_webid %>">
-							<h5><%= individual_item.item_name %></h5>
+							<h5><%= trimItemName(name=individual_item.item_name) %></h5>
 						</a>
 						<h6>$<%= individual_item.unitPrice %></h6>
 						<span>In stock, <%= individual_item.quantityAvailable %> units</span>
@@ -314,12 +329,13 @@
 					<div class="product-style two">
 						<div>
 							<!-- <img alt="img" src="https://via.placeholder.com/140x165"> -->
-							<img alt="<%= 'Image for ' + (individual_item.item_name).slice(0,14) %>" src="<%= IMG_DIR_FOR_WEB + individual_item.imageurl %>" width="140" height="165" />
+							<% const altImage = trimItemName(name=individual_item.item_name) ; %>
+							<img alt="<%= 'Image for ' + altImage %>" src="<%= IMG_DIR_FOR_WEB + individual_item.imageurl %>" width=140 height=165 />
 						</div>
 						<div>
 							
 							<a href="/product-details/<%= individual_item.category_webid %>">
-								<h5><%= individual_item.item_name %></h5>
+								<h5><%= trimItemName(name=individual_item.item_name) %></h5>
 							</a>
 
 
@@ -349,11 +365,12 @@
 				<div class="product-style two mb-lg-0">
 					<div>
 						<!-- <img alt="img" src="https://via.placeholder.com/140x165"> -->
-						<img alt="<%= 'Image for ' + (individual_item.item_name).slice(0,14)  %>" src="<%= IMG_DIR_FOR_WEB + individual_item.imageurl %>" width="140" height="165" />
+						<% const altImage = trimItemName(name=individual_item.item_name) ; %>
+						<img alt="<%= 'Image for ' + altImage  %>" src="<%= IMG_DIR_FOR_WEB + individual_item.imageurl %>" width=140 height=165 />
 					</div>
 					<div>
 					<a href="/product-details/<%= individual_item.category_webid %>">
-						<h5><%= individual_item.item_name %></h5>
+						<h5><%= trimItemName(name=individual_item.item_name) %></h5>
 					</a>
 					<h6>$<%= individual_item.unitPrice %></h6>
 					<span>In stock, <%= individual_item.individItemQtyAvailable %> units</span>
@@ -384,11 +401,12 @@
 				<div class="product-style two">
 					<div>
 						<!-- <img alt="img" src="https://via.placeholder.com/140x165"> -->
-						<img alt="<%= 'Image for ' + (individual_item.item_name).slice(0,14) %>" src="<%= IMG_DIR_FOR_WEB + individual_item.imageurl %>" width="140" height="165" />
+						<% const altImage = trimItemName(name=individual_item.item_name) ; %>
+						<img alt="<%= 'Image for ' + altImage %>" src="<%= IMG_DIR_FOR_WEB + individual_item.imageurl %>" width=140 height=165 />
 					</div>
 					<div>
 					<a href="/product-details/<%= individual_item.category_webid %>">
-						<h5><%= individual_item.item_name %></h5>
+						<h5><%= trimItemName(name=individual_item.item_name) %></h5>
 					</a>
 					<h6>$<%= individual_item.unitPrice %></h6>
 					<span>In stock, <%= individual_item.quantityAvailable %> units</span>
@@ -419,11 +437,12 @@
 					<div class="product-style two">
 						<div>
 							<!-- <img alt="img" src="https://via.placeholder.com/140x165"> -->
-							<img alt="<%=  'Image for ' + (individual_item.item_name).slice(0,14) %>" src="<%= IMG_DIR_FOR_WEB + individual_item.imageurl %>" width="140" height="165" />
+							<% const altImage = trimItemName(name=individual_item.item_name) ; %>
+							<img alt="<%=  'Image for ' + altImage %>" src="<%= IMG_DIR_FOR_WEB + individual_item.imageurl %>" width=140 height=165 />
 						</div>
 					<div>
 					<a href="/product-details/<%= individual_item.category_webid %>">
-						<h5><%= individual_item.item_name %></h5>
+						<h5><%= trimItemName(name=individual_item.item_name) %></h5>
 					</a>
 					<h6>$<%= individual_item.unitPrice %></h6>
 					<span>In stock, <%= individual_item.individItemQtyAvailable %> units</span>

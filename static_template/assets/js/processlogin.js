@@ -30,7 +30,7 @@ jQuery(document).ready(function(){
             var successHtml = ` 
             <div class="alert alert-success fade show" role="alert">
               <strong>Success!</strong>
-              <p>${d}</p>
+              <p>${d.responseText}</p>
               <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>`;
             
@@ -87,7 +87,7 @@ jQuery(document).ready(function(){
             var successHtml = ` 
             <div class="alert alert-success fade show" role="alert">
               <strong>Success!</strong>
-              <p>${d}</p>
+              <p>${d.responseText}</p>
               <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>`;
             

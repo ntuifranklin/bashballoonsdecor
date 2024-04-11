@@ -4,6 +4,9 @@ $(document).ready(function() {
     // need email sender and stuff like that.
     $("#ordercheckout").submit(function (event) {
 
+        /* Then disable the submit button for the form to 
+        prevent multiple submissions */
+        $("#orderCheckoutSubmitButton").attr('disabled', true) ;
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -34,8 +37,7 @@ $(document).ready(function() {
               <p>${data.responseText}</p>
               <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>`;
-            //Then disable the submit button for the form
-            $("#orderCheckoutSubmitButton").attr('disabled', true) ;
+            
             //disable the table that
             $("#checkoutTableListItems").remove();
             //Then show success message
@@ -43,6 +45,8 @@ $(document).ready(function() {
             
 
           }).fail(function (data) { 
+            //renable the submit button
+            $("#orderCheckoutSubmitButton").attr('disabled', false) ;
             var errorHtml = ` 
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
               <strong>Error!</strong> 

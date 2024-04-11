@@ -64,7 +64,7 @@ module.exports = () => {
             userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
         
         //console.log(`User cart : ${JSON.stringify(userCart)}`);
-        const itemTitle = item.item_name ;
+        const itemTitle = decode(item.item_name) ;
         const item_category_id = item.category_id ;
         const itemsWithSimilarCategoryID = await JSON.parse(JSON.stringify(itemsByCategoryID[item_category_id]));
 

@@ -99,18 +99,39 @@
 							</tr>
 						</thead>
 						<tbody>
-						<% var grandTotal = 0 ; %>
-						<% var totalItems = 0 ; %>
+						<% 
+						var grandTotal = 0 ;
+						var totalItems = 0 ; 
+						
+						function trimItemName(name="",size=16) {
+							const n = new String(name);
+							if (n.length >= size )
+							return n.slice(0,(size-4)) + " ..." ;
+							
+							return n ;
+						
+						} ;
+						%>
 						
 						<% for(var itemKey in userCart)  { %>
 							<% var item = JSON.parse(JSON.stringify(userCart[itemKey])) ;%>
 							<% var itemDetails = JSON.parse(JSON.stringify(item["itemDetails"])) ; %>
 							<tr class="product">
 								<td class="product-name">
-									<img alt="img" src="https://via.placeholder.com/70x70">
+
+									
+									<% if (itemDetails.imageurl != "" ) {%>
+										<img src="<%= IMG_DIR_FOR_WEB + itemDetails.imageurl %>" width=70 height=70 />
+									<% } else { %>
+										<img src="https://via.placeholder.com/70x70" />
+										<!-- https://via.placeholder.com/70x70 -->
+									<% } %>
+
+									
 									<div>
-										<span><%= itemDetails.item_name %></span>
-										<p><%= itemDetails.item_name %></p>
+										<% const trimmedName = trimItemName(name=decode(itemDetails.item_name)); %>
+										<span><%= trimmedName %></span>
+										<p><%= trimmedName %></p>
 										
 										<p>SKU: <%= itemDetails.category_webid %></p>
 									</div>
@@ -164,7 +185,7 @@
 								<td colspan="4">
 									<div class="d-flex align-items-center justify-content-between">
 										<h4><%= totalItems %> items</h4>
-										<h5>$<%= grandTotal %></h5>
+										<h5>$<%= grandTotal.toFixed(3) %></h5>
 									</div>
 								</td>
 							</tr>

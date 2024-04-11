@@ -101,13 +101,15 @@ module.exports = () => {
         if (!correct_mimetype) {
             console.log(`Error wrong file type uploaded`);
             response.status(400).send(`Only images of this type ${acceptedImageTypes} are accepted`);
+            
             return ;
         }
         
         const formerrors = validationResult(request);
         if (!formerrors.isEmpty()) {
             const err_message = formerrors.array().map(i => i.msg).join('<br>');
-            response.status(400).send(`${JSON.parse(JSON.stringify(err_message))}`); 
+            response.status(400).send(`${JSON.parse(JSON.stringify(err_message))}`);
+                
             return ;
         };
         
@@ -135,8 +137,9 @@ module.exports = () => {
         // Use the mv() method to place the file somewhere on your server
         sampleFile.mv(uploadPath, function(errMoveImg) {
             if (errMoveImg) {
-                console.log(`Error moving image : ${errMoveImg}`);
-                response.status(500).send(errMoveImg);
+                console.log(`Error moving image : ${errMoveImg.message}`);
+                
+                response.status(400).send('Error uploading image');
                 return ;
 
             }
@@ -206,12 +209,15 @@ module.exports = () => {
 
             request.session.save();
             
-            response.status(200).send(`Item added to cart successfully`);
+            const success_message = `Item added to category successfully<br/>\n
+            <a href='/admin'>Back to Admin Dashboard</a>
+            ` ;
+            response.status(200).send(success_message);
             return ;
         } catch (error) {
             console.log(`Error in admin.js inserting new item: ${error.message}`);
             con.execute('ROLLBACK');//con.rollback();
-            response.status(500).send(`Error processing form`);
+            response.status(400).send(`Error processing form`);
             return ;
         }
         
@@ -275,7 +281,7 @@ module.exports = () => {
         if (!(category_webid in itemsByCategoryWebID)) {
             console.log(`Posting to /admin/updateitem/ with category_webid : ${category_webid}. \n
              This category_webid was not found`);
-            response.status(401).send(`An error occured`);
+            response.status(400).send(`An error occured`);
             return ;
         }
         /* get cached or session array variables if necessary */
@@ -290,7 +296,7 @@ module.exports = () => {
         const formerrors = validationResult(request);
         if (!formerrors.isEmpty()) {
             const err_message = formerrors.array().map(i => i.msg).join('<br>');
-            response.status(400).send(`${JSON.parse(JSON.stringify(err_message))}`); 
+            response.status(400).send(`${err_message}`); 
             return ;
         };
 
@@ -335,7 +341,7 @@ module.exports = () => {
             sampleFile.mv(uploadPath, function(errMoveImg) {
                 if (errMoveImg) {
                     console.log(`Error moving image : ${errMoveImg}`);
-                    response.status(500).send(errMoveImg);
+                    response.status(500).send('Error uploading image');
                     return ;
                 }
 
@@ -468,12 +474,16 @@ module.exports = () => {
 
             request.session.save();
             
-            response.status(200).send(`Item updated successfully`);
+            const success_message = `Item updated successfully<br/>\n
+            <a href='/admin'>Back to Admin Dashboard</a>
+            ` ;
+            response.status(200).send(success_message);
+            //response.status(200).send('Item updated successfully');
             return ;
         } catch (error) {
             console.log(`Error in admin.js updating item: ${error.message}`);
             con.execute('ROLLBACK');//con.rollback();
-            response.status(500).send(`Error processing update item form`);
+            response.status(400).send('Error processing update item form');
             return ;
         }
         
@@ -498,7 +508,7 @@ module.exports = () => {
         var category_webid = new String(request.params.category_webid);
         if (!(category_webid in itemsByCategoryWebID)) {
             console.log(`An update occured in ${__filename} with a category_webid that was not found in cache or session.`);
-            response.status(401).send(`An Error Occured`);
+            response.status(400).send(`An Error Occured`);
             return ;
         };
         const itemToUpdate = await JSON.parse(JSON.stringify(itemsByCategoryWebID[category_webid]));
