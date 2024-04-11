@@ -67,7 +67,12 @@ module.exports = () => {
         const emailObject = {
             to: process.env.BCC_ORDER_EMAIL,
             subject: `Contact form from ${name} with email: ${email}`,
-            html: `${comment}`,
+            html: `
+            Customer Details : <br/>\n
+            Full Name : ${name} <br/>\n
+            Email Address : ${email} <br/>\n
+            Phone : ${phone} <br/>\n
+            Message: ${comment}<br/>\n`,
         } ;
         emailSender.sendEmail(emailObject.to, emailObject.subject, emailObject.html).
         then((result) => {

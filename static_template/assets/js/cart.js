@@ -81,7 +81,7 @@ function changeItemQuantity(itemID, source='', htmlID='#', alertIndex=''){
     //console.log(`Success data received : ${JSON.stringify(data)}`);
     var successHtml = `
     <div class="alert alert-success alert-dismissible fade show" role="alert">
-      <strong>Success!</strong>  ${data.responseText}.
+      <strong>Success!</strong>  ${data}.
       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>`;
     

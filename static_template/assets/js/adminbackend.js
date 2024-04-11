@@ -49,7 +49,7 @@ $(document).ready(function() {
             var successHtml = ` 
             <div class="alert alert-success fade show" role="alert">
               <strong>Success!</strong>
-              <p>${d.responseText}</p>
+              <p>${d}</p>
               <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>`;
             
@@ -118,7 +118,7 @@ $(document).ready(function() {
           var successHtml = ` 
           <div class="alert alert-success fade show" role="alert">
             <strong>Success!</strong>
-            <p>${d.responseText}</p>
+            <p>${d}</p>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
           </div>`;
           
@@ -143,7 +143,17 @@ $(document).ready(function() {
 
     /* This function below will take from the database the list of category items selected */
     $('#category_id').on('change', function (e) {
-      reloadCategoryTable();
+      const selectedCategoryIDValue = $(this).val()
+      if ( selectedCategoryIDValue != ''){
+        //reload only if category_id is not empty
+        reloadCategoryTable();
+      } else {
+        //clear the table on admin page
+        $("#itemTableBody").html('');
+        //update the select category title 
+        $("#selectedCategoryTitle").html('Select a Category Title On Left');
+      }
+
     });
 
   
@@ -195,7 +205,7 @@ function reloadCategoryTable() {
             <td><a href='/admin/updateitem/${d[i].category_webid}'>${editSvgVectorButton}</a></td>
             </tr>\n`; 
         };
-        $("#selectedCategoryTitle").html(`${textSelected} ${d.length} items`);
+        $("#selectedCategoryTitle").html(`${textSelected} (${d.length} items)`);
         
         $("#itemTableBody").html(htmlRows);
       }).fail(function (data) { 
