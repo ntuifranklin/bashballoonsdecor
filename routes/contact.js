@@ -58,7 +58,7 @@ module.exports = () => {
         if (!formerrors.isEmpty()) {
             const err_message = formerrors.array().map(i => i.msg).join('<br>');
             //console.log(`Error processing form: ${JSON.stringify(formerrors.array(), null, 4)}`);
-           response.status(400).send(`${err_message}`); 
+            response.status(400).send(`${err_message}`); 
            return ;
             
         } ;

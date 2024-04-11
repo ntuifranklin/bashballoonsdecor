@@ -102,11 +102,12 @@ module.exports = () => {
             user = JSON.parse(JSON.stringify(request.session.user)) ;
             //console.log(`user : ${JSON.stringify(user)}, current session : ${JSON.stringify(request.session)}`);
             //return response.status(401).send(`You are already logged in as ${user.email}`);
-            return response.status(200).send(
+            response.status(200).send(
                 `You are already logged in as ${user.email}\n
                 Click <a href="/logout">here</a> to logout\n<br>
                 Click <a href="/admin">here</a> to head to your dashboard\n<br>`
             );
+            return ;
         } ;
 
         user = {} ;
@@ -130,6 +131,7 @@ module.exports = () => {
          //check if user is logged in
         var user = request.session.user;
         if (user) {
+            //not supposed to happen
             user = JSON.parse(JSON.stringify(request.session.user)) ;
             //console.log(`user : ${JSON.stringify(user)}, current session : ${JSON.stringify(request.session)}`);
             return response.status(401).send(`You are already logged in as ${user.email}`);
@@ -144,7 +146,9 @@ module.exports = () => {
         if (!formerrors.isEmpty()) {
             const err_message = formerrors.array().map(i => i.msg).join('<br>');
             console.log(`Error processing login form: ${JSON.stringify(formerrors.array(), null, 4)}`);
-            return response.status(400).send(`${err_message}`); 
+            
+            response.status(500).send(`${err_message}`);
+            return ;
         }     
         
                 
@@ -152,9 +156,11 @@ module.exports = () => {
         con.execute('SELECT * FROM users WHERE email = ? ', [email], async(err, results) => {
             if (err) {
                 console.log(`Error processing login form: ${err}`);
-                return response.status(500).send('Internal Server Error');
+                response.status(500).send('Internal server error');
+                return ;
             } else if (results.length === 0) {
-                return response.status(404).send('Login did not seem to work');
+                response.status(400).send('Oops! Login did not seem to work');
+                return ;
             }
 
             const user = results[0];
@@ -177,25 +183,32 @@ module.exports = () => {
                         VALUES (id, ?, ?, NOW() + INTERVAL 15 MINUTE)',
                       [user.email, otp], (err, results) => {
                     if (err) {
-                        return response.status(500).send('Internal Server Error');
+                        response.status(500).send('Internal Server Error');
+                        return 
                     }
 
                     // Send OTP via email
                     try {
                         sendOTP(user.email, otp);
-                        response.send(
-                            `Login was successful. <br/>
-                             Please check your email and verify your one time password`
-                        );
+                        response.send({
+                            message:'success',
+                            responseText:`Login was successful. <br/>
+                            Please check your email and verify your one time password`
+                        });
                     } catch (error) {
                         console.log(`Error : ${error}`);
+                        response.send({
+                            message:'error',
+                            responseText:`An error occured while sending email otp email`
+                        });
                     } ;
                     
 
                     
                 });
             } else {
-                return response.status(404).send('Ouch! login was invalid');
+                response.status(404).send('Ouch! login was invalid');
+                return
 
             } ;
         });

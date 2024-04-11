@@ -33,6 +33,7 @@ module.exports = () => {
             userCart: userCart,
             user:user,
             csrfToken: request.csrfToken(),
+            IMG_DIR_FOR_WEB : request.session.IMG_DIR_FOR_WEB,
             categories: categories,
             decode:decode,
             encode:encode

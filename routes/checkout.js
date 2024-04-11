@@ -63,7 +63,8 @@ module.exports = () => {
         if (!formerrors.isEmpty()) {
             const err_message = formerrors.array().map(i => i.msg).join('<br>');
             //console.log(`Error processing form: ${JSON.stringify(formerrors.array(), null, 4)}`);
-            return response.status(400).send(`${err_message}`); 
+            response.status(400).send(`${err_message}`); 
+            return ;
             
         };
         /* End Sanitize form data  */
@@ -133,6 +134,7 @@ module.exports = () => {
 
             var emailOrderBodyHtml = "" ;
             var allIndividualItems = JSON.parse(JSON.stringify(userCart)) ;
+            //emailOrderBodyHtml += "<table>";
             for(var itemKey in allIndividualItems)  {
                 var  order_category_items_id = await generateUniqueID(con=con, tableName="order_category_items", keyFieldName="order_category_items_id", size=64) ;
                
@@ -147,7 +149,7 @@ module.exports = () => {
                 emailOrderBodyHtml += `\t\t\t\t<td>${itemDetails.item_name}</td>\n`;
                 emailOrderBodyHtml += `\t\t\t\t<td>${individualItem.quantity}</td>\n`;
                 emailOrderBodyHtml += `\t\t\t\t<td>${itemDetails.unitPrice}</td>\n`;
-                emailOrderBodyHtml += `\t\t\t\t<td>$${itemsSubTotal}</td>\n`;
+                emailOrderBodyHtml += `\t\t\t\t<td>$${itemsSubTotal.toFixed(3)}</td>\n`;
                 emailOrderBodyHtml += `\t\t\t</tr>\n`;
                
                 var oneOrderItemInsertSQL = "INSERT INTO `order_category_items` VALUES(?, ?, ?, ?, ?, ?)";
@@ -164,6 +166,7 @@ module.exports = () => {
                 transactionData.push(oneOrderItemInsertData);
                 //console.log(`one item : oneOrderItemInsertSQL : ${transactionQueries.length} : ${transactionData.length}`);
             } ;
+            //emailOrderBodyHtml += "</table>";
 
             /*
             MySQLDBConnector.executeInTransactionMode(transactionQueries, transactionData);
@@ -199,43 +202,55 @@ module.exports = () => {
 
             console.error("Error loading data, reverting changes: ", error);
             var rollBack = await con.execute('ROLLBACK');
+            console.log(`Error on ${__filename} :  ${error.message}`);
+            response.status(400).send('Error processing your order');
+            return ;
             
-            return response.status(400).send({ message: `${error.message}`, responseText: 'Error processing your order' });
-            
-
         };
         var orderHtml = `<html>\n`;
-
         orderHtml += `<head>\n`;
         orderHtml += `<title>Order Confirmation</title>\n`;
-        orderHtml += `<style>${bootstrapCode}</style>\n`;
+        orderHtml += `<style>
+                    table, tr, th, td {
+                    border: 1px solid black;
+                    border-collapse: collapse;
+                    }
+        </style>\n`;
         orderHtml += `</head>\n`;
-        orderHtml += `<script>${jqueryCode}</script>\n`;
+        //orderHtml += `<script>${jqueryCode}</script>\n`;
         orderHtml += `<body>\n`;
         orderHtml += `\t<div class="container">\n`;
-        orderHtml += `\t\t<h1>Order Confirmation</h1>\n`;
+        orderHtml += `\t\t<h1>Order Confirmation</h1>\n`;      
+        orderHtml += `\t\t<h3>Customer Phone : ${phone}</h3>\n`;
+        orderHtml += `\t\t<h3>Customer Full Name : ${completename}</h3>\n`;
+        orderHtml += `\t\t<h3>Customer Email : ${email}</h3>\n`;
+        orderHtml += `\t\t<h3>Street Address : ${street_address}</h3>\n`;
+        orderHtml += `\t\t<h3>City : ${city}</h3>\n`;
+        orderHtml += `\t\t<h3>State : ${state}</h3>\n`;
+        orderHtml += `\t\t<h3>Zip Code : ${zipcode}</h3>\n`;
+        orderHtml += `\t\t<h3>Customer Order Note : ${order_note}</h3>\n`;
         orderHtml += `\t\t<h2>Order Details</h2>\n`;
         orderHtml += `\t\t<table class="table table-striped table-hover">\n`;
-        orderHtml += `\t\t\t<thead>\n`; 
+        //orderHtml += `\t\t\t<thead>\n`; 
         orderHtml += `\t\t\t\t<tr>\n`;
         orderHtml += `\t\t\t\t\t<th>Ordered Item</th>\n`;
         orderHtml += `\t\t\t\t\t<th>Quantity</th>\n`;
         orderHtml += `\t\t\t\t\t<th>Unit Cost</th>\n`;
         orderHtml += `\t\t\t\t\t<th>Sub Total in USD</th>\n`;
         orderHtml += `\t\t\t\t</tr>\n`;
-        orderHtml += `\t\t\t</thead>\n`;
-        orderHtml += `\t\t<tbody>\n`;
+        //orderHtml += `\t\t\t</thead>\n`;
+        //orderHtml += `\t\t<tbody>\n`;
         orderHtml += `${emailOrderBodyHtml}`;
         orderHtml += `\t\t\t<tr>\n`;
-        orderHtml += `\t\t\t\t<td colspan=2>\n`;
+        orderHtml += `\t\t\t\t<td>\n`;
         orderHtml += `\t\t\t\t<b>Grand Total : </b>\n`;
         orderHtml += `\t\t\t\t</td>\n`;
-        orderHtml += `\t\t\t\t<td>\n`;
-        orderHtml += `\t\t\t\t<b>$${grandTotal}</b>\n`; 
+        orderHtml += `\t\t\t\t<td colspan=3>\n`;
+        orderHtml += `\t\t\t\t<b>$${grandTotal.toFixed(3)}</b>\n`; 
         orderHtml += `\t\t\t\t</td>\n`;
         orderHtml += `\t\t\t</tr>\n`;
         
-        orderHtml += `\t\t\t\t</tbody>\n`;
+        //orderHtml += `\t\t\t\t</tbody>\n`;
         orderHtml += `\t\t\t</table>\n`;
         orderHtml += `\t\t</div>\n`;
         orderHtml += `\t</body>\n`;
@@ -243,7 +258,7 @@ module.exports = () => {
         
         /* send the email */
         var emailSender = new Email();
-        const orderConfirmationNumber = uuidv4() ;
+        const orderConfirmationNumber = order_id ;
         var mailOptions = { 
             from: process.env.BCC_ORDER_EMAIL,
             subject: `Order Confirmation: ${orderConfirmationNumber}`,
@@ -257,14 +272,15 @@ module.exports = () => {
                 request.session.userCart = {} ;
                 request.session.save();
                 //console.log(`Order Confirmation Email sent: ${JSON.stringify(result)}`);
-                return response.status(200).send({ message: `Order Confirmation Email sent: ${JSON.stringify(result)}`, responseText: 'Order processed successfully' });
+                response.status(200).send(`Order processed successfully<br/>\nYou will receive a confirmation email`);
+                return ;
             
             }
         )
         .catch((error) => {
-            console.log(`Error sending email: ${error}`);
-            return response.status(400).send({ message: `${error.message}`, responseText: 'Error processing your order' });
-            
+            console.log(`Error sending email: ${error.message}`);
+            response.status(400).send('Error processing your order');
+            return ;
         });
 
     });
@@ -290,6 +306,7 @@ module.exports = () => {
                 error: null,
                 success:null,
                 user:user,
+                IMG_DIR_FOR_WEB : request.session.IMG_DIR_FOR_WEB,
                 csrfToken: request.csrfToken(),
                 categories: categories,
                 decode: decode,

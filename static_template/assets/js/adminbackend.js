@@ -49,7 +49,7 @@ $(document).ready(function() {
             var successHtml = ` 
             <div class="alert alert-success fade show" role="alert">
               <strong>Success!</strong>
-              <p>${d}</p>
+              <p>${d.responseText}</p>
               <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>`;
             
@@ -60,7 +60,7 @@ $(document).ready(function() {
             var errorHtml = ` 
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
               <strong>Error!</strong> 
-              <p>${d}</p>
+              <p>${d.responseText}</p>
               <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>`;
             
@@ -107,7 +107,7 @@ $(document).ready(function() {
       //var category_webid = data.category_webid;
       await $.ajax({
           type: "POST",
-          url: `/admin/updateitem`,//form upload causes csrf error
+          url: `/admin/updateitem/${data.category_webid}`,//form upload causes csrf error
           data: formData,
           contentType : false,
           processData : false,
@@ -118,7 +118,7 @@ $(document).ready(function() {
           var successHtml = ` 
           <div class="alert alert-success fade show" role="alert">
             <strong>Success!</strong>
-            <p>${d}</p>
+            <p>${d.responseText}</p>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
           </div>`;
           
@@ -129,7 +129,7 @@ $(document).ready(function() {
           var errorHtml = ` 
           <div class="alert alert-danger alert-dismissible fade show" role="alert">
             <strong>Error!</strong> 
-            <p>${d}</p>
+            <p>${d.responseText}</p>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
           </div>`;
           

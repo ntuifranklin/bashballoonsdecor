@@ -183,17 +183,7 @@
                       <svg height="112pt" viewBox="0 -38 512 512" width="112pt" xmlns="http://www.w3.org/2000/svg"><path d="m180 0h-160c-11.046875 0-20 8.953125-20 20v160c0 11.046875 8.953125 20 20 20h160c11.046875 0 20-8.953125 20-20v-160c0-11.046875-8.953125-20-20-20zm-20 160h-120v-120h120zm76-98c0-11.046875 8.953125-20 20-20h236c11.046875 0 20 8.953125 20 20s-8.953125 20-20 20h-236c-11.046875 0-20-8.953125-20-20zm276 76c0 11.046875-8.953125 20-20 20h-236c-11.046875 0-20-8.953125-20-20s8.953125-20 20-20h236c11.046875 0 20 8.953125 20 20zm-332 98h-160c-11.046875 0-20 8.953125-20 20v160c0 11.046875 8.953125 20 20 20h160c11.046875 0 20-8.953125 20-20v-160c0-11.046875-8.953125-20-20-20zm-20 160h-120v-120h120zm352-98c0 11.046875-8.953125 20-20 20h-236c-11.046875 0-20-8.953125-20-20s8.953125-20 20-20h236c11.046875 0 20 8.953125 20 20zm0 76c0 11.046875-8.953125 20-20 20h-236c-11.046875 0-20-8.953125-20-20s8.953125-20 20-20h236c11.046875 0 20 8.953125 20 20zm0 0"/></svg>
                     </i>
                   </button>
-                  <button class="nav-link" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false">
-                    <i>
-                      <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                      viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve">
-                        <path d="M0,0v237.268h237.268V0H0z M199.805,199.805H37.463V37.463h162.341V199.805z"/>
-                        <path d="M274.732,0v237.268H512V0H274.732z M474.537,199.805H312.195V37.463h162.341V199.805z"/>
-                        <path d="M0,274.732V512h237.268V274.732H0z M199.805,474.537H37.463V312.195h162.341V474.537z"/>
-                        <path d="M274.732,274.732V512H512V274.732H274.732z M474.537,474.537H312.195V312.195h162.341V474.537z"/>
-                    </svg>
-                    </i>
-                  </button>
+                 
               </div>
               </div>
         </div>
@@ -208,7 +198,17 @@
           <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
             <ul>
 
-              <% //console.log(`category_id: ${category_id}`); %>            
+              <% //console.log(`category_id: ${category_id}`); 
+              
+                function trimItemName(name="",size=20) {
+                  const n = new String(name);
+                  if (n.length >= size )
+                    return n.slice(0,(size-4)) + " ..." ;
+                  
+                  return n ;
+
+                }
+              %>            
             
               <% for (var i = 0; i < category_items.length; i++) { %>
                 
@@ -217,11 +217,12 @@
                   <li class="grid-list  <%- ( i == category_items.length - 1 ) ? 'end' : '' %>" >
                     <div class="d-flex align-items-center">
                       <!-- <img alt="product" src="https://via.placeholder.com/110x118"> -->
-                      <img alt="<%= 'Image for ' + (new String(item_name)).slice(0,20) %>" src="<%= IMG_DIR_FOR_WEB + individual_item.imageurl %>" width="110" height="118" />
+                      <% const trimmedName = trimItemName(name=item_name)%>
+                      <img alt="<%= 'Image for ' + trimmedName %>" src="<%= IMG_DIR_FOR_WEB + individual_item.imageurl %>" width=110 height=118 />
                       
                       <div class="weekly-sellers-text">
-                        <span><%= item_name %></span>
-                        <a href="/product-details/<%= individual_item.category_webid %>"><h5><%= item_name %></h5></a>
+                        <span><%= trimmedName %></span>
+                        <a href="/product-details/<%= individual_item.category_webid %>"><h5><%= trimmedName %></h5></a>
                         <div class="star">
                           <i class="fa-solid fa-star"></i>
                           <i class="fa-solid fa-star"></i>
@@ -271,63 +272,7 @@
             </ul>
           </div>
 
-          <% /* Tab showing below */ %>
-          <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
-           
-            <div class="row list">
-              
-              <% for (var j = 0; j < category_items.length; j++) { %>
-                <% var individual_item_box = JSON.parse(JSON.stringify(category_items[j], null, 4)) ; %>
-                <% var box_item_name = decode(individual_item_box.item_name); %>
-                <div class="col-md-4 col-sm-6">
-                  <div class="recent-product-two">
-                    <div class="recent-product-two-img">
-                      <!-- <img alt="product" src="https://via.placeholder.com/174x190"> -->
-                      <img alt="<%= 'Image for ' + (new String(box_item_name)).slice(0,20) %>"  src="<%= IMG_DIR_FOR_WEB + individual_item_box.imageurl %>" width="174" height="190" />
-                    </div>
-                    <div class="weekly-sellers-text">
-                        <span><%= box_item_name %></span>
-                        <a href="/product-details"><h5><%= box_item_name %></h5></a>
-                        <div class="star">
-                          <i class="fa-solid fa-star"></i>
-                          <i class="fa-solid fa-star"></i>
-                          <i class="fa-solid fa-star"></i>
-                          <i class="fa-solid fa-star"></i>
-                          <i class="fa-solid fa-star"></i>
-                        </div>
-                        <h6>$<%= individual_item_box.unitPrice + "/day" %></h6>
-                      </div>
-                      <div class="add-to-cart two">
-                      
-                        <% var htmlID2 = new String(individual_item_box.item_id) + "2";  %>
-                        <a id="<%= htmlID2 %>" class="btn" onclick="updateCart('<%= individual_item_box.item_id %>', source='rental-items-list', htmlID='<%= htmlID2 %>')"><span>Add to Cart</span></a>
-                        <a href="#" class="heart-wishlist">
-                          <i class="fa-regular fa-heart"></i>
-                        </a>
-                      </div>
-                  </div>
-                </div>
-              <% } %>
-              
-
-
-              <% 
-              /* 
-              Pagination 
-              <div class="pagination-gap">
-                <ul id="border-pagination">
-                  <li class="ps-0"><a href="javascript:void(0)"><i class="fa-solid fa-angle-left"></i></a></li>
-                  <li><a href="javascript:void(0)" class="active">01</a></li>
-                  <li><a href="javascript:void(0)">02</a></li>
-                  <li>....</li>
-                  <li><a href="javascript:void(0)">08</a></li>
-                  <li><a href="javascript:void(0)"><i class="fa-solid fa-angle-right"></i></a></li>
-                </ul>
-              </div>
-              */
-              %>
-            </div>
-          </div>
+         
         </div>
       </div>
       <!-- END ITEMS LISTING -->

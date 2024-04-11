@@ -48,16 +48,20 @@ module.exports = () => {
 
                 request.session.save();
         
-                return response.status(200).send(
-                    `OTP successfully verified\n<br/>
+                return response.status(200).send({
+                    message:'success',
+                    responseText: `OTP successfully verified\n<br/>
                     You are logged in as ${user_email}\n<br/>
                     <a href="/admin">Click here to head to your dashboard</a>\n <br/>
                     or <br/>
                     <a href="/logout"> Click here to logout</a> \n<br>`
-                );
+                });
             } catch(err) {
                 console.log(err);
-                response.status(400).send('An Error Occure');
+                response.status(400).send({
+                    message:'error',
+                    responseText:'An Error Occured'
+                });
                 return ;
             }
                 

@@ -11,6 +11,16 @@ function getRandomPercentageOff() {
   return Math.ceil(Math.random() * (18 - 12) + 12);
 }
 
+
+function trimItemName(name="",size=20) {
+  const n = new String(name);
+  if (n.length >= size )
+    return n.slice(0,(size-4)) + " ..." ;
+  
+  return n ;
+
+}
+
 %>
 <section class="gap no-top" style="background-color: #f7f7f7 ;">
     <div class="container">
@@ -24,8 +34,14 @@ function getRandomPercentageOff() {
             <ul class="pd-imgs">
                   <li class="li-pd-imgs nav-active">
                       <a href="JavaScript:void(0)">
-                        <img alt="<%= 'Image for ' + decode(item.item_name).slice(0.20) %>" src="<%= IMG_DIR_FOR_WEB + item.imageurl %>" width="384" height="320" />
-                        <!-- <img alt="ballon" src="https://via.placeholder.com/384x320"> -->
+                        <% const trimmedName = trimItemName(name=decode(item.item_name)); %>
+                        <% if (item.imageurl != "" ) {%>
+                          <img src="<%= IMG_DIR_FOR_WEB + item.imageurl %>" width=55 height=59 />
+                        <% } else { %>
+                          <img src="https://via.placeholder.com/55x59" />
+                          <!-- https://via.placeholder.com/195x210 -->
+                        <% } %>
+
                       </a>
   
                   </li>
@@ -45,8 +61,14 @@ function getRandomPercentageOff() {
               </ul>
               <div class="pd-main-img">
                 <!-- <img id="NZoomImg" alt="ballon" src="https://via.placeholder.com/384x320" > -->
-                <img id="NZoomImg" alt="<%= 'Image for ' + decode(item.item_name).slice(0,20) %>" src="<%= IMG_DIR_FOR_WEB + item.imageurl %>" width="384" height="320" />
                 
+                <% if (item.imageurl != "" ) {%>
+                  <img src="<%= IMG_DIR_FOR_WEB + item.imageurl %>" width=384 height=320 />
+                <% } else { %>
+                  <img src="https://via.placeholder.com/384x320" />
+                  <!-- https://via.placeholder.com/384x320 -->
+                <% } %>
+               
               </div>
           </div>
         </div>
@@ -57,7 +79,7 @@ function getRandomPercentageOff() {
               <p>Save <%= percentOff %>%</p>
               <h5>SKU-<%= item.category_webid %></h5>
             </div>
-            <h2><%= decode(item.item_name) %></h2>
+            <h2><%= trimmedName %></h2>
             
             <div class="star">
               <i class="fa-solid fa-star"></i>
@@ -154,7 +176,7 @@ function getRandomPercentageOff() {
         <h3>Description</h3>
         <div class="boder"></div>
         <p>
-          <%= item.description %>
+          <%= decode(item.description) %>
         </p>
         <!-- 
         <div class="party-balloons">
@@ -302,11 +324,15 @@ function getRandomPercentageOff() {
           <% } %>
           <div class="item">
             <div class="product-style">
-
-              <img alt="<%= 'Image for ' + (similar_item.item_name).slice(0.20) %>" src="<%= IMG_DIR_FOR_WEB + similar_item.imageurl %>" width="195" height="210" />
-          
+              <% if (similar_item.imageurl != "" ) {%>
+                <img src="<%= IMG_DIR_FOR_WEB + similar_item.imageurl %>" width=110 height=118 />
+              <% } else { %>
+                <img src="https://via.placeholder.com/110x118" />
+                <!-- https://via.placeholder.com/195x210 -->
+              <% } %>
+              <% const trimSimilarName = trimItemName(name=decode(similar_item.item_name)) %>
               <a href="/product-details/<%= similar_item.category_webid %>">
-                <h5><%= decode(similar_item.item_name) %></h5>
+                <h5><%= trimSimilarName %></h5>
               </a>
                 <h6>$<%= similar_item.unitPrice %></h6>
                 <span>In stock, <%= similar_item.quantityAvailable %> units</span>
