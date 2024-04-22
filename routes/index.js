@@ -44,7 +44,14 @@ module.exports = () => {
         
         
         var items_array = await JSON.parse(JSON.stringify(request.session.items_array));
-       
+        const seoSiteLink = request.locals.seoSiteLink ;
+        var seoObject = {
+            title: request.locals.siteName,
+            description: `Transform your event into an unforgettable celebration with our premier party rental service.\n
+            with ${seoSiteLink}
+            `,
+        };
+
         //console.log(`User cart : ${JSON.stringify(userCart)}`);
         response.render('layout', 
         { 
@@ -59,6 +66,7 @@ module.exports = () => {
             customers_feedback: request.locals.customers_feedback,
             decode: decode,
             encode: encode,
+            seoObject : seoObject
         });
         
     });
@@ -117,8 +125,14 @@ module.exports = () => {
            
             
             var category_items = [] ;
+            const humanFriendlyCategoryName = decode(category.category_name);
             if (categoryID in itemsByCategoryID) { 
                 category_items = itemsByCategoryID[categoryID];
+                const seoSiteLink = request.locals.seoSiteLink ;
+                var seoObject = {
+                    title: `Your ${humanFriendlyCategoryName} for your next party at ${seoSiteLink}`,
+                    description: `Checkout our list of ${humanFriendlyCategoryName} with ${seoSiteLink}`,
+                }
                 response.status(200).render('layout',
                 {
                     pageTitle: decode(category.category_name),
@@ -134,6 +148,7 @@ module.exports = () => {
                     csrfToken: request.csrfToken(),
                     decode: decode,
                     encode: encode,
+                    seoObject:seoObject
                 });
             } else {
                 response.status(200).render('layout',

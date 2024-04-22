@@ -19,8 +19,41 @@
    <link rel="stylesheet" href="/assets/css/responsive.css">
    <!-- color -->
    <link rel="stylesheet" href="/assets/css/color.css">
+
+		
+	<meta property="og:determiner" content="The" />
+	<meta property="og:locale" content="en_US" />
+	<meta property="og:site_name" content="BashBalloonsRentals" />
+
    <% if ( typeof csrfToken !== 'undefined'  ) { %>
    	<meta name="csrf-token" content="<%= csrfToken %>">
+   <% } %>
+
+   <!-- What SEO can we do here -->
+   <% 
+	
+   //trimming should be to 155 characters maximum 
+   function trimSeoDesc(name="",size=155) {
+	const n = new String(name);
+	if (n.length >= size )
+		return n.slice(0,(size-4)) + " ..." ;
+	
+	return n ;
+
+    }
+ 
+   %>
+   <% if ( typeof seoObject != "undefined") { %>
+		<% if ("description" in seoObject) { %>
+			<% const truncatedDescription = trimSeoDesc(seoObject["description"]);  %>
+			<meta name="description" content="<%= truncatedDescription %>"/>
+		<% } %>
+		
+		<% if ("title" in seoObject) { %>
+			<% const truncatedTitle = trimSeoDesc(seoObject["title"]);  %>
+			<meta property="og:title" content="<%= truncatedTitle %>"/>
+		<% } %>
+
    <% } %>
  </head>
 <body>

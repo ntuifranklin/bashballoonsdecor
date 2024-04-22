@@ -9,6 +9,8 @@ const template_folder = 'static_template';
 const routes = require('./routes');
 
 const app = express();
+
+
 app.use(express.json());
 
 var mysql = require('mysql');
@@ -121,6 +123,8 @@ app.locals.twitterLink = process.env.TWITTER_LINK;
 app.locals.youtubeLink = process.env.YOUTUBE_LINK;
 app.locals.googleMapsLink = process.env.GOOGLE_MAPS_LINK ;
 app.locals.googleMapsFrameLink = process.env.GOOGLE_MAPS_FRAME_LINK ;
+app.locals.seoSiteLink = process.env.SEO_SITE_LINK;
+app.locals.port = PORT ;
 
 
 
@@ -224,8 +228,9 @@ app.use(parseForm, csrfProtection, async(request, response, next) => {
 
 app.use('/',routes());
 
-
-app.listen(PORT, () => {
+//exporting app for testing
+module.exports = app.listen(PORT, () => {
     console.log(`Express server listening on port ${PORT}`);
    
 });
+

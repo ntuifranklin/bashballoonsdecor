@@ -70,7 +70,12 @@ module.exports = () => {
 
         //find the category name of the category to which this item belongs to.
         var category = categories.find(category => category.category_id === item_category_id) ;
-        
+        const seoSiteLink = request.locals.seoSiteLink ;
+        var seoObject = {
+            title: `${itemTitle} at ${seoSiteLink}`,
+            description: `Premium ${itemTitle}, Elevate your event with ${seoSiteLink}
+            `,
+        }
         var category_name = decode(category.category_name) ;
         response.render('layout', { 
             pageTitle: itemTitle, 
@@ -85,6 +90,7 @@ module.exports = () => {
             categories: categories,
             itemsWithSimilarCategoryID:itemsWithSimilarCategoryID,
             item_category_name: category_name,
+            seoObject:seoObject
         });
     });
 
