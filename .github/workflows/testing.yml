@@ -1,0 +1,15 @@
+name: Docker-Testing
+
+on: [workflow_dispatch]
+
+jobs:
+  build-website:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Test Bash Balloons Rentals Website/WebApp
+        run: |
+          npm install .
+          npm run test
+  
+  
