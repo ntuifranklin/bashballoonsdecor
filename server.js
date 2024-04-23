@@ -49,7 +49,7 @@ const cookieSession = require('cookie-session');
 var parseForm = bodyParser.urlencoded({ extended: false });
 app.use(bodyParser.urlencoded({extended: true}));
 
-const site_secret = faker.internet.password(30);
+const site_secret = faker.internet.password({ length:30 });
 //console.log(`Generated site secret as : ${site_secret}`);
 const session_mysql_connection = mysql.createConnection(session_database_options);
 const sessionStore = new MySQLStore(session_database_options, session_mysql_connection);
