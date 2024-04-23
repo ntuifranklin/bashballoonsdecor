@@ -9,7 +9,6 @@ jobs:
     runs-on: node:20.7.0
     steps:
       - uses: actions/checkout@v2
-        name: Test Bash Balloons Rentals Website/WebApp
         run: 
           echo ${{ secrets.GREEN_PEPPER_SPICES }} | base64 -d >> $GITHUB_ENV
           source $GITHUB_ENV
