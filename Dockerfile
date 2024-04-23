@@ -8,7 +8,9 @@ RUN mkdir -p $TESTDIR
 RUN mkdir -p $PRODDIR
 WORKDIR $TESTDIR
 RUN chown -R franklin:www-data "$WEBDIR"
-COPY . .
+COPY ./ "$TESTDIR/"
 EXPOSE 5555/tcp  8819/tcp
+RUN npm cache clean --force
+RUN npm rm -fr node_modules
 RUN npm install .
 RUN npm run test
