@@ -12,10 +12,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Test Bash Balloons Rentals Website/WebApp
-      - run: echo $ENV_CONTENT | base64 -d > ~/.webenv
-          env:
-            ENV_CONTENT: ${{ secrets.GREEN_PEPPER_SPICES }}
-        run: 
+      - run: 
+          echo ${{ secrets.GREEN_PEPPER_SPICES }} | base64 -d > ~/.webenv
           source ~/.webenv
           npm install .
           npm run test
