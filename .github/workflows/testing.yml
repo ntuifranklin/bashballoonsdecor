@@ -7,9 +7,10 @@ on:
 jobs:
   build-website:
     runs-on: node:20.7.0
-    steps:
+    steps: 
+      - uses: actions/checkout@v2
       - name: Test Bash Balloons Rentals Website/WebApp
-        run: 
+        run: |
           echo ${{ secrets.GREEN_PEPPER_SPICES }} | base64 -d >> $GITHUB_ENV
           source $GITHUB_ENV
           npm install .
