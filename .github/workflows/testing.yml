@@ -8,11 +8,15 @@ on:
 
 jobs:
   build-website:
-    runs-on: node:12.18-alpine
+    runs-on: node:20.7.0
     steps:
       - uses: actions/checkout@v2
       - name: Test Bash Balloons Rentals Website/WebApp
+      - run: echo $ENV_CONTENT | base64 -d > ~/.webenv
+          env:
+            ENV_CONTENT: ${{ secrets.GREEN_PEPPER_SPICES }}
         run: |
+          source ~/.webenv
           npm install .
           npm run test
   

@@ -1,17 +1,14 @@
-FROM node:10-alpine
-USER node
-ENV NODE_VERSION 20.7.0
-ARG WEBROOT="/var/www/html/tools"
-ARG TESTDIR="$WEBROOT/testbbd"
-ARG PRODDIR="$WEBROOT/prodbbd"
-RUN mkdir -p "$TESTDIR"
-RUN mkdir -p "PRODDIR"
-RUN chown -R node:node $WEBROOT
-COPY --chown=node:node  . "$TESTDIR"
-COPY --chown=node:node  . "$PRODDIR"
+FROM node:20.7.0
+RUN adduser franklin
+RUN usermod -aG www-data,root franklin
+ARG WEBDIR="/var/www/html/tools"
+ARG TESTDIR="$WEBDIR/testbbd"
+ARG PRODDIR="$WEBDIR/prodbbd"
+RUN mkdir -p $TESTDIR
+RUN mkdir -p $PRODDIR
 WORKDIR $TESTDIR
+RUN chown -R franklin:www-data "$WEBDIR"
+COPY . .
+EXPOSE 5555/tcp  8819/tcp
 RUN npm install .
-EXPOSE 5555/tcp
-EXPOSE 8819/tcp
-CMD ["npm","run","test"]
-
+RUN npm run test
