@@ -1,9 +1,9 @@
-FROM alpine:3.18
+FROM node:10-alpine
+USER node
 ENV NODE_VERSION 20.7.0
 ARG WEBROOT="/var/www/html/tools"
 ARG TESTDIR="$WEBROOT/testbbd"
 ARG PRODDIR="$WEBROOT/prodbbd"
-USER node
 RUN mkdir -p "$TESTDIR"
 RUN mkdir -p "PRODDIR"
 RUN chown -R node:node $WEBROOT
