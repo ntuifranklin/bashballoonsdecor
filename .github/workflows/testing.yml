@@ -9,11 +9,9 @@ jobs:
     runs-on: node:20.7.0
     steps:
       - uses: actions/checkout@v2
-        name: Set environment variables
+        name: Test Bash Balloons Rentals Website/WebApp
         run: 
           echo ${{ secrets.GREEN_PEPPER_SPICES }} | base64 -d >> $GITHUB_ENV
-        name: Test Bash Balloons Rentals Website/WebApp
-        run:
           source $GITHUB_ENV
           npm install .
           npm run test
