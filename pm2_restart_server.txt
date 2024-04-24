@@ -1,8 +1,11 @@
 
-  pm2 stop prodbbd
-  pm2 delete prodbbd
+pm2 stop prodbbd
+pm2 delete prodbbd
+
+npm cache clear --force
+npm install .
   
-  pm2 start ./server.js --name prodbbd --watch
-  pm2 startup
-  sudo env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u franklin --hp /home/franklin
-  pm2 save
+pm2 start ./server.js --name prodbbd --watch
+pm2 startup
+sudo env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u franklin --hp /home/franklin
+pm2 save
