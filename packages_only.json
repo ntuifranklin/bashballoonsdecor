@@ -1,0 +1,20 @@
+{
+"package_3000" : 
+    {
+        "packageid": "d09745340cebd03c6e0a",
+        "packagedesc": "Package For 150 Guests",
+        "packagecost": 3000
+    },
+"package_3800" : 
+    {
+        "packageid": "ab7adb97a1f89a92527a",
+        "packagedesc": "Package For 250 Guests",
+        "packagecost": 3800
+    },
+"package_4900" : 
+    {
+        "packageid": "bfcd68043040f450b8e7",
+        "packagedesc": "Package For 300 Guests",
+        "packagecost": 4900
+    }
+}

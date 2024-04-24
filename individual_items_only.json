@@ -1,0 +1,79 @@
+[
+    {
+        "individItemID": "6b65ac0e7f",
+        "individItemTitle": "Wine Glasses",
+        "individItemDescription": "",
+        "individItemUnitCost": 1,
+        "individItemQtyAvailable": 10000
+    },
+    {
+        "individItemID": "acc1607057",
+        "individItemTitle": "Glass Table",
+        "individItemDescription": "",
+        "individItemUnitCost": 14,
+        "individItemQtyAvailable": 300
+    },
+    {
+        "individItemID": "b4952d9db7",
+        "individItemTitle": "Fancy Chairs",
+        "individItemDescription": "",
+        "individItemUnitCost": 17,
+        "individItemQtyAvailable": 764
+    },
+    {
+        "individItemID": "b583dd37c0",
+        "individItemTitle": "DJ",
+        "individItemDescription": "",
+        "individItemUnitCost": 750,
+        "individItemQtyAvailable": 3
+    },
+    {
+        "individItemID": "b661760f0",
+        "individItemTitle": "360 Picture",
+        "individItemDescription": "",
+        "individItemUnitCost": 220,
+        "individItemQtyAvailable": 20
+    },
+    {
+        "individItemID": "cac96965e2",
+        "individItemTitle": "Glass Charger Plates",
+        "individItemDescription": "",
+        "individItemUnitCost": 6,
+        "individItemQtyAvailable": 2500
+    },
+    {
+        "individItemID": "e33ada4996",
+        "individItemTitle": "Chafing Dishes",
+        "individItemDescription": "",
+        "individItemUnitCost": 9,
+        "individItemQtyAvailable": 360
+    },
+    {
+        "individItemID": "ef0c617141",
+        "individItemTitle": "Chafing Dishes Stand",
+        "individItemDescription": "",
+        "individItemUnitCost": 75,
+        "individItemQtyAvailable": 289
+    },
+    {
+        "individItemID": "f4c33c5e2c",
+        "individItemTitle": "Floor Wrap",
+        "individItemDescription": "",
+        "individItemUnitCost": 145,
+        "individItemQtyAvailable": 3689
+    },
+    {
+        "individItemID": "fa8fbbce63",
+        "individItemTitle": "Champagne Glasses",
+        "individItemDescription": "",
+        "individItemUnitCost": 1,
+        "individItemQtyAvailable": 10000
+    },
+    {
+        "individItemID": "fdc724fa11",
+        "individItemTitle": "Chiavari Chairs (Gold, Silver, and Ice Chairs)",
+        "individItemDescription": "",
+        "individItemUnitCost": 8,
+        "individItemQtyAvailable": 456
+    }
+]
