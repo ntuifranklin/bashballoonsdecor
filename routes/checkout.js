@@ -23,8 +23,8 @@ const mysql2 = require('mysql2');
 //read jquery file stream and css stream into a string 
 const jqueryCode = fs.readFileSync(`${process.env.BOOTSTRAP_JS_FILE}`).toString();
 const bootstrapCode = fs.readFileSync(`${process.env.BOOTSTRAP_CSS_FILE}`).toString(); 
-const {Email} = require('../utilities/email');
-
+const {Email,isEmailValid} = require('../utilities/email');
+const {safeAgainstSqlAndShellInjection} = require('../utilities/functions');
 
 
 const checkOutValidation = [
@@ -57,6 +57,26 @@ module.exports = () => {
         const street_address = new String(request.body.street_address) ;
         const order_note = new String(request.body.order_note);
 
+        //Check email is valid
+        
+        const emailValidation = await isEmailValid(email) ;
+        if (emailValidation == null || emailValidation.valid == null || emailValidation.valid === false ) {
+            //email is not valid
+            response.status(400).send(`Something wrong with your form.`); 
+           return ;
+        }
+        
+        //check if any bad characters are within the order_note
+        const validOrderNote= safeAgainstSqlAndShellInjection(order_note);
+        const validCity = safeAgainstSqlAndShellInjection(city);
+        const validState = safeAgainstSqlAndShellInjection(state);
+        const validPhone = safeAgainstSqlAndShellInjection(phone);
+        const validStreetAddress = safeAgainstSqlAndShellInjection(street_address);
+       
+        if (!validOrderNote || !validCity || !validState || !validPhone || !validStreetAddress) {
+            response.status(400).send(`Something wrong with your form.`); 
+           return ;
+        } ;
         //============================================
         /* Begin sanitize from data here */
         const formerrors = validationResult(request);
@@ -171,8 +191,8 @@ module.exports = () => {
             /*
             MySQLDBConnector.executeInTransactionMode(transactionQueries, transactionData);
             */
-           //update grand total before starting transaction
-           orderInsertArray[3] = grandTotal ;
+            //update grand total before starting transaction
+            orderInsertArray[3] = grandTotal ;
             con.execute('START TRANSACTION');
             
             for (var k = 0; k < transactionQueries.length; k++) {

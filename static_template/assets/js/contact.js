@@ -1,5 +1,5 @@
 $(document).ready(function(){
-    $('#contactFormSubmitButton').click((e) => {  //Don't foget to change the id form
+    $('#contact-form').submit((event) => {  //Don't foget to change the id form
         var token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
         //disable the submit button, then renable it later if an error occured
         $(this).attr('disabled', true);
@@ -21,7 +21,7 @@ $(document).ready(function(){
             url: "/contact",
             data: data,
         }).done((data) => {
-          console.log(`Success data received : ${JSON.stringify(data)}`);
+          //console.log(`Success data received : ${JSON.stringify(data)}`);
           var successHtml = `
           <div class="alert alert-success alert-dismissible fade show" role="alert">
             <strong>Success!</strong>  ${data}.
@@ -44,6 +44,6 @@ $(document).ready(function(){
           $(`#contactFormAlertIndex`).html(errorHtml);
           
         });
-        e.preventDefault();
+        event.preventDefault();
     });
 });

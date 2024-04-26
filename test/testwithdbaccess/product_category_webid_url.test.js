@@ -2,7 +2,7 @@ const request = require("supertest");
 const app = require("../../server.js");
 const { assert,expect,should } = require ("chai");  
 
-const {MySQLDBConnector,defaultMySQLDBConnectorConfig} = require("../../database/models/MySQLDBConnector.js");
+const {MySQLDBConnector} = require("../../database/models/MySQLDBConnector.js");
 
 require("dotenv").config();
 
@@ -21,7 +21,7 @@ describe('Testing the URL for each Category webid ', async() => {
         category_webids.forEach((category_webid_object, index) => {
           var jsonObject = JSON.parse(JSON.stringify(category_webid_object));
           var category_webid = jsonObject.category_webid ;
-          const lowerCaseCatName = category_webid.toLowerCase();
+          //const lowerCaseCatName = category_webid.toLowerCase();
           it(`Testing of url /product-details/${category_webid}`, async()=> {
             
             expect(category_webid).to.not.equal(null);

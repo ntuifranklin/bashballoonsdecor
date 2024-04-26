@@ -3,11 +3,13 @@
 require('dotenv').config();
 const mysql2 = require('mysql2');
 
-const defaultMySQLDBConnectorConfig = {
+const {isTestEnvironment} = require('../../utilities/functions');
+
+const TEST_MARIADB_CONFIG = {
     host: process.env.DATABASE_HOST,
-    user: process.env.DATABASE_USER,
-    password: process.env.DATABASE_PASSWORD,
-    database: process.env.DATABASE_UPGRADED_NAME,
+    user: process.env.UPGRADED_DATABASE_USER,
+    password: process.env.UPGRADED_DATABASE_PASSWORD,
+    database: process.env.TEST_DATABASE_UPGRADED_NAME,
     waitForConnections: true,
     connectionLimit: 20,
     maxIdle: 20, // max idle connections, the default value is the same as `connectionLimit`
@@ -17,15 +19,47 @@ const defaultMySQLDBConnectorConfig = {
     keepAliveInitialDelay: 0
 }; 
 
+exports.TEST_MARIADB_CONFIG = TEST_MARIADB_CONFIG;
+
+const PROD_MARIADB_CONFIG = {
+    host: process.env.DATABASE_HOST,
+    user: process.env.UPGRADED_DATABASE_USER,
+    password: process.env.UPGRADED_DATABASE_PASSWORD,
+    database: process.env.PROD_DATABASE_UPGRADED_NAME,
+    waitForConnections: true,
+    connectionLimit: 20,
+    maxIdle: 20, // max idle connections, the default value is the same as `connectionLimit`
+    idleTimeout: 360000, // idle connections timeout, in milliseconds, the default value 60000
+    queueLimit: 0,
+    enableKeepAlive: true,
+    keepAliveInitialDelay: 0
+}; 
+
+exports.PROD_MARIADB_CONFIG = PROD_MARIADB_CONFIG;
+
+var ENV_DB_CONFIG = {};
+
+const thisEnv = isTestEnvironment(__dirname);
+//console.log(`Got environment testing is ${thisEnv}`);
+if (thisEnv == true )
+    ENV_DB_CONFIG = TEST_MARIADB_CONFIG;
+else if (thisEnv == false )
+    ENV_DB_CONFIG = PROD_MARIADB_CONFIG ;
+else 
+    throw new Error("Could not detect environment");
+
+
+const defaultMySQLDBConnectorConfig = ENV_DB_CONFIG ;
 exports.defaultMySQLDBConnectorConfig = defaultMySQLDBConnectorConfig;
 
 class MySQLDBConnector{
 
     static pool = null;
     static connection = null ;
-    static config = defaultMySQLDBConnectorConfig;
+    static config = ENV_DB_CONFIG;
     constructor(){
-        this.config =  MySQLDBConnector.config;
+
+        this.config = ENV_DB_CONFIG;        
         MySQLDBConnector.pool = MySQLDBConnector.getPool();
 
     }
@@ -43,7 +77,12 @@ class MySQLDBConnector{
     }
 
     static async execute(query, params=[]){
-        //console.log(`Executing query: ${query} with params: ${params}`);
+        /* 
+        console.log(`\n\t
+        Executing query: \n\t ${query} \n\t with params: ${params}
+        \n\t with database parameters : ${JSON.stringify(MySQLDBConnector.config)}
+        `);
+        */
         var params = params;
         return new Promise(async(resolve, reject) => {
             

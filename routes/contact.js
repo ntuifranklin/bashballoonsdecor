@@ -2,7 +2,7 @@ const express = require('express');
 const { decode,encode } = require('html-entities');
 const router = express.Router();
 const {Email} = require('../utilities/email');
-
+const {safeAgainstSqlAndShellInjection} = require('../utilities/functions');
 const bodyParser = require('body-parser');
 var csrf = require('csurf');
 // csrf protection
@@ -10,7 +10,7 @@ var csrfProtection = csrf({ cookie: true });
 const cookieSession = require('cookie-session');
 var parseForm = bodyParser.urlencoded({ extended: true });
 const { check,validationResult } = require('express-validator');
-const {VALID_EMAIL_REGEXP} = require('../utilities/email');
+const {VALID_EMAIL_REGEXP, isEmailValid} = require('../utilities/email');
 const validEmailRegExp = VALID_EMAIL_REGEXP ;
 const contactFormValidation = [
     check('name').isLength({ min: 5, max:255 }).withMessage('Please enter your name.'),
@@ -53,6 +53,21 @@ module.exports = () => {
         const comment = new String(request.body.comment);
         const phone = new String(request.body.phone);
 
+        //validate email
+        const emailValidation = await isEmailValid(email) ;
+        if (emailValidation == null || emailValidation.valid == null || emailValidation.valid === false ) {
+            //email is not valid
+            response.status(400).send(`Something wrong with your form.`); 
+           return ;
+        };
+        
+        const validName = safeAgainstSqlAndShellInjection(name);
+        const validPhone = safeAgainstSqlAndShellInjection(phone);
+        const validComment= safeAgainstSqlAndShellInjection(comment);
+        if (!validComment || !validName || !validPhone) {
+            response.status(400).send(`Something wrong with your form.`); 
+           return ;
+        } ;
         /* Begin sanitize from data here */
         const formerrors = validationResult(request);
         if (!formerrors.isEmpty()) {

@@ -21,7 +21,7 @@ require('dotenv').config();
 const {session_database_options} = require('./sessionmanagement/session') ;
 const cookieParser = require('cookie-parser');
 const {getCategories,getCategoriesItems} = require('./database/controllers/database');
-
+const {isTestEnvironment} = require('./utilities/functions');
 
 
 /* File upload  */
@@ -32,14 +32,17 @@ app.use(fileUpload({
 
 /* dynamically detect the folder we are running from,
  then select port accordingly */
-const current_dir = __dirname
+const current_dir = new String(__dirname) ;
 const PRODUCTION_ENV = process.env.BBD_LOCATION;
 const TEST_ENV = process.env.TEST_BBD_LOCATION;
 var PORT = process.env.TEST_SITE_PORT;
-if ( current_dir == PRODUCTION_ENV) {
+var isTestingEnv = isTestEnvironment(root_dir=new String(__dirname));
+if ( !isTestingEnv) {
     PORT = process.env.PRODUCTION_SITE_PORT;
-} else if (current_dir == TEST_ENV) {
+} else if (isTestingEnv) {
     PORT = process.env.TEST_SITE_PORT;
+} else {
+    throw Error("We could neither detect testing or production environment");
 }
 
 var csrf = require('csurf');

@@ -16,6 +16,7 @@ const randomstring = require('randomstring');
 var mysql2 = require('mysql2');
 const {decode,encode} = require('html-entities');
 const {Email,VALID_EMAIL_REGEXP} = require('../utilities/email');
+const { defaultMySQLDBConnectorConfig } = require('../database/models/MySQLDBConnector');
 
 /* This is the only email regular expression used to check emails  */
 const loginCheckOutValidation = [
@@ -73,19 +74,7 @@ function generateOTP() {
 module.exports = () => { 
     
     /* generate a pool of mysql connection  */
-    var con = mysql2.createPool({
-        host: process.env.DATABASE_HOST,
-        user: process.env.DATABASE_USER,
-        password: process.env.DATABASE_PASSWORD,
-        database: process.env.DATABASE_UPGRADED_NAME,
-        waitForConnections: true,
-        connectionLimit: 5,
-        maxIdle: 4, // max idle connections, the default value is the same as `connectionLimit`
-        idleTimeout: 60000, // idle connections timeout, in milliseconds, the default value 60000
-        queueLimit: 0,
-        enableKeepAlive: true,
-        keepAliveInitialDelay: 0
-    });
+    var con = mysql2.createPool(defaultMySQLDBConnectorConfig);
 
     
     router.get('/', csrfProtection, async(request, response) => { 
