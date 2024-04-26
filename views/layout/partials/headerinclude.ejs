@@ -185,14 +185,15 @@
 	  <div class="container">
 		<nav class="navbar">
 		  <ul class="navbar-links">
-					  <li class="navbar-dropdown menu-item-children">
-						<a href="/">
-							<i>
-						  		<img alt="home" src="/assets/img/home.png">
-							</i>Home
-						</a>
-					  </li>
-					  <li class="navbar-dropdown menu-item-children">
+					<li>
+					<a href="/">
+						<i>
+							<img alt="home" src="/assets/img/home.png">
+						</i>Home
+					</a>
+					</li>
+
+					<li class="navbar-dropdown menu-item-children">
 
 						<a href="javascript:void(0)">Our Party Rental Inventory</a>
 						<div class="dropdown">
@@ -205,20 +206,21 @@
 								<a href="/<%= category_name %>"><%= decode(category_name) %></a>
 							<% } %>
 						</div>
-					  </li>
-					  
-					  <li class="navbar-dropdown">
-						<a href="/cart">Your Shopping Cart</a>
-					  </li>					  
+					</li>
+					
+					<li class="navbar-dropdown">
+					<a href="/cart">Your Shopping Cart</a>
+					</li>					  
 
-					  <li class="navbar-dropdown">
-						<a href="/checkout">Cart Checkout</a>
-					  </li>
-					 
-					  <li class="navbar-dropdown">
-						<a href="/contact">Contact</a>
-					  </li>
+					<li class="navbar-dropdown">
+					<a href="/checkout">Cart Checkout</a>
+					</li>
+					
+					<li class="navbar-dropdown">
+					<a href="/contact">Contact</a>
+					</li>
 		  </ul>
+		  
 		  
 			<a class="phone" href="callto:<%= customerServiceNumber %>">
 				<i>
@@ -232,7 +234,7 @@
 			  	</i>
 				<%= customerServiceNumber %> 
 			</a>
-			<br/>
+			<br/>  
 			
 			<a class="phone" href="callto:<%= customerServiceNumberExtra %>">
 				<i>
@@ -258,9 +260,25 @@
 		</div>
 		  <ul>
 
-			<li class="menu-item-has-children"><a href="/">Home</a>
-			
+			<li>
+				<a href="/">Home</a>
 			</li>
+
+			
+			<% if (user && user.email ) { %>
+			<li class="menu-item-children">
+				<ul class="sub-menu">
+					<li><a class="d-flex"><i class="bi bi-person"></i><%= user.email %></a></li>
+					<li><a class="d-flex" href="/admin">Admin Dashboard</a></li>
+					<li><a class="d-flex" href="/logout">Logout</a></li>
+				</ul>
+			</li>
+			<%  } else { %>
+			<li>
+				<a class="d-flex" href="/login">login</a>
+			</li>
+			<% } %>
+
 
 			<li class="menu-item-has-children"><a href="JavaScript:void(0)">Our Party Rental Inventory</a>
 			  <ul class="sub-menu">
