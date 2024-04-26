@@ -1,0 +1,10 @@
+
+RewriteEngine on
+RewriteCond %{HTTP_HOST} eignh\.com [NC]
+RewriteRule .* - [F]
+# RewriteCond %{HTTP_HOST} ^www\.eignh\.com$ [NC]
+# RewriteRule .* - [F]
+RewriteCond %{HTTP_REFERER} eignh\.com [NC]
+RewriteRule .* - [F]
+# RewriteCond %{HTTP_REFERER} www\.eignh\.com [NC]
+# RewriteRule .* - [F]
