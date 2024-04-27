@@ -23,7 +23,7 @@ const mysql2 = require('mysql2');
 //read jquery file stream and css stream into a string 
 const jqueryCode = fs.readFileSync(`${process.env.BOOTSTRAP_JS_FILE}`).toString();
 const bootstrapCode = fs.readFileSync(`${process.env.BOOTSTRAP_CSS_FILE}`).toString(); 
-const {Email,isEmailValid} = require('../utilities/email');
+const {Email,isEmailValid,VALID_EMAIL_REGEXP} = require('../utilities/email');
 const {safeAgainstSqlAndShellInjection} = require('../utilities/functions');
 
 
@@ -60,11 +60,12 @@ module.exports = () => {
         //Check email is valid
         
         const emailValidation = await isEmailValid(email) ;
-        if (emailValidation == null || emailValidation.valid == null || emailValidation.valid === false ) {
+        if (!emailValidation && !emailValidation.valid && emailValidation.valid === false && !VALID_EMAIL_REGEXP.test(email)) {
             //email is not valid
             response.status(400).send(`Something wrong with your form.`); 
-           return ;
-        }
+            //console.log(`bad email validation test`);
+            return ;
+        };
         
         //check if any bad characters are within the order_note
         const validOrderNote= safeAgainstSqlAndShellInjection(order_note);

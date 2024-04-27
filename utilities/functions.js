@@ -23,7 +23,7 @@ function isTestEnvironment(root_dir=new String(__dirname)) {
 
 exports.isTestEnvironment = isTestEnvironment ;
 
-const VALID_MESSAGE_REGEXP = /^[a-zA-Z0-9_.\- ]$/ ;
+const VALID_MESSAGE_REGEXP = /^[a-zA-Z0-9_\.\- ]$/ ;
 exports.VALID_MESSAGE_REGEXP = VALID_MESSAGE_REGEXP ;
 
 function safeAgainstSqlAndShellInjection(message="") {
@@ -32,3 +32,12 @@ function safeAgainstSqlAndShellInjection(message="") {
 
 exports.safeAgainstSqlAndShellInjection = safeAgainstSqlAndShellInjection ;
 
+const OTP_CODE_SIZE = 9 ;
+exports.OTP_CODE_SIZE = OTP_CODE_SIZE ;
+
+function isValidOTPCode(code) {
+    const c = new String(code);
+    return (c.length == OTP_CODE_SIZE) && (/^[0-9]$/.test(code)) ;
+} ;
+
+exports.isValidOTPCode = isValidOTPCode ;

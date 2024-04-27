@@ -15,7 +15,8 @@ const nodemailer = require('nodemailer');
 const randomstring = require('randomstring');
 var mysql2 = require('mysql2');
 const {decode,encode} = require('html-entities');
-const {Email,VALID_EMAIL_REGEXP} = require('../utilities/email');
+const {Email,VALID_EMAIL_REGEXP, isEmailValid} = require('../utilities/email');
+const {OTP_CODE_SIZE} = require('../utilities/functions');
 const { defaultMySQLDBConnectorConfig } = require('../database/models/MySQLDBConnector');
 
 /* This is the only email regular expression used to check emails  */
@@ -66,7 +67,7 @@ function sendOTP(email, otp) {
 // Generate OTP
 function generateOTP() {
     return randomstring.generate({
-      length: 9,
+      length: OTP_CODE_SIZE,
       charset: 'numeric'
     });
   }
@@ -116,7 +117,7 @@ module.exports = () => {
     });
 
     
-    router.post('/', csrfProtection,loginCheckOutValidation, (request, response) => {
+    router.post('/', csrfProtection,loginCheckOutValidation, async(request, response) => {
          //check if user is logged in
         var user = request.session.user;
         if (user) {
@@ -130,6 +131,16 @@ module.exports = () => {
         
         const email = new String(request.body.email).trim();
         const password = new String(request.body.password).trim();
+        
+        //validate email
+        const emailValidation =  await isEmailValid(email) ;
+        //console.log(`email validation : ${JSON.stringify(emailValidation)}`);
+        if (!emailValidation && !emailValidation.valid && emailValidation.valid === false && !VALID_EMAIL_REGEXP.test(email)) {
+            //email is not valid
+            response.status(400).send(`Something wrong with your form.`); 
+            //console.log(`bad email validation test`);
+           return ;
+        };
         //console.log(`email: ${email} password: ${password}`);
         const formerrors = validationResult(request);
         if (!formerrors.isEmpty()) {

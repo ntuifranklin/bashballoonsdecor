@@ -55,10 +55,12 @@ module.exports = () => {
 
         //validate email
         const emailValidation = await isEmailValid(email) ;
-        if (emailValidation == null || emailValidation.valid == null || emailValidation.valid === false ) {
+        //console.log(`email validation : ${JSON.stringify(emailValidation)}`);
+        if (!emailValidation && !emailValidation.valid && emailValidation.valid === false && !VALID_EMAIL_REGEXP.test(email)) {
             //email is not valid
             response.status(400).send(`Something wrong with your form.`); 
-           return ;
+            //console.log(`bad email validation test`);
+            return ;
         };
         
         const validName = safeAgainstSqlAndShellInjection(name);
