@@ -23,8 +23,12 @@ const mysql2 = require('mysql2');
 //read jquery file stream and css stream into a string 
 const jqueryCode = fs.readFileSync(`${process.env.BOOTSTRAP_JS_FILE}`).toString();
 const bootstrapCode = fs.readFileSync(`${process.env.BOOTSTRAP_CSS_FILE}`).toString(); 
-const {Email} = require('../utilities/email');
-
+const {Email,isEmailValid,VALID_EMAIL_REGEXP} = require('../utilities/email');
+const {
+    safeAgainstSqlAndShellInjection,
+    isValidPhoneNumber,
+    isValidTextMessage
+    } = require('../utilities/functions');
 
 
 const checkOutValidation = [
@@ -57,6 +61,59 @@ module.exports = () => {
         const street_address = new String(request.body.street_address) ;
         const order_note = new String(request.body.order_note);
 
+        //Check email is valid
+        
+        const emailValidation = await isEmailValid(email) ;
+        if (!emailValidation && !emailValidation.valid && emailValidation.valid === false && !VALID_EMAIL_REGEXP.test(email)) {
+            //email is not valid
+            response.status(400).send(`Something wrong with your form.`); 
+            //console.log(`bad email validation test`);
+            return ;
+        };
+        
+        //check if any bad characters are within the order_note
+       
+        const validCompleteName = isValidTextMessage(completename) && safeAgainstSqlAndShellInjection(completename);
+        const validStreetAddress = isValidTextMessage(street_address) &&  safeAgainstSqlAndShellInjection(street_address);
+        const validCity = isValidTextMessage(city) && safeAgainstSqlAndShellInjection(city);
+        const validState = isValidTextMessage(state) && safeAgainstSqlAndShellInjection(state);
+        const validZipCode = isValidTextMessage(zipcode) && safeAgainstSqlAndShellInjection(zipcode);
+        const validPhone = isValidPhoneNumber(phone) ;
+        const validOrderNote= isValidTextMessage(order_note) && safeAgainstSqlAndShellInjection(order_note);
+       
+        if (!validCompleteName) {
+            response.status(400).send(`Please check the name entered`); 
+           return ;
+        } ;
+        
+        if (!validStreetAddress) {
+            response.status(400).send(`Please check the street address`); 
+           return ;
+        } ;
+        if (!validCity) {
+            response.status(400).send(`Please check the city entered`); 
+           return ;
+        } ;
+        if (!validState) {
+            response.status(400).send(`Please check the state.`); 
+           return ;
+        } ;
+        if (!validZipCode) {
+            response.status(400).send(`Please check the zip code`); 
+           return ;
+        } ;
+        if (!validPhone) {
+            response.status(400).send(`Please check the phone number.`); 
+           return ;
+        } ;
+        if (!validState) {
+            response.status(400).send(`Please check the state.`); 
+           return ;
+        } ;
+        if (!validOrderNote) {
+            response.status(400).send(`Please check the order note`); 
+           return ;
+        } ;
         //============================================
         /* Begin sanitize from data here */
         const formerrors = validationResult(request);
@@ -171,8 +228,8 @@ module.exports = () => {
             /*
             MySQLDBConnector.executeInTransactionMode(transactionQueries, transactionData);
             */
-           //update grand total before starting transaction
-           orderInsertArray[3] = grandTotal ;
+            //update grand total before starting transaction
+            orderInsertArray[3] = grandTotal ;
             con.execute('START TRANSACTION');
             
             for (var k = 0; k < transactionQueries.length; k++) {

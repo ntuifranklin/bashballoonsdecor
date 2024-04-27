@@ -17,7 +17,7 @@
               
               <form class="box login" id="otpverifyform" method="POST" action="/verifyotp">
                 <h3>Verify Your One Time Password (OTP)</h3>
-                <input type="user_email" name="user_email" placeholder="email address">
+                <input type="email" name="user_email" placeholder="email address">
                 <input type="hidden" name="_csrf2" value="<%= csrfToken %>">
                 <input name="otp" id="otp" value="" placeholder="Enter your one time password">
                 <button type="submit" class="btn two"><span>Verify OTP</span></button>

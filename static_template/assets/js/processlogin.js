@@ -25,12 +25,12 @@ jQuery(document).ready(function(){
             data: data,
             encode: true,
         }).done(function (data) {
-            console.log(`${JSON.stringify(data)}`);
-            var d = JSON.parse(JSON.stringify(data));
+            //console.log(`${JSON.stringify(data)}`);
+            //var d = JSON.parse(JSON.stringify(data));
             var successHtml = ` 
             <div class="alert alert-success fade show" role="alert">
               <strong>Success!</strong>
-              <p>${d}</p>
+              <p>${data}</p>
               <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>`;
             
@@ -44,7 +44,7 @@ jQuery(document).ready(function(){
             $('#loginform').toggle();
             
         }).fail(function (data) { 
-            console.log(`${JSON.stringify(data)}`);
+            //console.log(`${JSON.stringify(data)}`);
             var d = JSON.parse(JSON.stringify(data));
             var errorHtml = ` 
             <div class="alert alert-danger alert-dismissible fade show" role="alert">

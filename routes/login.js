@@ -15,7 +15,9 @@ const nodemailer = require('nodemailer');
 const randomstring = require('randomstring');
 var mysql2 = require('mysql2');
 const {decode,encode} = require('html-entities');
-const {Email,VALID_EMAIL_REGEXP} = require('../utilities/email');
+const {Email,VALID_EMAIL_REGEXP, isEmailValid} = require('../utilities/email');
+const {OTP_CODE_SIZE} = require('../utilities/functions');
+const { defaultMySQLDBConnectorConfig } = require('../database/models/MySQLDBConnector');
 
 /* This is the only email regular expression used to check emails  */
 const loginCheckOutValidation = [
@@ -65,7 +67,7 @@ function sendOTP(email, otp) {
 // Generate OTP
 function generateOTP() {
     return randomstring.generate({
-      length: 9,
+      length: OTP_CODE_SIZE,
       charset: 'numeric'
     });
   }
@@ -73,19 +75,7 @@ function generateOTP() {
 module.exports = () => { 
     
     /* generate a pool of mysql connection  */
-    var con = mysql2.createPool({
-        host: process.env.DATABASE_HOST,
-        user: process.env.DATABASE_USER,
-        password: process.env.DATABASE_PASSWORD,
-        database: process.env.DATABASE_UPGRADED_NAME,
-        waitForConnections: true,
-        connectionLimit: 5,
-        maxIdle: 4, // max idle connections, the default value is the same as `connectionLimit`
-        idleTimeout: 60000, // idle connections timeout, in milliseconds, the default value 60000
-        queueLimit: 0,
-        enableKeepAlive: true,
-        keepAliveInitialDelay: 0
-    });
+    var con = mysql2.createPool(defaultMySQLDBConnectorConfig);
 
     
     router.get('/', csrfProtection, async(request, response) => { 
@@ -127,7 +117,7 @@ module.exports = () => {
     });
 
     
-    router.post('/', csrfProtection,loginCheckOutValidation, (request, response) => {
+    router.post('/', csrfProtection,loginCheckOutValidation, async(request, response) => {
          //check if user is logged in
         var user = request.session.user;
         if (user) {
@@ -141,11 +131,21 @@ module.exports = () => {
         
         const email = new String(request.body.email).trim();
         const password = new String(request.body.password).trim();
+        
+        //validate email
+        const emailValidation =  await isEmailValid(email) ;
+        //console.log(`email validation : ${JSON.stringify(emailValidation)}`);
+        if (!emailValidation && !emailValidation.valid && emailValidation.valid === false && !VALID_EMAIL_REGEXP.test(email)) {
+            //email is not valid
+            response.status(400).send(`Something wrong with your form.`); 
+            //console.log(`bad email validation test`);
+           return ;
+        };
         //console.log(`email: ${email} password: ${password}`);
         const formerrors = validationResult(request);
         if (!formerrors.isEmpty()) {
             const err_message = formerrors.array().map(i => i.msg).join('<br>');
-            console.log(`Error processing login form: ${JSON.stringify(formerrors.array(), null, 4)}`);
+            //console.log(`Error processing login form: ${JSON.stringify(formerrors.array(), null, 4)}`);
             
             response.status(500).send(`${err_message}`);
             return ;
@@ -200,8 +200,6 @@ module.exports = () => {
                             responseText:`An error occured while sending email otp email`
                         });
                     } ;
-                    
-
                     
                 });
             } else {

@@ -7,20 +7,13 @@ const csrfProtection = csrf({ cookie: true })
 const { check,validationResult } = require('express-validator');
 
 require('dotenv').config();
-const createError = require('http-errors');
-const {mysqlpassword} = require('../database/controllers/database');
-const {decode, encode} = require('html-entities');
-
-const bcrypt = require('bcrypt');
-const nodemailer = require('nodemailer');
-const randomstring = require('randomstring');
-var mysql2 = require('mysql2');
-const {Email} = require('../utilities/email');
+const {isEmailValid,VALID_EMAIL_REGEXP} = require('../utilities/email');
+const {OTP_CODE_SIZE} = require('../utilities/functions');
 const {MySQLDBConnector, defaultMySQLDBConnectorConfig} = require('../database/models/MySQLDBConnector');
-
+const {isValidOTPCode} = require('../utilities/functions');
 const verifyOTPcheckOutValidation = [
     check('user_email').isEmail().normalizeEmail().withMessage('Please enter a valid email address.'),
-    check('otp').isLength({ min: 1 }).withMessage('Please enter your One Time Password'),
+    check('otp').isLength({ min: 1, max:OTP_CODE_SIZE }).isNumeric().withMessage('Please enter your One Time Password'),
 ];
 
 module.exports = () => { 
@@ -34,6 +27,21 @@ module.exports = () => {
             const user_email = new String(request.body.user_email).trim();
             const otp = new String(request.body.otp).trim();
         
+            //validate email
+            const emailValidation = await isEmailValid(user_email) ;
+            const otpIsValid = isValidOTPCode(otp) ;
+            
+            //console.log(`email validation : ${JSON.stringify(emailValidation)}`);
+            if (!emailValidation && !emailValidation.valid && emailValidation.valid === false && !VALID_EMAIL_REGEXP.test(user_email)) {
+                //email is not valid
+                response.status(400).send(`Something wrong with your email.`); 
+                //console.log(`bad email validation test`);
+               return ;
+            };
+            if (otpIsValid == null || !otpIsValid) {
+                response.status(400).send(`Something wrong with your otp code.`); 
+                return ;
+            } ;
             try {
                 // Verify OTP
                 const verify_otp_query = "SELECT * FROM otp WHERE user_email = ? AND otp_code = ? AND expiration_time >= NOW()";

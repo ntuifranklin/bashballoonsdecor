@@ -3,7 +3,7 @@ const app = require("../../server.js");
 const { assert,expect,should } = require ("chai");  
 const cheerio = require("cheerio");
 
-const {MySQLDBConnector,defaultMySQLDBConnectorConfig} = require("../../database/models/MySQLDBConnector.js");
+const {MySQLDBConnector} = require("../../database/models/MySQLDBConnector.js");
 
 require("dotenv").config();
 

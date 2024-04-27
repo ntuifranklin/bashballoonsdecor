@@ -1,5 +1,8 @@
 var nodemailer = require('nodemailer');
 require('dotenv').config();
+
+const emailValidator = require('deep-email-validator');
+
 const IMAP_EMAIL_AUTH_JSON = {
     host: process.env.BOX_IMAP_MAIL_SERVER,
     port: process.env.IMAP_PORT,
@@ -103,3 +106,9 @@ exports.Email = Email;
 
 const VALID_EMAIL_REGEXP = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/ ;
 exports.VALID_EMAIL_REGEXP = VALID_EMAIL_REGEXP ;
+
+async function isEmailValid(email) {
+    return await emailValidator.validate(email)
+  } ;
+  
+exports.isEmailValid = isEmailValid ;

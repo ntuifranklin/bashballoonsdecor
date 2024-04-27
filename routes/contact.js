@@ -2,7 +2,11 @@ const express = require('express');
 const { decode,encode } = require('html-entities');
 const router = express.Router();
 const {Email} = require('../utilities/email');
-
+const {
+    safeAgainstSqlAndShellInjection,
+    isValidPhoneNumber,
+    isValidTextMessage
+} = require('../utilities/functions');
 const bodyParser = require('body-parser');
 var csrf = require('csurf');
 // csrf protection
@@ -10,7 +14,7 @@ var csrfProtection = csrf({ cookie: true });
 const cookieSession = require('cookie-session');
 var parseForm = bodyParser.urlencoded({ extended: true });
 const { check,validationResult } = require('express-validator');
-const {VALID_EMAIL_REGEXP} = require('../utilities/email');
+const {VALID_EMAIL_REGEXP, isEmailValid} = require('../utilities/email');
 const validEmailRegExp = VALID_EMAIL_REGEXP ;
 const contactFormValidation = [
     check('name').isLength({ min: 5, max:255 }).withMessage('Please enter your name.'),
@@ -53,6 +57,31 @@ module.exports = () => {
         const comment = new String(request.body.comment);
         const phone = new String(request.body.phone);
 
+        //validate email
+        const emailValidation = await isEmailValid(email) ;
+        //console.log(`email validation : ${JSON.stringify(emailValidation)}`);
+        if (!emailValidation && !emailValidation.valid && emailValidation.valid === false && !VALID_EMAIL_REGEXP.test(email)) {
+            //email is not valid
+            response.status(400).send(`Something wrong with your email.`); 
+            //console.log(`bad email validation test`);
+            return ;
+        };
+        
+        const validName = isValidTextMessage(name) && safeAgainstSqlAndShellInjection(name);
+        const validPhone = isValidPhoneNumber(phone) ;
+        const validComment= isValidTextMessage(comment) && safeAgainstSqlAndShellInjection(comment);
+        if ( !validName ) {
+            response.status(400).send(`Something wrong with your full name.`); 
+           return ;
+        } ;
+        if (!validPhone) {
+            response.status(400).send(`Something wrong with the phone number.`); 
+           return ;
+        } ;
+        if (!validComment) {
+            response.status(400).send(`Something wrong with your message.`); 
+           return ;
+        } ;
         /* Begin sanitize from data here */
         const formerrors = validationResult(request);
         if (!formerrors.isEmpty()) {
