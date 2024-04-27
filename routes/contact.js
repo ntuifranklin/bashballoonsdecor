@@ -2,7 +2,11 @@ const express = require('express');
 const { decode,encode } = require('html-entities');
 const router = express.Router();
 const {Email} = require('../utilities/email');
-const {safeAgainstSqlAndShellInjection} = require('../utilities/functions');
+const {
+    safeAgainstSqlAndShellInjection,
+    isValidPhoneNumber,
+    isValidTextMessage
+} = require('../utilities/functions');
 const bodyParser = require('body-parser');
 var csrf = require('csurf');
 // csrf protection
@@ -58,16 +62,24 @@ module.exports = () => {
         //console.log(`email validation : ${JSON.stringify(emailValidation)}`);
         if (!emailValidation && !emailValidation.valid && emailValidation.valid === false && !VALID_EMAIL_REGEXP.test(email)) {
             //email is not valid
-            response.status(400).send(`Something wrong with your form.`); 
+            response.status(400).send(`Something wrong with your email.`); 
             //console.log(`bad email validation test`);
             return ;
         };
         
-        const validName = safeAgainstSqlAndShellInjection(name);
-        const validPhone = safeAgainstSqlAndShellInjection(phone);
-        const validComment= safeAgainstSqlAndShellInjection(comment);
-        if (!validComment || !validName || !validPhone) {
-            response.status(400).send(`Something wrong with your form.`); 
+        const validName = isValidTextMessage(name) && safeAgainstSqlAndShellInjection(name);
+        const validPhone = isValidPhoneNumber(phone) ;
+        const validComment= isValidTextMessage(comment) && safeAgainstSqlAndShellInjection(comment);
+        if ( !validName ) {
+            response.status(400).send(`Something wrong with your full name.`); 
+           return ;
+        } ;
+        if (!validPhone) {
+            response.status(400).send(`Something wrong with the phone number.`); 
+           return ;
+        } ;
+        if (!validComment) {
+            response.status(400).send(`Something wrong with your message.`); 
            return ;
         } ;
         /* Begin sanitize from data here */

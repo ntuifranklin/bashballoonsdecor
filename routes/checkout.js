@@ -24,7 +24,11 @@ const mysql2 = require('mysql2');
 const jqueryCode = fs.readFileSync(`${process.env.BOOTSTRAP_JS_FILE}`).toString();
 const bootstrapCode = fs.readFileSync(`${process.env.BOOTSTRAP_CSS_FILE}`).toString(); 
 const {Email,isEmailValid,VALID_EMAIL_REGEXP} = require('../utilities/email');
-const {safeAgainstSqlAndShellInjection} = require('../utilities/functions');
+const {
+    safeAgainstSqlAndShellInjection,
+    isValidPhoneNumber,
+    isValidTextMessage
+    } = require('../utilities/functions');
 
 
 const checkOutValidation = [
@@ -68,14 +72,46 @@ module.exports = () => {
         };
         
         //check if any bad characters are within the order_note
-        const validOrderNote= safeAgainstSqlAndShellInjection(order_note);
-        const validCity = safeAgainstSqlAndShellInjection(city);
-        const validState = safeAgainstSqlAndShellInjection(state);
-        const validPhone = safeAgainstSqlAndShellInjection(phone);
-        const validStreetAddress = safeAgainstSqlAndShellInjection(street_address);
        
-        if (!validOrderNote || !validCity || !validState || !validPhone || !validStreetAddress) {
-            response.status(400).send(`Something wrong with your form.`); 
+        const validCompleteName = isValidTextMessage(completename) && safeAgainstSqlAndShellInjection(completename);
+        const validStreetAddress = isValidTextMessage(street_address) &&  safeAgainstSqlAndShellInjection(street_address);
+        const validCity = isValidTextMessage(city) && safeAgainstSqlAndShellInjection(city);
+        const validState = isValidTextMessage(state) && safeAgainstSqlAndShellInjection(state);
+        const validZipCode = isValidTextMessage(zipcode) && safeAgainstSqlAndShellInjection(zipcode);
+        const validPhone = isValidPhoneNumber(phone) ;
+        const validOrderNote= isValidTextMessage(order_note) && safeAgainstSqlAndShellInjection(order_note);
+       
+        if (!validCompleteName) {
+            response.status(400).send(`Please check the name entered`); 
+           return ;
+        } ;
+        
+        if (!validStreetAddress) {
+            response.status(400).send(`Please check the street address`); 
+           return ;
+        } ;
+        if (!validCity) {
+            response.status(400).send(`Please check the city entered`); 
+           return ;
+        } ;
+        if (!validState) {
+            response.status(400).send(`Please check the state.`); 
+           return ;
+        } ;
+        if (!validZipCode) {
+            response.status(400).send(`Please check the zip code`); 
+           return ;
+        } ;
+        if (!validPhone) {
+            response.status(400).send(`Please check the phone number.`); 
+           return ;
+        } ;
+        if (!validState) {
+            response.status(400).send(`Please check the state.`); 
+           return ;
+        } ;
+        if (!validOrderNote) {
+            response.status(400).send(`Please check the order note`); 
            return ;
         } ;
         //============================================

@@ -44,7 +44,7 @@ jQuery(document).ready(function(){
             $('#loginform').toggle();
             
         }).fail(function (data) { 
-            console.log(`${JSON.stringify(data)}`);
+            //console.log(`${JSON.stringify(data)}`);
             var d = JSON.parse(JSON.stringify(data));
             var errorHtml = ` 
             <div class="alert alert-danger alert-dismissible fade show" role="alert">

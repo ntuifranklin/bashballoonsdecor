@@ -34,12 +34,12 @@ module.exports = () => {
             //console.log(`email validation : ${JSON.stringify(emailValidation)}`);
             if (!emailValidation && !emailValidation.valid && emailValidation.valid === false && !VALID_EMAIL_REGEXP.test(user_email)) {
                 //email is not valid
-                response.status(400).send(`Something wrong with your form.`); 
+                response.status(400).send(`Something wrong with your email.`); 
                 //console.log(`bad email validation test`);
                return ;
             };
             if (otpIsValid == null || !otpIsValid) {
-                response.status(400).send(`Something wrong with your form.`); 
+                response.status(400).send(`Something wrong with your otp code.`); 
                 return ;
             } ;
             try {

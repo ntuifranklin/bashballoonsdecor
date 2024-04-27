@@ -145,7 +145,7 @@ module.exports = () => {
         const formerrors = validationResult(request);
         if (!formerrors.isEmpty()) {
             const err_message = formerrors.array().map(i => i.msg).join('<br>');
-            console.log(`Error processing login form: ${JSON.stringify(formerrors.array(), null, 4)}`);
+            //console.log(`Error processing login form: ${JSON.stringify(formerrors.array(), null, 4)}`);
             
             response.status(500).send(`${err_message}`);
             return ;
@@ -200,8 +200,6 @@ module.exports = () => {
                             responseText:`An error occured while sending email otp email`
                         });
                     } ;
-                    
-
                     
                 });
             } else {
