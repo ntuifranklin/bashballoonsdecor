@@ -140,93 +140,96 @@ app.locals.customers_feedback = customers_feedback ;
 
 /* location where images are being sotred */
 const {IMG_DIR_FOR_WEB} = require('./utilities/fileupload');
+const { exit } = require('process');
 
+/* rejected firewall domains  */
+const firewall = require('./utilities/firewall');
+app.use(firewall);
 app.use(parseForm, csrfProtection, async(request, response, next) => { 
 
-    /*
-        Load user cart here so that it is accessible from all over the app
-    */
-    var userCart = {} ;
-        
-    var items_array = null ;
-    var itemsByID = null ;
-    var itemsByCategoryID = {}
-    var categories = null ;
-    var itemsByCategoryWebID = {};
+        var userCart = {} ;
+            
+        var items_array = null ;
+        var itemsByID = null ;
+        var itemsByCategoryID = {}
+        var categories = null ;
+        var itemsByCategoryWebID = {};
 
-    if (request.session.userCart)
-        userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
+        if (request.session.userCart)
+            userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
+        
+        var item = null ;
     
-    var item = null ;
-   
-    if (!items_array) {
-        itemsByID = {} ;
-        itemsByCategoryID = {} ;
-        itemsByCategoryWebID = {};
-        
-        items_array = await getCategoriesItems ();
-        
-        for (var j=0 ; j < items_array.length; j++ ) {
-            item = JSON.parse(JSON.stringify(items_array[j]));
-            items_array[j].item_name = decode(item.item_name);
-            var categoryID = item.category_id ;
-            if (!(categoryID in itemsByCategoryID)) {
-                itemsByCategoryID[categoryID] = [] ;
-            } ;
-            itemsByCategoryID[categoryID].push(item);
-            var itemID = new String(item.item_id) ;
+        if (!items_array) {
+            itemsByID = {} ;
+            itemsByCategoryID = {} ;
+            itemsByCategoryWebID = {};
             
-            if (!(itemID in itemsByID)) { 
-                itemsByID[itemID] = {} ;
-            } ;
-
-            var category_webid = new String(item.category_webid);
+            items_array = await getCategoriesItems ();
             
-            var category_id = new String(item.category_id);
-            //console.log(`category_webid : ${category_webid}`);
+            for (var j=0 ; j < items_array.length; j++ ) {
+                item = JSON.parse(JSON.stringify(items_array[j]));
+                items_array[j].item_name = decode(item.item_name);
+                var categoryID = item.category_id ;
+                if (!(categoryID in itemsByCategoryID)) {
+                    itemsByCategoryID[categoryID] = [] ;
+                } ;
+                itemsByCategoryID[categoryID].push(item);
+                var itemID = new String(item.item_id) ;
+                
+                if (!(itemID in itemsByID)) { 
+                    itemsByID[itemID] = {} ;
+                } ;
 
-            if (!(category_webid in itemsByCategoryWebID)) {
-                itemsByCategoryWebID[category_webid] = {};
+                var category_webid = new String(item.category_webid);
+                
+                var category_id = new String(item.category_id);
+                //console.log(`category_webid : ${category_webid}`);
+
+                if (!(category_webid in itemsByCategoryWebID)) {
+                    itemsByCategoryWebID[category_webid] = {};
+                } ;
+
+            
+                itemsByCategoryWebID[category_webid] = JSON.parse(JSON.stringify(item)) ;
+
+                itemsByID[itemID]["itemDetails"] = JSON.parse(JSON.stringify(item)) ;
             } ;
 
-           
-            itemsByCategoryWebID[category_webid] = JSON.parse(JSON.stringify(item)) ;
+        
 
-            itemsByID[itemID]["itemDetails"] = JSON.parse(JSON.stringify(item)) ;
+            request.session.items_array = JSON.parse(JSON.stringify(items_array));
+            request.session.itemsByID = JSON.parse(JSON.stringify(itemsByID)) ;
+            request.session.itemsByCategoryID = JSON.parse(JSON.stringify(itemsByCategoryID));
+            request.session.itemsByCategoryWebID = JSON.parse(JSON.stringify(itemsByCategoryWebID));
+            //console.log(`Items By Category WebID : ${JSON.stringify(request.session.itemsByCategoryWebID)}`);
+            //console.log(`Items By Category ID : ${JSON.stringify(request.session.itemsByCategoryID)}`);
+            request.session.save();
         } ;
 
-      
-
-        request.session.items_array = JSON.parse(JSON.stringify(items_array));
-        request.session.itemsByID = JSON.parse(JSON.stringify(itemsByID)) ;
-        request.session.itemsByCategoryID = JSON.parse(JSON.stringify(itemsByCategoryID));
-        request.session.itemsByCategoryWebID = JSON.parse(JSON.stringify(itemsByCategoryWebID));
-        //console.log(`Items By Category WebID : ${JSON.stringify(request.session.itemsByCategoryWebID)}`);
-        //console.log(`Items By Category ID : ${JSON.stringify(request.session.itemsByCategoryID)}`);
-        request.session.save();
-    } ;
-
-    //console.log(`itemsByID in server.js: ${JSON.stringify(request.session.itemsByID,null,4)}`);
-    
-    if (!categories ) {
-        categories = await getCategories (tableName='categories') ;
-        for (var i = 0; i <  categories.length; i++) {
-            var category = JSON.parse(JSON.stringify( categories[i]));
-            category.category_name = decode(category.category_name);
-            //categories[i].category_name = category.category_name;
-        };
+        //console.log(`itemsByID in server.js: ${JSON.stringify(request.session.itemsByID,null,4)}`);
         
-        request.session.categories = await JSON.parse(JSON.stringify(categories));
-        request.session.save();
-    } ;
+        if (!categories ) {
+            categories = await getCategories (tableName='categories') ;
+            for (var i = 0; i <  categories.length; i++) {
+                var category = JSON.parse(JSON.stringify( categories[i]));
+                category.category_name = decode(category.category_name);
+                //categories[i].category_name = category.category_name;
+            };
+            
+            request.session.categories = await JSON.parse(JSON.stringify(categories));
+            request.session.save();
+        } ;
 
-    request.session.userCart = await JSON.parse(JSON.stringify(userCart)) ;
-    request.session.IMG_DIR_FOR_WEB = IMG_DIR_FOR_WEB ;
-    request.session.save();
-    response.locals.csrfToken = request.csrfToken();
-    request.locals = app.locals ;
-   
-    return next();
+        request.session.userCart = await JSON.parse(JSON.stringify(userCart)) ;
+        request.session.IMG_DIR_FOR_WEB = IMG_DIR_FOR_WEB ;
+        request.session.save();
+        response.locals.csrfToken = request.csrfToken();
+        request.locals = app.locals ;
+    
+        return next();
+
+
 });
 
 app.use('/',routes());
