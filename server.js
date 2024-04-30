@@ -73,7 +73,7 @@ var sessionBasedOnEnvironment = {
 } ;
 
 /* If in a production environment, then use un secure cookies */
-if (PORT == process.env.PORUDCTION_SITE_PORT) {
+if (PORT == process.env.PRODUCTION_SITE_PORT) {
         
     app.set('trust proxy', 1) // trust first proxy
     dynamicCookie.secure = true; // serve secure cookies
