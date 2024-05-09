@@ -85,11 +85,8 @@ module.exports = () => {
         console.log(`city passed: ${city}`);
         console.log(`state passed: ${state}`);
         console.log(`zipcode passed: ${zipcode}`);
-        
         console.log(`phone passed: ${phone}`);
-        
         console.log(`street address passed: ${street_address}`);
-        
         console.log(`order note: ${order_note}`);
 
         const fislCompleteName = new Fisl() ;   
