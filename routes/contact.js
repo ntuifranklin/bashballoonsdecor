@@ -14,11 +14,13 @@ var csrfProtection = csrf({ cookie: true });
 const cookieSession = require('cookie-session');
 var parseForm = bodyParser.urlencoded({ extended: true });
 const { check,validationResult } = require('express-validator');
-const {VALID_EMAIL_REGEXP, isEmailValid} = require('../utilities/email');
+const {VALID_EMAIL_REGEXP, MAX_EMAIL_ADDR_LENGTH,isEmailValid} = require('../utilities/email');
+const {Fisl, MAX_BUFFER_SIZE,DEFAULT_BUFFER_TYPE} = require('../utilities/Fisl');
 const validEmailRegExp = VALID_EMAIL_REGEXP ;
+
 const contactFormValidation = [
     check('name').isLength({ min: 5, max:255 }).withMessage('Please enter your name.'),
-    check('email').matches(validEmailRegExp).withMessage('Please enter a valid email address.'),
+    check('email').isLength({min:6, max:MAX_EMAIL_ADDR_LENGTH}).matches(validEmailRegExp).withMessage('Please enter a valid email address.'),
     check('comment').isLength({ min: 5, max:255 }).withMessage('Please a message.'),
     check('phone').isLength({ min: 5, max:16 }).withMessage('Please enter your phone number.'),
 ];
@@ -50,7 +52,24 @@ module.exports = () => {
         });
     });
     
-    router.post('/',  contactFormValidation, csrfProtection,async(request, response) => {         
+    router.post('/',  contactFormValidation, csrfProtection,async(request, response) => {    
+        /* Use buffers to prevent buffer overflow  */
+        /*
+        const fislName = new Fisl() ;   
+        fislName.overLoadConstructor(MAX_BUFFER_SIZE, request.body.name, DEFAULT_BUFFER_TYPE); 
+        const fislEmail = new Fisl() ;   
+        fislEmail.overLoadConstructor(MAX_EMAIL_ADDR_LENGTH, request.body.email, DEFAULT_BUFFER_TYPE);  
+        const fislComment = new Fisl() ;   
+        fislComment.overLoadConstructor(MAX_BUFFER_SIZE, request.body.comment, DEFAULT_BUFFER_TYPE);  
+        const fislPhone = new Fisl() ;   
+        fislPhone.overLoadConstructor(MAX_BUFFER_SIZE, request.body.phone, DEFAULT_BUFFER_TYPE);   
+        
+        
+        const name = fislName.toString();
+        const email = fislEmail.toString();
+        const comment = fislComment.toString();
+        const phone = fislPhone.toString();
+        */
         /* Process form */
         const name = new String(request.body.name);
         const email = new String(request.body.email);
