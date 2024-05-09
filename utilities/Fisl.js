@@ -17,7 +17,7 @@ const { Buffer } = require('node:buffer');
   of the field into the database where the data will be placed.
 
  */
-const MAX_BUFFER_SIZE = 25 ; 
+const MAX_BUFFER_SIZE = 255 ; 
 exports.MAX_BUFFER_SIZE = MAX_BUFFER_SIZE ;
 const DEFAULT_BUFFER_TYPE = "utf8";
 exports.DEFAULT_BUFFER_TYPE = DEFAULT_BUFFER_TYPE ;

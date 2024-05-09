@@ -54,6 +54,7 @@ module.exports = () => {
     
     router.post('/',  contactFormValidation, csrfProtection,async(request, response) => {    
         /* Use buffers to prevent buffer overflow  */
+        /*
         const fislName = new Fisl() ;   
         fislName.overLoadConstructor(MAX_BUFFER_SIZE, request.body.name, DEFAULT_BUFFER_TYPE); 
         const fislEmail = new Fisl() ;   
@@ -63,11 +64,17 @@ module.exports = () => {
         const fislPhone = new Fisl() ;   
         fislPhone.overLoadConstructor(MAX_BUFFER_SIZE, request.body.phone, DEFAULT_BUFFER_TYPE);   
         
-        /* Process form */
+        
         const name = fislName.toString();
         const email = fislEmail.toString();
         const comment = fislComment.toString();
         const phone = fislPhone.toString();
+        */
+        /* Process form */
+        const name = new String(request.body.name);
+        const email = new String(request.body.email);
+        const comment = new String(request.body.comment);
+        const phone = new String(request.body.phone);
 
         //validate email
         const emailValidation = await isEmailValid(email) ;

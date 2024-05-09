@@ -27,7 +27,8 @@ $(document).ready(function(){
             <strong>Success!</strong>  ${data}.
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
           </div>`;
-          
+          //disable this button for other submissions
+          $("#contactFormSubmitButtonID").prop("disabled",true); 
           $(`#contactFormAlertIndex`).html(successHtml);
           
           

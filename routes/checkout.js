@@ -53,6 +53,7 @@ module.exports = () => {
 
         var userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
         /* Use buffers to prevent buffer overflow  */
+        /*
         var completename = new String(request.body.completename);
         if (completename.length > MAX_BUFFER_SIZE )
             completename = completename.substring(0,MAX_BUFFER_SIZE);
@@ -79,7 +80,10 @@ module.exports = () => {
         var order_note = new String(request.body.order_note);
         if (order_note.length > MAX_BUFFER_SIZE )
             order_note = order_note.substring(0,MAX_BUFFER_SIZE);
+        */
         /* lets log what we have so far */
+
+        /*
         console.log(`complete name passed: ${completename}`);
         console.log(`email passed: ${email}`);
         console.log(`city passed: ${city}`);
@@ -107,6 +111,7 @@ module.exports = () => {
         fislOrderNote.overLoadConstructor(order_note.length, order_note, DEFAULT_BUFFER_TYPE);  
         
         /* Get form data first, and sanitize or reject if necessary */
+        /*
         completename = fislCompleteName.toString();
         console.log(`complete name passed: ${completename}`);
         email = fislEmail.toString();
@@ -123,7 +128,16 @@ module.exports = () => {
         console.log(`street address passed: ${street_address}`);
         order_note = fislOrderNote.toString();
         console.log(`order note: ${order_note}`);
-
+        */
+       /* Get form data first, and sanitize or reject if necessary */
+       const completename = new String(request.body.completename);
+       const email = new String(request.body.email) ;
+       const city = new String(request.body.city) ;
+       const state = new String(request.body.state) ;
+       const zipcode = new String(request.body.zipcode) ;
+       const phone = new String(request.body.phone) ; 
+       const street_address = new String(request.body.street_address) ;
+       const order_note = new String(request.body.order_note);
         //Check email is valid
         
         const emailValidation = await isEmailValid(email) ;
