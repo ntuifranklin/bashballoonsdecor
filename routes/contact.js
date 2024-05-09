@@ -20,7 +20,7 @@ const validEmailRegExp = VALID_EMAIL_REGEXP ;
 
 const contactFormValidation = [
     check('name').isLength({ min: 5, max:255 }).withMessage('Please enter your name.'),
-    check('email').isLength({min:6, mx:MAX_EMAIL_ADDR_LENGTH}).matches(validEmailRegExp).withMessage('Please enter a valid email address.'),
+    check('email').isLength({min:6, max:MAX_EMAIL_ADDR_LENGTH}).matches(validEmailRegExp).withMessage('Please enter a valid email address.'),
     check('comment').isLength({ min: 5, max:255 }).withMessage('Please a message.'),
     check('phone').isLength({ min: 5, max:16 }).withMessage('Please enter your phone number.'),
 ];

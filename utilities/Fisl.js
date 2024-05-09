@@ -17,7 +17,7 @@ const { Buffer } = require('node:buffer');
   of the field into the database where the data will be placed.
 
  */
-const MAX_BUFFER_SIZE = 255 ; 
+const MAX_BUFFER_SIZE = 25 ; 
 exports.MAX_BUFFER_SIZE = MAX_BUFFER_SIZE ;
 const DEFAULT_BUFFER_TYPE = "utf8";
 exports.DEFAULT_BUFFER_TYPE = DEFAULT_BUFFER_TYPE ;
@@ -31,7 +31,7 @@ class Fisl {
         this.maxSize = MAX_BUFFER_SIZE ;
         this.dataType = 'utf8' ;
         this.buffer = Buffer.alloc(this.maxSize,"", this.dataType);
-        overLoadConstructor(this.maxSize,"", this.dataType);
+        this.overLoadConstructor(this.maxSize,"", this.dataType);
     } ;
     
     overLoadConstructor(size=MAX_BUFFER_SIZE, data="",dataType="utf8") {

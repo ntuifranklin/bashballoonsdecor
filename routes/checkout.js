@@ -23,23 +23,25 @@ const mysql2 = require('mysql2');
 //read jquery file stream and css stream into a string 
 const jqueryCode = fs.readFileSync(`${process.env.BOOTSTRAP_JS_FILE}`).toString();
 const bootstrapCode = fs.readFileSync(`${process.env.BOOTSTRAP_CSS_FILE}`).toString(); 
-const {Email,isEmailValid,VALID_EMAIL_REGEXP} = require('../utilities/email');
+const {Email,isEmailValid,MAX_EMAIL_ADDR_LENGTH,VALID_EMAIL_REGEXP} = require('../utilities/email');
+const {Fisl, MAX_BUFFER_SIZE,DEFAULT_BUFFER_TYPE} = require('../utilities/Fisl');
+
 const {
     safeAgainstSqlAndShellInjection,
     isValidPhoneNumber,
     isValidTextMessage
-    } = require('../utilities/functions');
+} = require('../utilities/functions');
 
 
 const checkOutValidation = [
-    check('completename').isLength({ min: 5, max:255 }).withMessage('Please enter your full name.'),
-    check('email').isEmail().normalizeEmail().withMessage('Please enter a valid email address.'),
-    check('street_address').isLength({ min: 5, max:255 }).withMessage('Please enter your street address.'),
-    check('city').isLength({ min: 2, max:255 }).withMessage('Please enter your city.'),
-    check('state').isLength({ min: 2, max:255 }).withMessage('Please enter your state.'),
+    check('completename').isLength({ min: 5, max:MAX_BUFFER_SIZE }).withMessage('Please enter your full name.'),
+    check('email').isLength({min:6, max:MAX_EMAIL_ADDR_LENGTH}).isEmail().normalizeEmail().withMessage('Please enter a valid email address.'),
+    check('street_address').isLength({ min: 5, max:MAX_BUFFER_SIZE }).withMessage('Please enter your street address.'),
+    check('city').isLength({ min: 2, max:MAX_BUFFER_SIZE }).withMessage('Please enter your city.'),
+    check('state').isLength({ min: 2, max:MAX_BUFFER_SIZE }).withMessage('Please enter your state.'),
     check('zipcode').isLength({ min: 5, max:5 }).withMessage('Please a valid zipcode.'),
-    check('phone').isLength({ min: 5, max:16 }).withMessage('Please enter your phone number.'),
-    check('order_note').isLength({ min: 5, max:255 }).withMessage('Please enter your order note.'),
+    check('phone').isLength({ min: 5, max:10 }).withMessage('Please enter your phone number.'),
+    check('order_note').isLength({ min: 5, max:MAX_BUFFER_SIZE }).withMessage('Please enter your order note.'),
 ];
 module.exports = () => {
     router.post('/', checkOutValidation,csrfProtection, async (request, response) => {
@@ -50,16 +52,80 @@ module.exports = () => {
         };
 
         var userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
+        /* Use buffers to prevent buffer overflow  */
+        var completename = new String(request.body.completename);
+        if (completename.length > MAX_BUFFER_SIZE )
+            completename = completename.substring(0,MAX_BUFFER_SIZE);
+        var email = new String(request.body.email);
+        if (email.length > MAX_EMAIL_ADDR_LENGTH )
+            email = email.substring(0,MAX_EMAIL_ADDR_LENGTH);
+        var city = new String(request.body.city);
+        if (city.length > MAX_BUFFER_SIZE )
+            city = city.substring(0,MAX_BUFFER_SIZE);
+        var state = new String(request.body.state);
+        if (state.length > MAX_BUFFER_SIZE )
+            state = state.substring(0,MAX_BUFFER_SIZE);
 
+        var zipcode = new String(request.body.zipcode);
+        if (zipcode.length > MAX_BUFFER_SIZE )
+            zipcode = zipcode.substring(0,MAX_BUFFER_SIZE);
+        var phone = new String(request.body.phone);
+        if (phone.length > MAX_BUFFER_SIZE )
+            phone = phone.substring(0,MAX_BUFFER_SIZE);
+        
+        var street_address = new String(request.body.street_address);
+        if (street_address.length > MAX_BUFFER_SIZE )
+            street_address = street_address.substring(0,MAX_BUFFER_SIZE);
+        var order_note = new String(request.body.order_note);
+        if (order_note.length > MAX_BUFFER_SIZE )
+            order_note = order_note.substring(0,MAX_BUFFER_SIZE);
+        /* lets log what we have so far */
+        console.log(`complete name passed: ${completename}`);
+        console.log(`email passed: ${email}`);
+        console.log(`city passed: ${city}`);
+        console.log(`state passed: ${state}`);
+        console.log(`zipcode passed: ${zipcode}`);
+        
+        console.log(`phone passed: ${phone}`);
+        
+        console.log(`street address passed: ${street_address}`);
+        
+        console.log(`order note: ${order_note}`);
+
+        const fislCompleteName = new Fisl() ;   
+        fislCompleteName.overLoadConstructor(completename.length, completename, DEFAULT_BUFFER_TYPE); 
+        const fislEmail = new Fisl() ;   
+        fislEmail.overLoadConstructor(email.length, email, DEFAULT_BUFFER_TYPE);  
+        const fislCity = new Fisl() ;   
+        fislCity.overLoadConstructor(city.length, city, DEFAULT_BUFFER_TYPE);  
+        const fislState = new Fisl() ;   
+        fislState.overLoadConstructor(state.length, state, DEFAULT_BUFFER_TYPE);  
+        const fislZipCode = new Fisl() ;   
+        fislZipCode.overLoadConstructor(zipcode.length, zipcode, DEFAULT_BUFFER_TYPE);   
+        const fislPhone = new Fisl() ;   
+        fislPhone.overLoadConstructor(phone.length, phone, DEFAULT_BUFFER_TYPE); 
+        const fislStreetAddress = new Fisl() ;   
+        fislStreetAddress.overLoadConstructor(street_address.length, street_address, DEFAULT_BUFFER_TYPE);   
+        const fislOrderNote = new Fisl() ;   
+        fislOrderNote.overLoadConstructor(order_note.length, order_note, DEFAULT_BUFFER_TYPE);  
+        
         /* Get form data first, and sanitize or reject if necessary */
-        const completename = new String(request.body.completename);
-        const email = new String(request.body.email) ;
-        const city = new String(request.body.city) ;
-        const state = new String(request.body.state) ;
-        const zipcode = new String(request.body.zipcode) ;
-        const phone = new String(request.body.phone) ; 
-        const street_address = new String(request.body.street_address) ;
-        const order_note = new String(request.body.order_note);
+        completename = fislCompleteName.toString();
+        console.log(`complete name passed: ${completename}`);
+        email = fislEmail.toString();
+        console.log(`email passed: ${email}`);
+        city = fislCity.toString();
+        console.log(`city passed: ${city}`);
+        state = fislState.toString();
+        console.log(`state passed: ${state}`);
+        zipcode = fislZipCode.toString();
+        console.log(`zipcode passed: ${zipcode}`);
+        phone = fislPhone.toString();
+        console.log(`phone passed: ${phone}`);
+        street_address = fislStreetAddress.toString();
+        console.log(`street address passed: ${street_address}`);
+        order_note = fislOrderNote.toString();
+        console.log(`order note: ${order_note}`);
 
         //Check email is valid
         
