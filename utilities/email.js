@@ -103,6 +103,8 @@ class Email {
 };
 exports.Email = Email;
 
+const MAX_EMAIL_ADDR_LENGTH = 50 ;
+exports.MAX_EMAIL_ADDR_LENGTH = MAX_EMAIL_ADDR_LENGTH ;
 
 const VALID_EMAIL_REGEXP = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/ ;
 exports.VALID_EMAIL_REGEXP = VALID_EMAIL_REGEXP ;
