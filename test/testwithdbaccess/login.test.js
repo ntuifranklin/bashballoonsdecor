@@ -12,8 +12,10 @@ describe('GET /login', () => {
   const email = process.env.ADMIN_USER_EMAIL;
   const password = process.env.ADMIN_USER_PASSWORD;
   it("Testing the login url",async() => {
-      const result = await request(app).get(`/login`) ;
-      expect(result.status).to.equal(200);  
+      request(app).get(`/login`)
+      .end(async(err, loginPageResult) => {
+      expect(loginPageResult.status).to.equal(200);
+        
       const $ = cheerio.load(result.text);
       const csrf = $("[name=_csrf]") ;
       //console.log(`obtained csrf: ${csrf}`);
@@ -57,8 +59,14 @@ describe('GET /login', () => {
             });
 
         })
+     
+        
+
+      });
         
      
   });
     
 }) ;
+
+

@@ -56,6 +56,8 @@ module.exports = () => {
                     userCart: userCart,
                     category: decode(category.category_name),
                     category_id: category.category_id,
+                    
+                    IMG_DIR_FOR_WEB : request.session.IMG_DIR_FOR_WEB,
                     category_items: category_items,
                     csrfToken: request.csrfToken(),
                     decode: decode,

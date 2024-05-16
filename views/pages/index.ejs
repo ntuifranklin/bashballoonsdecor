@@ -16,7 +16,7 @@
 	}
 %>
 <section class="slider-home-1 owl-carousel owl-theme">
-	<div class="hero-section item" style="background-image: url(https://via.placeholder.com/1920x640);">
+	<div class="hero-section item" style='background-image:url("<%= IMG_DIR_FOR_WEB %>1920x640.png")'>
 	  <div class="container">
 		<div class="row">
 		  <div class="col-lg-6">
@@ -30,7 +30,7 @@
 		</div>
 	  </div>
 	</div>
-	<div class="hero-section item" style="background-image: url(https://via.placeholder.com/1920x640);">
+	<div class="hero-section item" style='background-image:url("<%= IMG_DIR_FOR_WEB %>1920x640.png")'>
 	  <div class="container">
 		<div class="row">
 		  <div class="col-lg-6">
@@ -48,7 +48,7 @@
 <section class="gap">
 	<div class="container">
 		<div class="heading">
-			<img alt="heading" src="assets/img/heading.png">
+			<img alt="heading" src="/assets/img/heading.png">
 			<h2>Shop By Rentals Categories </h2>
 			<p>Different Items based on your budget!</p>
 		</div>
@@ -57,8 +57,9 @@
 				<% var category = JSON.parse(JSON.stringify(c[counter])); %>
 				<div class="item">
 					<div class="balloon-shap">
-					<img alt="balloon" src="https://via.placeholder.com/169x160">
-					<a href="/<%= category.category_name %>"><h5><%= category.category_name %>...</h5></a>
+						<img src="<%= IMG_DIR_FOR_WEB %>169x160.png" width=169 height=160 />
+						<!-- <img alt="balloon" src="https://via.placeholder.com/169x160"> -->
+						<a href="/<%= category.category_name %>"><h5><%= category.category_name %>...</h5></a>
 					</div>
 				</div>
 			<% } %>
@@ -80,11 +81,11 @@
 				<% var M =  (cit2.length > 10 ) ? 10 : cit2.length ; %>
 				<% for(var counter=0; counter<M; counter++) { %>
 					<% var item = JSON.parse(JSON.stringify(cit2[counter])); %>
-					<li><img alt="chak" src="assets/img/chak.png"><%= item.item_name%></li>
+					<li><img alt="chak" src="/assets/img/chak.png"><%= item.item_name%></li>
 				<% } %>
 			</ul>
 			<div class="call-us">
-			<img alt="call" src="assets/img/call.png">
+			<img alt="call" src="/assets/img/call.png">
 			<div>
 				<span>Have Questions? Call Us</span>
 				<a href="callto:<%= customerServiceNumber %>">
@@ -97,8 +98,10 @@
 		</div>
 		<div class="col-xl-6">
 		<div class="party-balloon-img">
-			<img alt="party-balloon" class="p-balloon" src="https://via.placeholder.com/360x360">
-			<img alt="party-balloon" src="https://via.placeholder.com/546x546">
+			<img alt="party-balloon" class="p-balloon" src="<%= IMG_DIR_FOR_WEB %>360x360.png" width=360 height=360 />
+			<!-- <img alt="party-balloon" class="p-balloon" src="https://via.placeholder.com/360x360"> -->
+			<img alt="party-balloon" src="<%= IMG_DIR_FOR_WEB %>546x546.png" width=546 height=546 />
+			<!-- <img alt="party-balloon" src="https://via.placeholder.com/546x546"> -->
 			<div class="b-shap"></div>
 		</div>
 		</div>
@@ -186,10 +189,10 @@
 	</div>
 </div>
 </section>
-<section class="gap" style="background-image: url(https://via.placeholder.com/1920x904)">
+<section class="gap" style='background-image:url("<%= IMG_DIR_FOR_WEB %>1920x640.png")'>
 <div class="container">
 	<div class="heading">
-	<img alt="heading" src="assets/img/heading.png">
+	<img alt="heading" src="/assets/img/heading.png">
 	<h2>Recent Products</h2>
 	
 	<% var cit3 = shuffleArray(all_items_array);  %>
@@ -219,7 +222,8 @@
 						<!-- width x height = 195 x 210 , scaled down by 0.7 -->
 						<img src="<%= IMG_DIR_FOR_WEB + individual_item.imageurl %>" width="117" height="89" />
 					<% } else { %>
-						<img src="https://via.placeholder.com/117x89" />
+						<img src="<%= IMG_DIR_FOR_WEB %>117x89.png" width=117 height=89 />
+						<!-- <img src="https://via.placeholder.com/117x89" /> -->
 						<!-- https://via.placeholder.com/195x210 -->
 					<% } %>
 
@@ -254,7 +258,8 @@
 			<div class="col-lg-4">
 				
 				<div class="holiday">
-					<img alt="holiday" src="https://via.placeholder.com/416x264">
+					<img alt="holiday" src="<%= IMG_DIR_FOR_WEB %>416x264.png" width=416 height=264 />
+					<!-- <img alt="holiday" src="https://via.placeholder.com/416x264"> -->
 					<div class="holiday-text">
 						<a href="/<%= category.category_name %>"><h3><%= category.category_name %></h3></a>
 						<span>See Our Selection</span>
@@ -294,10 +299,14 @@
 				<div class="col-lg-6">
 					<div class="product-style two">
 						<div>
-							<!-- <img alt="img" src="https://via.placeholder.com/140x165"> -->
-							<% const altImage = trimItemName(name=individual_item.item_name) ; %>
-							<img alt="<%= 'Image for ' + altImage %>" src="<%= IMG_DIR_FOR_WEB + individual_item.imageurl %>" width=140 height=165 />
-          
+							<% if (individual_item.imageurl != "" ) {%>
+								<img src="<%= IMG_DIR_FOR_WEB + individual_item.imageurl %>" width=140 height=165 />
+							<% } else { %>
+								<% const altImage = trimItemName(name=individual_item.item_name) ; %>
+								<img alt="<%= 'Image for ' + altImage %>" src="<%= IMG_DIR_FOR_WEB %>70x70.png" width=70 height=70 />
+								<!-- <img src="https://via.placeholder.com/70x70" /> -->
+								<!-- https://via.placeholder.com/70x70 -->
+							<% } %>
 						</div>
 						<div>
 						<a href="/product-details/<%= individual_item.category_webid %>">
@@ -328,9 +337,18 @@
 				<div class="col-lg-6">
 					<div class="product-style two">
 						<div>
-							<!-- <img alt="img" src="https://via.placeholder.com/140x165"> -->
-							<% const altImage = trimItemName(name=individual_item.item_name) ; %>
-							<img alt="<%= 'Image for ' + altImage %>" src="<%= IMG_DIR_FOR_WEB + individual_item.imageurl %>" width=140 height=165 />
+							
+							
+							<% if (individual_item.imageurl != "" ) {%>
+								<img src="<%= IMG_DIR_FOR_WEB + individual_item.imageurl %>" width=140 height=165 />
+							<% } else { %>
+								<% const altImage = trimItemName(name=individual_item.item_name) ; %>
+								<img alt="<%= 'Image for ' + altImage %>" src="<%= IMG_DIR_FOR_WEB %>70x70.png" width=70 height=70 />
+								<!-- <img src="https://via.placeholder.com/70x70" /> -->
+								<!-- https://via.placeholder.com/70x70 -->
+							<% } %>
+
+							
 						</div>
 						<div>
 							
@@ -364,9 +382,16 @@
 				<div class="col-lg-6">
 				<div class="product-style two mb-lg-0">
 					<div>
-						<!-- <img alt="img" src="https://via.placeholder.com/140x165"> -->
-						<% const altImage = trimItemName(name=individual_item.item_name) ; %>
-						<img alt="<%= 'Image for ' + altImage  %>" src="<%= IMG_DIR_FOR_WEB + individual_item.imageurl %>" width=140 height=165 />
+						
+						<% if (individual_item.imageurl != "" ) {%>
+							<img src="<%= IMG_DIR_FOR_WEB + individual_item.imageurl %>" width=140 height=165 />
+						<% } else { %>
+							<% const altImage = trimItemName(name=individual_item.item_name) ; %>
+							<img alt="<%= 'Image for ' + altImage %>" src="<%= IMG_DIR_FOR_WEB %>70x70.png" width=70 height=70 />
+							<!-- <img src="https://via.placeholder.com/70x70" /> -->
+							<!-- https://via.placeholder.com/70x70 -->
+						<% } %>
+						
 					</div>
 					<div>
 					<a href="/product-details/<%= individual_item.category_webid %>">
@@ -400,9 +425,15 @@
 				<div class="col-lg-6">
 				<div class="product-style two">
 					<div>
-						<!-- <img alt="img" src="https://via.placeholder.com/140x165"> -->
-						<% const altImage = trimItemName(name=individual_item.item_name) ; %>
-						<img alt="<%= 'Image for ' + altImage %>" src="<%= IMG_DIR_FOR_WEB + individual_item.imageurl %>" width=140 height=165 />
+						
+						<% if (individual_item.imageurl != "" ) {%>
+							<img src="<%= IMG_DIR_FOR_WEB + individual_item.imageurl %>" width=140 height=165 />
+						<% } else { %>
+							<% const altImage = trimItemName(name=individual_item.item_name) ; %>
+							<img alt="<%= 'Image for ' + altImage %>" src="<%= IMG_DIR_FOR_WEB %>70x70.png" width=70 height=70 />
+							<!-- <img src="https://via.placeholder.com/70x70" /> -->
+							<!-- https://via.placeholder.com/70x70 -->
+						<% } %>
 					</div>
 					<div>
 					<a href="/product-details/<%= individual_item.category_webid %>">
@@ -436,9 +467,16 @@
 				<div class="col-lg-6">
 					<div class="product-style two">
 						<div>
-							<!-- <img alt="img" src="https://via.placeholder.com/140x165"> -->
-							<% const altImage = trimItemName(name=individual_item.item_name) ; %>
-							<img alt="<%=  'Image for ' + altImage %>" src="<%= IMG_DIR_FOR_WEB + individual_item.imageurl %>" width=140 height=165 />
+
+							<% if (individual_item.imageurl != "" ) {%>
+								<img src="<%= IMG_DIR_FOR_WEB + individual_item.imageurl %>" width=140 height=165 />
+							<% } else { %>
+								<% const altImage = trimItemName(name=individual_item.item_name) ; %>
+								<img alt="<%= 'Image for ' + altImage %>" src="<%= IMG_DIR_FOR_WEB %>70x70.png" width=70 height=70 />
+								<!-- <img src="https://via.placeholder.com/70x70" /> -->
+								<!-- https://via.placeholder.com/70x70 -->
+							<% } %>
+
 						</div>
 					<div>
 					<a href="/product-details/<%= individual_item.category_webid %>">
@@ -477,7 +515,7 @@
 <section class="gap popular-occasion">
 <div class="container">
 	<div class="heading">
-	<img alt="heading" src="assets/img/heading.png">
+	<img alt="heading" src="/assets/img/heading.png">
 	<h2>Popular Occasion Themes</h2>
 	<p>Whats trending with our party themes</p>
 	</div>
@@ -561,7 +599,8 @@
 			<div class="row align-items-center">
 				<div class="col-lg-6">
 				<div class="theme-img">
-					<img alt="theme-img" src="https://via.placeholder.com/440x466">
+					<img alt="theme-img" src="<%= IMG_DIR_FOR_WEB %>440x466.png" width=440 height=466 />
+					<!-- <img alt="theme-img" src="https://via.placeholder.com/440x466"> -->
 				</div>
 				</div>
 				<div class="col-lg-6">
@@ -576,7 +615,7 @@
 						<% var individual_item = list_of_items[i] %>
 						
 						<% themeTotal += parseFloat(individual_item.unitPrice); %>
-						<li><img alt="chak" src="assets/img/chak.png"><%= individual_item.item_name %></li>
+						<li><img alt="chak" src="/assets/img/chak.png"><%= individual_item.item_name %></li>
 						<% } %>
 					</ul>
 					<div class="d-flex align-items-center justify-content-between">
@@ -602,7 +641,9 @@
 			<div class="row align-items-center">
 				<div class="col-lg-6">
 				<div class="theme-img">
-					<img alt="theme-img" src="https://via.placeholder.com/440x466">
+					
+					<img alt="theme-img" src="<%= IMG_DIR_FOR_WEB %>440x466.png" width=440 height=466 />
+					<!-- <img alt="theme-img" src="https://via.placeholder.com/440x466"> -->
 				</div>
 				</div>
 				<div class="col-lg-6">
@@ -616,7 +657,7 @@
 					<% for (var i = 0; i < list_of_items.length/2; i++) { %>
 					<% var individual_item = list_of_items[i] ;  %>
 					<% themeTotal += parseFloat(individual_item.unitPrice); %>
-					<li><img alt="chak" src="assets/img/chak.png"><%= individual_item.item_name %></li>
+					<li><img alt="chak" src="/assets/img/chak.png"><%= individual_item.item_name %></li>
 					<% } %>
 					</ul>
 					<div class="d-flex align-items-center justify-content-between">
@@ -642,7 +683,9 @@
 			<div class="row align-items-center">
 				<div class="col-lg-6">
 				<div class="theme-img">
-					<img alt="theme-img" src="https://via.placeholder.com/440x466">
+					
+					<img alt="theme-img" src="<%= IMG_DIR_FOR_WEB %>440x466.png" width=440 height=466 />
+					<!-- <img alt="theme-img" src="https://via.placeholder.com/440x466"> -->
 				</div>
 				</div>
 				<div class="col-lg-6">
@@ -655,7 +698,7 @@
 						<% for (var i = 0; i < list_of_items.length/2; i++) { %>
 							<% var individual_item = list_of_items[i] ;  %>
 							<% themeTotal += parseFloat(individual_item.unitPrice) ; %>
-							<li><img alt="chak" src="assets/img/chak.png"><%= individual_item.item_name %></li>
+							<li><img alt="chak" src="/assets/img/chak.png"><%= individual_item.item_name %></li>
 						<% } %>
 					</ul>
 					<div class="d-flex align-items-center justify-content-between">
@@ -681,7 +724,9 @@
 			<div class="row align-items-center">
 				<div class="col-lg-6">
 				<div class="theme-img">
-					<img alt="theme-img" src="https://via.placeholder.com/440x466">
+					
+					<img alt="theme-img" src="<%= IMG_DIR_FOR_WEB %>440x466.png" width=440 height=466 />
+					<!-- <img alt="theme-img" src="https://via.placeholder.com/440x466"> -->
 				</div>
 				</div>
 				<div class="col-lg-6">
@@ -694,7 +739,7 @@
 						<% for (var i = 0; i < list_of_items.length/2; i++) { %>
 							<% var individual_item = list_of_items[i] ;  %>
 							<% themeTotal += parseFloat(individual_item.unitPrice) ; %>
-							<li><img alt="chak" src="assets/img/chak.png"><%= individual_item.item_name %></li>
+							<li><img alt="chak" src="/assets/img/chak.png"><%= individual_item.item_name %></li>
 						<% } %>
 					</ul>
 					<div class="d-flex align-items-center justify-content-between">
@@ -732,7 +777,7 @@
 			<% var customer_feedback = JSON.parse(JSON.stringify( customers_feedback[j] )) ; %>
 			<div class="col-lg-12 item">
 				<div class="customer-feedback">
-					<i><img class="quote" alt="quote" src="assets/img/quote.png"></i>
+					<i><img class="quote" alt="quote" src="/assets/img/quote.png"></i>
 					<p><%= customer_feedback["comments"] %></p>
 					<h4><%= customer_feedback["fullname"] %></h4>
 					<span><%= customer_feedback["date"] %></span>
