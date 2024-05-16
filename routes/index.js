@@ -159,6 +159,7 @@ module.exports = () => {
                     category_items: category_items,
                     userCart: userCart,
                     user:user,
+                    IMG_DIR_FOR_WEB : request.session.IMG_DIR_FOR_WEB,
                     category: decode(category.category_name),
                     csrfToken: request.csrfToken(),
                     decode: decode,

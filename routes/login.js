@@ -109,6 +109,7 @@ module.exports = () => {
             template: 'login', 
             userCart: userCart,
             csrfToken: request.csrfToken(),
+            IMG_DIR_FOR_WEB : request.session.IMG_DIR_FOR_WEB,
             categories: categories,
             user: user,
             decode:decode,
