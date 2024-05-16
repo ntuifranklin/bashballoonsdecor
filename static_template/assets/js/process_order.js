@@ -37,9 +37,8 @@ $(document).ready(function() {
               <p>${data}</p>
               <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>`;
-            //disable submit button
-            $("#orderCheckoutSubmitButton").prop("disabled",true); 
-            //disable the table that shows items
+            
+            //disable the table that
             $("#checkoutTableListItems").remove();
             //Then show success message
             $(`#processOrderResult`).html(successHtml);
