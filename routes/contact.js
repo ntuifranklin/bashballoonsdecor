@@ -45,6 +45,7 @@ module.exports = () => {
             template: 'contact',
             csrfToken: request.csrfToken(),
             userCart: userCart,
+            IMG_DIR_FOR_WEB : request.session.IMG_DIR_FOR_WEB,
             user:user,
             categories: categories,
             decode:decode,

@@ -122,8 +122,16 @@
 									<% var item = JSON.parse(JSON.stringify(userCart[itemKey])) ;%>
 									<% var itemDetails = JSON.parse(JSON.stringify(item["itemDetails"])) ; %>
 									<li class="d-flex align-items-center position-relative">
+										
+		
 										<div class="p-img light-bg">
-										<img alt="img" src="https://via.placeholder.com/75x75">
+											
+											<% if (itemDetails.imageurl != "" ) {%>
+												<img src="<%= IMG_DIR_FOR_WEB + itemDetails.imageurl %>" width=75 height=75 />
+											<% } else { %>
+												<img src="<%= IMG_DIR_FOR_WEB %>75x75.png" width=75 height=75 />
+												<!-- <img src="https://via.placeholder.com/75x75" /> -->
+											<% } %>
 										</div>
 				
 										<div class="p-data">

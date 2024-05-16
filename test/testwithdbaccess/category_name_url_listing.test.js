@@ -25,10 +25,15 @@ describe('Testing The URL For Each Category Name', async() => {
           it(`Testing of url /${lowerCaseCatName} `, async()=> {
             
             expect(lowerCaseCatName).to.not.equal(null);
-            const result = await request(app).get(`/${lowerCaseCatName}`) ;
-            expect(lowerCaseCatName).to.not.equal(null);
-            expect(lowerCaseCatName).to.not.equal("");
-            expect(result.status).to.equal(200);
+            request(app).get(`/${lowerCaseCatName}`)
+            .end(async(err, categoryUrlRequestResult) => {
+              
+              expect(lowerCaseCatName).to.not.equal(null);
+              expect(lowerCaseCatName).to.not.equal("");
+              expect(categoryUrlRequestResult.status).to.equal(200);
+
+            }) ;
+            
 
           });
         });

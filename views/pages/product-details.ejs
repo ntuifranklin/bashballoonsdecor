@@ -38,7 +38,8 @@ function trimItemName(name="",size=20) {
                         <% if (item.imageurl != "" ) {%>
                           <img src="<%= IMG_DIR_FOR_WEB + item.imageurl %>" width=55 height=59 />
                         <% } else { %>
-                          <img src="https://via.placeholder.com/55x59" />
+                          <img src="<%= IMG_DIR_FOR_WEB %>55x59.png" width=55 height=59 />
+                          <!-- <img src="https://via.placeholder.com/55x59" /> -->
                           <!-- https://via.placeholder.com/195x210 -->
                         <% } %>
 
@@ -65,7 +66,8 @@ function trimItemName(name="",size=20) {
                 <% if (item.imageurl != "" ) {%>
                   <img src="<%= IMG_DIR_FOR_WEB + item.imageurl %>" width=384 height=320 />
                 <% } else { %>
-                  <img src="https://via.placeholder.com/384x320" />
+                  <img src="<%= IMG_DIR_FOR_WEB %>384x320.png" width=384 height=320 />
+                  <!-- <img src="https://via.placeholder.com/384x320" /> -->
                   <!-- https://via.placeholder.com/384x320 -->
                 <% } %>
                
@@ -327,7 +329,8 @@ function trimItemName(name="",size=20) {
               <% if (similar_item.imageurl != "" ) {%>
                 <img src="<%= IMG_DIR_FOR_WEB + similar_item.imageurl %>" width=110 height=118 />
               <% } else { %>
-                <img src="https://via.placeholder.com/110x118" />
+                <img src="<%= IMG_DIR_FOR_WEB %>110x118.png" width=110 height=118 />
+                <!-- <img src="https://via.placeholder.com/110x118" /> -->
                 <!-- https://via.placeholder.com/195x210 -->
               <% } %>
               <% const trimSimilarName = trimItemName(name=decode(similar_item.item_name)) %>
