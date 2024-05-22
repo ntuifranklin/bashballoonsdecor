@@ -9,7 +9,9 @@ const template_folder = 'static_template';
 const routes = require('./routes');
 
 const app = express();
-
+// for server ip :
+const ip = require("ip");
+const SERVER_IP =  ip.address() ;
 
 app.use(express.json());
 
@@ -21,7 +23,7 @@ require('dotenv').config();
 const {session_database_options} = require('./sessionmanagement/session') ;
 const cookieParser = require('cookie-parser');
 const {getCategories,getCategoriesItems} = require('./database/controllers/database');
-const {isTestEnvironment} = require('./utilities/functions');
+const {isTestEnvironment,isTestEnvUpgraded} = require('./utilities/functions');
 
 
 /* File upload  */
@@ -32,15 +34,16 @@ app.use(fileUpload({
 
 /* dynamically detect the folder we are running from,
  then select port accordingly */
-const current_dir = new String(__dirname) ;
-const PRODUCTION_ENV = process.env.BBD_LOCATION;
-const TEST_ENV = process.env.TEST_BBD_LOCATION;
-var PORT = process.env.TEST_SITE_PORT;
-var isTestingEnv = isTestEnvironment(root_dir=new String(__dirname));
+const TEST_PORT = process.env.TEST_SITE_PORT_UPGRADE;
+const PROD_PORT = process.env.PRODUCTION_SITE_PORT_UPGRADE;
+var PORT = TEST_PORT ;
+var isTestingEnv = isTestEnvUpgraded(current_dir=new String(__dirname));
 if ( !isTestingEnv) {
-    PORT = process.env.PRODUCTION_SITE_PORT;
+    PORT = PROD_PORT;
+    console.log(`Production port loaded: ${PORT}`);
 } else if (isTestingEnv) {
-    PORT = process.env.TEST_SITE_PORT;
+    PORT = TEST_PORT;
+    console.log(`Testing port loaded: ${PORT}`);
 } else {
     throw Error("We could neither detect testing or production environment");
 }
@@ -73,7 +76,7 @@ var sessionBasedOnEnvironment = {
 } ;
 
 /* If in a production environment, then use un secure cookies */
-if (PORT == process.env.PRODUCTION_SITE_PORT) {
+if (PORT == PROD_PORT) {
         
     app.set('trust proxy', 1) // trust first proxy
     dynamicCookie.secure = true; // serve secure cookies
@@ -236,7 +239,7 @@ app.use('/',routes());
 
 //exporting app for testing
 module.exports = app.listen(PORT, () => {
-    console.log(`Express server listening on port ${PORT}`);
+    console.log(`Express server listening on : ${SERVER_IP}:${PORT} `);
    
 });
 
