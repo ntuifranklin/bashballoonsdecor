@@ -3,7 +3,7 @@
 require('dotenv').config();
 const mysql2 = require('mysql2');
 
-const {isTestEnvironment} = require('../../utilities/functions');
+const {isTestEnvironment,isTestEnvUpgraded} = require('../../utilities/functions');
 
 const TEST_MARIADB_CONFIG = {
     host: process.env.DATABASE_HOST,
@@ -39,7 +39,7 @@ exports.PROD_MARIADB_CONFIG = PROD_MARIADB_CONFIG;
 
 var ENV_DB_CONFIG = {};
 
-const thisEnv = isTestEnvironment(__dirname);
+const thisEnv = isTestEnvUpgraded(current_dir=__dirname);
 //console.log(`Got environment testing is ${thisEnv}`);
 if (thisEnv == true )
     ENV_DB_CONFIG = TEST_MARIADB_CONFIG;
@@ -67,7 +67,7 @@ class MySQLDBConnector{
     /** Singleton design pattern */
     static async getPool(){
         if (MySQLDBConnector.pool === null){
-            MySQLDBConnector.pool = mysql2.createPool(this.config);
+            MySQLDBConnector.pool = mysql2.createPool(defaultMySQLDBConnectorConfig);
         } ;
         return MySQLDBConnector.pool;
     }
@@ -83,6 +83,9 @@ class MySQLDBConnector{
         \n\t with database parameters : ${JSON.stringify(MySQLDBConnector.config)}
         `);
         */
+        /* const c = JSON.stringify(defaultMySQLDBConnectorConfig);
+        console.log(`Connecting to database with config : ${c}`);
+        */
         var params = params;
         return new Promise(async(resolve, reject) => {
             
@@ -92,7 +95,7 @@ class MySQLDBConnector{
             if (params !== null && params.length != 0){ 
                     
                 await pool.execute(query, params, (err, rows, fields) => {
-                    //console.log(`Executing query: ${query} with params: ${params}`);
+                    console.log(`Executing query: ${query} with params: ${params}`);
                     if (err) {
                         console.log(err);
                         reject(err);

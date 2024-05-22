@@ -23,6 +23,24 @@ function isTestEnvironment(root_dir=new String(__dirname)) {
 
 exports.isTestEnvironment = isTestEnvironment ;
 
+
+function isTestEnvUpgraded(current_dir=new String(__dirname)) {
+    
+    const PRODUCTION_ENV = new String(process.env.PRODUCTION_FOLDER);
+    const TEST_ENV = new String(process.env.TEST_FOLDER);
+    var isTesting = null ;
+    if ( current_dir.includes(PRODUCTION_ENV) ) {
+        //console.log("We are in production");
+        isTesting = false ;
+    } else if (current_dir.includes(TEST_ENV) ) {
+        isTesting = true ;
+        //console.log("We are in testing");
+    }
+
+    return isTesting ;
+} ;
+exports.isTestEnvUpgraded = isTestEnvUpgraded ;
+
 const VALID_MESSAGE_REGEXP = /^[a-zA-Z0-9_.\, ]+$/ ;
 exports.VALID_MESSAGE_REGEXP = VALID_MESSAGE_REGEXP ;
 
