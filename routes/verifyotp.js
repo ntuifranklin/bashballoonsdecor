@@ -46,7 +46,7 @@ module.exports = () => {
                 // Verify OTP
                 const verify_otp_query = "SELECT * FROM otp WHERE user_email = ? AND otp_code = ? AND expiration_time >= NOW()";
                 const otp_results = await mysqlDbConnector.execute(verify_otp_query, [user_email, otp]) ;
-                const delete_otp_query = "DELETE FROM otp WHERE user_email = ?";
+                const delete_otp_query = "DELETE FROM otp WHERE user_email = ? ";
                 const delete_old_otp = await mysqlDbConnector.execute(delete_otp_query, [user_email]);
                 request.session.user = {
                     email: user_email,
@@ -66,7 +66,8 @@ module.exports = () => {
                 console.log(err);
                 response.status(400).send({
                     message:'error',
-                    responseText:'An Error Occured'
+                    responseText:`An Error Occured while verifying the one time 
+                    password for the user_email: ${user_email}`
                 });
                 return ;
             }

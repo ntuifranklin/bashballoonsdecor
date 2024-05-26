@@ -47,18 +47,24 @@ function sendOTP(email, otp) {
                 </body>
             </html>`,
         };
+        try{
 
-        var emailSending = new Email();
-        await emailSending.sendEmail(mailOptions.to, mailOptions.subject, mailOptions.html).
-        then(
-            (result) => {
-                console.log(`OTP Email sent: ${JSON.stringify(result)}`);
-                resolve(result);
-            }
-        ).catch(err => {
-            console.log(`Error sending OTP email: ${err}`);
-            reject(err);
-        });
+            var emailSending = new Email();
+            emailSending.sendEmail(mailOptions.to, mailOptions.subject, mailOptions.html).
+            then(
+                (result) => {
+                    console.log(`OTP Email sent: ${JSON.stringify(result)}`);
+                    resolve(result);
+                }
+            ).catch(err => {
+                console.log(`Error sending OTP email: ${err}`);
+                reject(err);
+            });
+        } catch(err) {
+            console.log(`Error sending email: ${err.message}`);
+
+        }
+        
     });
 };
 

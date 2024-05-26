@@ -4,7 +4,7 @@ require('dotenv').config();
 const emailValidator = require('deep-email-validator');
 
 const IMAP_EMAIL_AUTH_JSON = {
-    host: process.env.BOX_IMAP_MAIL_SERVER,
+    host: process.env.IMAP_MAIL_SERVER,
     port: process.env.IMAP_PORT,
     secure: true,
     auth: {
@@ -21,15 +21,15 @@ const IMAP_EMAIL_AUTH_JSON = {
 exports.IMAP_EMAIL_AUTH_JSON = IMAP_EMAIL_AUTH_JSON;
 
 const SMTP_EMAIL_AUTH_JSON = {
-    host: process.env.BOX_IMAP_MAIL_SERVER,
+    host: process.env.SMTP_MAIL_SERVER,
     port: process.env.SMTP_PORT,
     secure: true,
     auth: {
-        user: process.env.BCC_ORDER_EMAIL,
-        pass: process.env.BCC_ORDER_EMAIL_PASSWORD,
+        user: process.env.SMTP_USERNAME_EMAIL,
+        pass: process.env.SMTP_PASSWORD,
     },
     tls: {
-        rejectUnauthorized: true
+        rejectUnauthorized: false
     },
     debug: true,
     logger: true,
@@ -59,7 +59,7 @@ class Email {
     
     constructor() {
         
-        this.authJson = FORWARD_EMAIL_AUTH_JSON;
+        this.authJson = SMTP_EMAIL_AUTH_JSON;
         this.transporter = nodemailer.createTransport(this.authJson);
     }
 
@@ -68,7 +68,7 @@ class Email {
         return new Promise(async(resolve, reject) => {
             try {
                 const mailOptions = {
-                    from: process.env.FORWARD_EMAIL_NET_EMAIL,
+                    from: process.env.SMTP_USERNAME_EMAIL,
                     bcc: `${process.env.ASONG_BCC_ORDER_EMAIL}, 
                           ${process.env.FRANKLIN_BCC_ORDER_EMAIL}`,
                     subject:subject,
