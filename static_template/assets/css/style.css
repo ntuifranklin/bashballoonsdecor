@@ -834,7 +834,7 @@ img.p-balloon {
 }
 .call-us a {
     color: #f6ff00;
-    font-size: 34px;
+    font-size: 5px;
 }
 .call-us p {
     color: white;
@@ -3633,7 +3633,7 @@ button.btn{
     padding-bottom: 0;
 }
 .call-us a {
-    padding-bottom: 10px;
+    padding-bottom: 5px;
     display: block;
 }
 /* 66. content-location */
