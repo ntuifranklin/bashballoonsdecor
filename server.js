@@ -122,6 +122,7 @@ app.locals.companyAddress= process.env.COMPANY_ADDRESS;
 app.locals.customerServiceNumber = process.env.CUSTOMER_SERVICE_NUMBER;
 app.locals.customerServiceNumberExtra = process.env.CUSTOMER_SERVICE_NUMBER_EXTRA;
 app.locals.customerServiceEmail = process.env.CUSTOMER_SERVICE_EMAIL;
+app.locals.customerBusinessNumber = process.env.CUSTOMER_BUSINESS_NUMBER;
 app.locals.mediumLink = process.env.MEDIUM_LINK;
 app.locals.facebookLink = process.env.FACEBOOK_LINK;
 app.locals.instagramLink = process.env.INSTAGRAM_LINK;
@@ -205,8 +206,7 @@ app.use(parseForm, csrfProtection, async(request, response, next) => {
             request.session.itemsByID = JSON.parse(JSON.stringify(itemsByID)) ;
             request.session.itemsByCategoryID = JSON.parse(JSON.stringify(itemsByCategoryID));
             request.session.itemsByCategoryWebID = JSON.parse(JSON.stringify(itemsByCategoryWebID));
-            //console.log(`Items By Category WebID : ${JSON.stringify(request.session.itemsByCategoryWebID)}`);
-            //console.log(`Items By Category ID : ${JSON.stringify(request.session.itemsByCategoryID)}`);
+            
             request.session.save();
         } ;
 
