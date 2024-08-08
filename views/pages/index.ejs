@@ -4,6 +4,9 @@
 <% var all_items_array = JSON.parse(JSON.stringify(items_array)) ;%>
 <% //console.log(`On index page received categories : ${c}`) ;%>
 <% //console.log(`On index page received category_items : ${all_items_array}`) ;%>
+
+<% const imgItemWidth=360 ; %>
+<% const imgItemHeight=360 ; %>
 <%
 	
 	function trimItemName(name="",size=20) {
@@ -301,10 +304,10 @@
 					<div class="product-style two">
 						<div>
 							<% if (individual_item.imageurl != "" ) {%>
-								<img src="<%= IMG_DIR_FOR_WEB + individual_item.imageurl %>"  />
+								<img src="<%= IMG_DIR_FOR_WEB + individual_item.imageurl %>" width="<%= imgItemWidth %>" height="<%= imgItemHeight %>"/>
 							<% } else { %>
 								<% const altImage = trimItemName(name=individual_item.item_name) ; %>
-								<img alt="<%= altImage %>" src="<%= IMG_DIR_FOR_WEB %>70x70.png" width=70 height=70 />
+								<img alt="<%= altImage %>" src="<%= IMG_DIR_FOR_WEB %><%= imgItemWidth %>x<%= imgItemHeight %>.png" width="<%= imgItemWidth %>" height="<%= imgItemHeight %>" />
 								<!-- <img src="https://via.placeholder.com/70x70" /> -->
 								<!-- https://via.placeholder.com/70x70 -->
 							<% } %>
@@ -341,10 +344,10 @@
 							
 							
 							<% if (individual_item.imageurl != "" ) {%>
-								<img src="<%= IMG_DIR_FOR_WEB + individual_item.imageurl %>" width=140 height=165 />
+								<img src="<%= IMG_DIR_FOR_WEB + individual_item.imageurl %>" width="<%= imgItemWidth %>" height="<%= imgItemHeight %>" />
 							<% } else { %>
 								<% const altImage = trimItemName(name=individual_item.item_name) ; %>
-								<img alt="<%= altImage %>" src="<%= IMG_DIR_FOR_WEB %>70x70.png" width=70 height=70 />
+								<img alt="<%= altImage %>" src="<%= IMG_DIR_FOR_WEB %><%= imgItemWidth %>x<%= imgItemHeight %>.png" width="<%= imgItemWidth %>" height="<%= imgItemHeight %>" />
 								<!-- <img src="https://via.placeholder.com/70x70" /> -->
 								<!-- https://via.placeholder.com/70x70 -->
 							<% } %>
@@ -385,10 +388,10 @@
 					<div>
 						
 						<% if (individual_item.imageurl != "" ) {%>
-							<img src="<%= IMG_DIR_FOR_WEB + individual_item.imageurl %>" width=140 height=165 />
+							<img src="<%= IMG_DIR_FOR_WEB + individual_item.imageurl %>" width="<%= imgItemWidth %>" height="<%= imgItemHeight %>" />
 						<% } else { %>
 							<% const altImage = trimItemName(name=individual_item.item_name) ; %>
-							<img alt="<%=  altImage %>" src="<%= IMG_DIR_FOR_WEB %>70x70.png" width=70 height=70 />
+							<img alt="<%= altImage %>" src="<%= IMG_DIR_FOR_WEB %><%= imgItemWidth %>x<%= imgItemHeight %>.png" width="<%= imgItemWidth %>" height="<%= imgItemHeight %>" />
 							<!-- <img src="https://via.placeholder.com/70x70" /> -->
 							<!-- https://via.placeholder.com/70x70 -->
 						<% } %>
@@ -428,10 +431,10 @@
 					<div>
 						
 						<% if (individual_item.imageurl != "" ) {%>
-							<img src="<%= IMG_DIR_FOR_WEB + individual_item.imageurl %>" width=140 height=165 />
+							<img src="<%= IMG_DIR_FOR_WEB + individual_item.imageurl %>" width="<%= imgItemWidth %>" height="<%= imgItemHeight %>" />
 						<% } else { %>
 							<% const altImage = trimItemName(name=individual_item.item_name) ; %>
-							<img alt="<%= altImage %>" src="<%= IMG_DIR_FOR_WEB %>70x70.png" width=70 height=70 />
+							<img alt="<%= altImage %>" src="<%= IMG_DIR_FOR_WEB %><%= imgItemWidth %>x<%= imgItemHeight %>.png" width="<%= imgItemWidth %>" height="<%= imgItemHeight %>" />
 							<!-- <img src="https://via.placeholder.com/70x70" /> -->
 							<!-- https://via.placeholder.com/70x70 -->
 						<% } %>
@@ -470,10 +473,10 @@
 						<div>
 
 							<% if (individual_item.imageurl != "" ) {%>
-								<img src="<%= IMG_DIR_FOR_WEB + individual_item.imageurl %>" width=140 height=165 />
+								<img src="<%= IMG_DIR_FOR_WEB + individual_item.imageurl %>" width="<%= imgItemWidth %>" height="<%= imgItemHeight %>" />
 							<% } else { %>
 								<% const altImage = trimItemName(name=individual_item.item_name) ; %>
-								<img alt="<%= altImage %>" src="<%= IMG_DIR_FOR_WEB %>70x70.png" width=70 height=70 />
+								<img alt="<%= altImage %>" src="<%= IMG_DIR_FOR_WEB %><%= imgItemWidth %>x<%= imgItemHeight %>.png" width="<%= imgItemWidth %>" height="<%= imgItemHeight %>" />
 								<!-- <img src="https://via.placeholder.com/70x70" /> -->
 								<!-- https://via.placeholder.com/70x70 -->
 							<% } %>
