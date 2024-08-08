@@ -58,8 +58,9 @@ module.exports = () => {
         var loggedInUser = {} ;
 
         //check if user is logged in
-        if (request.session.user && request.session.user != {}) {
-            loggedInUser = JSON.parse(JSON.stringify(request.session.user)) ;
+        if ("user" in request.session) {
+            loggedInUser = JSON.parse(JSON.stringify(request.session["user"])) ;
+            console.log(`logged in user: ${loggedInUser}`);
         } else {
             response.status(401).send(`Go Away !!!`);
             return ;
