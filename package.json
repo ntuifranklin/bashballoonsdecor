@@ -10,7 +10,7 @@
   "scripts": {
     "test": "mocha --timeout 100000 --recursive --exit",
     "start": "node NODE_ENV=production server.js",
-    "dev": "nodemon -e js,ejs,html -w . -w public -w views -w routes -w database server.js"
+    "dev": "nodemon -e js,ejs,html -w . -w public -w views -w routes -w database NODE_ENV=development server.js"
   },
   "author": "Franklin Nkokam Ngongang",
   "license": "ISC",
