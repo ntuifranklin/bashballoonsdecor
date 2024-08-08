@@ -49,7 +49,7 @@ module.exports = () => {
                 const delete_otp_query = "DELETE FROM otp WHERE user_email = ? ";
                 const delete_old_otp = await mysqlDbConnector.execute(delete_otp_query, [user_email]);
                 console.log(`otp success user_email: ${user_email}`);
-                request.session["user"] = {
+                request.session.user = {
                     email: `${user_email}`,
                     password: null,
                     authenticated: true
