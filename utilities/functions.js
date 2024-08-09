@@ -9,12 +9,12 @@ require('dotenv').config();
 function isTestEnvironment(root_dir=new String(__dirname)) {
    
     const current_dir = root_dir;
-    const PRODUCTION_ENV = new String(process.env.BBD_LOCATION);
-    const TEST_ENV = new String(process.env.TEST_BBD_LOCATION);
+    const CURRENT_ENV = new String(process.env.NODE_ENV);
+    const PROD_ENV = "production";
     var isTesting = null ;
-    if ( current_dir.includes(PRODUCTION_ENV) ) {
+    if ( CURRENT_ENV == PROD_ENV ) {
         isTesting = false ;
-    } else if (current_dir.includes(TEST_ENV) ) {
+    } else {
         isTesting = true ;
     }
 
@@ -25,19 +25,7 @@ exports.isTestEnvironment = isTestEnvironment ;
 
 
 function isTestEnvUpgraded(current_dir=new String(__dirname)) {
-    
-    const PRODUCTION_ENV = new String(process.env.PRODUCTION_FOLDER);
-    const TEST_ENV = new String(process.env.TEST_FOLDER);
-    var isTesting = null ;
-    if ( current_dir.includes(PRODUCTION_ENV) ) {
-        //console.log("We are in production");
-        isTesting = false ;
-    } else if (current_dir.includes(TEST_ENV) ) {
-        isTesting = true ;
-        //console.log("We are in testing");
-    }
-
-    return isTesting ;
+    return isTestEnvironment(root_dir=current_dir) ;
 } ;
 exports.isTestEnvUpgraded = isTestEnvUpgraded ;
 

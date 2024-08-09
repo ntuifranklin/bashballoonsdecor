@@ -6,6 +6,7 @@ processName="$1"
 pm2 stop $processName
 pm2 delete $processName
 
+# clear npm cache for clean slate
 npm cache clear --force
 npm install .
   
