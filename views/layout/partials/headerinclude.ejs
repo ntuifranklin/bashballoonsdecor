@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zxx">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,36 +23,59 @@
 		
 	<meta property="og:determiner" content="The" />
 	<meta property="og:locale" content="en_US" />
-	<meta property="og:site_name" content="BashBalloonsRentals" />
+	<meta name="author" content="<%= companyBusinessName %>">
+	<meta property="og:site_name" content="<%= companyBusinessName %>" />
+	<meta name="robots" content="index, follow">
+	<meta property="og:url" content="<%= fullUrl %>">
+	<link rel="canonical" href="<%= fullUrl %>">
 
    <% if ( typeof csrfToken !== 'undefined'  ) { %>
    	<meta name="csrf-token" content="<%= csrfToken %>">
    <% } %>
 
-   <!-- What SEO can we do here -->
    <% 
-	
    //trimming should be to 155 characters maximum 
    function trimSeoDesc(name="",size=155) {
 	const n = new String(name);
 	if (n.length >= size )
 		return n.slice(0,(size-4)) + " ..." ;
-	
 	return n ;
 
     }
  
    %>
+   <% //check product-details page in routes folder for more details about seo %>
    <% if ( typeof seoObject != "undefined") { %>
-		<% if ("description" in seoObject) { %>
-			<% const truncatedDescription = trimSeoDesc(seoObject["description"]);  %>
-			<meta name="description" content="<%= truncatedDescription %>"/>
-		<% } %>
+	<% if ("description" in seoObject) { %>
+		<% const truncatedDescription = trimSeoDesc(seoObject["description"]);  %>
+		<meta name="description" content="<%= truncatedDescription %>"/>
+		<meta property="og:description" content="<%= truncatedDescription %>.">
+		<meta property="twitter:description" content="<%= truncatedDescription %>.">
 		
-		<% if ("title" in seoObject) { %>
-			<% const truncatedTitle = trimSeoDesc(seoObject["title"]);  %>
-			<meta property="og:title" content="<%= truncatedTitle %>"/>
-		<% } %>
+	<% } %>
+	
+	<% if ("title" in seoObject) { %>
+		<% const truncatedTitle = trimSeoDesc(seoObject["title"]);  %>
+		<meta name="title" content="<%= truncatedTitle %>"/>
+		<meta property="og:title" content="<%= truncatedTitle %>"/>
+		<meta property="twitter:title" content="<%= truncatedTitle %>"/>
+		<meta name="keywords" content="<%= truncatedTitle %>, party supplies, Bash Balloons Decor and Rentals, <%= companyBusinessName %>">
+	<% } %>
+
+	<% if("itemImageUrl" in seoObject) { %>
+		<% const itemImageUrl = seoObject["itemImageUrl"];  %>
+		<meta property="og:image" content="<%= IMG_DIR_FOR_WEB %><%= itemImageUrl %>">
+		<meta property="twitter:image" content="<%= IMG_DIR_FOR_WEB %><%= itemImageUrl %>">
+		<meta property="og:type" content="product">
+		<meta name="twitter:card" content="summary_large_image">
+	<% } %>
+	
+	<% if ("type" in seoObject) { %>
+		<% const pageSeoType = trimSeoDesc(seoObject["type"]);  %>
+		<meta property="og:type" content="<%= pageSeoType %>">
+	<% } else { %>
+		<meta property="og:type" content="website">
+	<% } %>
 
    <% } %>
  </head>
