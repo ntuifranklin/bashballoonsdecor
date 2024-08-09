@@ -129,9 +129,10 @@ module.exports = () => {
             if (categoryID in itemsByCategoryID) { 
                 category_items = itemsByCategoryID[categoryID];
                 const seoSiteLink = request.locals.seoSiteLink ;
+                /* the seo meta tag og:type is set to website by default in headerinclude.ejs. */
                 var seoObject = {
                     title: `Your ${humanFriendlyCategoryName} for your next party at ${seoSiteLink}`,
-                    description: `Checkout our list of ${humanFriendlyCategoryName} with ${seoSiteLink}`,
+                    description: `Checkout our list of ${humanFriendlyCategoryName} with ${seoSiteLink} for your event`,
                 }
                 response.status(200).render('layout',
                 {

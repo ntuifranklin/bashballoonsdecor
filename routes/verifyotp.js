@@ -48,8 +48,9 @@ module.exports = () => {
                 const otp_results = await mysqlDbConnector.execute(verify_otp_query, [user_email, otp]) ;
                 const delete_otp_query = "DELETE FROM otp WHERE user_email = ? ";
                 const delete_old_otp = await mysqlDbConnector.execute(delete_otp_query, [user_email]);
+                console.log(`otp success user_email: ${user_email}`);
                 request.session.user = {
-                    email: user_email,
+                    email: `${user_email}`,
                     password: null,
                     authenticated: true
                 } ;
@@ -61,7 +62,7 @@ module.exports = () => {
                 <a href="/admin">Click here to head to your dashboard</a>\n <br/>
                 or <br/>
                 <a href="/logout"> Click here to logout</a> \n<br>`);
-                return ;
+                
             } catch(err) {
                 console.log(err);
                 response.status(400).send({
@@ -69,7 +70,7 @@ module.exports = () => {
                     responseText:`An Error Occured while verifying the one time 
                     password for the user_email: ${user_email}`
                 });
-                return ;
+                
             }
                 
         

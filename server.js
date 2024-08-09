@@ -119,6 +119,7 @@ app.locals.siteName = process.env.SITENAME;
 app.locals.miniSiteName = process.env.MINI_SITENAME;
 app.locals.pageTitle = process.env.PAGETITLE;
 app.locals.companyAddress= process.env.COMPANY_ADDRESS;
+app.locals.companyBusinessName = process.env.COMPANY_BUSINESS_NAME;
 app.locals.customerServiceNumber = process.env.CUSTOMER_SERVICE_NUMBER;
 app.locals.customerServiceNumberExtra = process.env.CUSTOMER_SERVICE_NUMBER_EXTRA;
 /* app.locals.customerServiceEmail = process.env.CUSTOMER_SERVICE_EMAIL; */
@@ -151,6 +152,8 @@ const { exit } = require('process');
 const firewall = require('./utilities/firewall');
 app.use(firewall);
 app.use(parseForm, csrfProtection, async(request, response, next) => { 
+
+    
 
         var userCart = {} ;
             
@@ -229,8 +232,23 @@ app.use(parseForm, csrfProtection, async(request, response, next) => {
         request.session.IMG_DIR_FOR_WEB = IMG_DIR_FOR_WEB ;
         request.session.save();
         response.locals.csrfToken = request.csrfToken();
+        
+        
+        //need full url for SEO
+        
+        const protocol = request.protocol;
+        const host = request.hostname;
+        const url = request.originalUrl;
+        const port = PORT;
+        var fullUrl = '';
+        if (`${PORT}` != `80` )
+            fullUrl = `${protocol}://${host}:${port}${url}` ;
+        else
+            fullUrl = `${protocol}://${host}${url}` ;
+        app.locals.fullUrl = fullUrl ;
         request.locals = app.locals ;
-    
+        //console.log(`Full urls is ${fullUrl}`);
+
         return next();
 
 
