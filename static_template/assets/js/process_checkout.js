@@ -31,6 +31,7 @@ $(document).ready(function() {
             encode: true,
           }).done(function (data) {
             
+            console.log(`${JSON.stringify(data)}`);
             var successHtml = ` 
             <div class="alert alert-success alert-dismissible fade show" role="alert">
               <strong>Success!</strong> 

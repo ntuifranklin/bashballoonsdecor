@@ -4,13 +4,15 @@ const shopRoute = require('./shop');
 const checkoutRoute = require('./checkout');
 const f404Route = require('./f404');
 const cartRoute = require('./cart');
-const rentalItemsListRoute = require('./rental-items-list');
+//const rentalItemsListRoute = require('./rental-items-list');
 const contactRoute = require('./contact');
 const productDetailsRoute = require('./product-details');
 const adminRoute = require('./admin');
 const loginRoute = require('./login');
 const logoutRoute = require('./logout');
 const verifyOTPRoute = require('./verifyotp');
+const successPaymentRoute = require('./success-payment-route');
+
 const { ExpressValidator } = require('express-validator');
 const bodyParser = require('body-parser');
 var mysql2 = require('mysql2');
@@ -21,6 +23,18 @@ const {getCategoriesItems} = require('../database/controllers/database');
 
 const {decode, encode} = require('html-entities');
 
+const {
+    CHECKOUT_ROUTE,
+    CART_ROUTE,
+    CONTACT_ROUTE,
+    PRODUCT_DETAILS_ROUTE,
+    ADMIN_ROUTE,
+    LOGIN_ROUTE,
+    LOGOUT_ROUTE,
+    VERIFY_OTP_ROUTE,
+    F404_ROUTE,
+    SUCCESS_PAYMENT_ROUTE
+} = require('../utilities/routes_constant_names');
 require('dotenv').config();
 
 
@@ -72,16 +86,16 @@ module.exports = () => {
     });
     
     /* the routes below have to be here before the /:category_name route else things dont work properly */
-    router.use('/shop', shopRoute());
-    router.use('/checkout', checkoutRoute());
-    router.use('/cart', cartRoute());
-    router.use(['/rental-items-list'], rentalItemsListRoute());
-    router.use(['/contact','/contactus'], contactRoute());
-    router.use(['/product-details','/productdetails','/individual-items-details'], productDetailsRoute());
-    router.use(['/dashboard','/admin','/backend'], adminRoute());
-    router.use(['/login','/identify-your-self','/whoami'], loginRoute());
-    router.use(['/logout','/signout'], logoutRoute());
-    router.use(['/verifyotp','/verify-otp'], verifyOTPRoute());
+    //router.use('/shop', shopRoute());
+    router.use(`/${CHECKOUT_ROUTE}`, checkoutRoute());
+    router.use(`/${CART_ROUTE}`, cartRoute());
+    router.use(`/${CONTACT_ROUTE}`, contactRoute());
+    router.use(`/${PRODUCT_DETAILS_ROUTE}`, productDetailsRoute());
+    router.use(`/${ADMIN_ROUTE}`, adminRoute());
+    router.use(`/${LOGIN_ROUTE}`, loginRoute());
+    router.use(`/${LOGOUT_ROUTE}`, logoutRoute());
+    router.use(`/${VERIFY_OTP_ROUTE}`, verifyOTPRoute());
+    router.use(`/${SUCCESS_PAYMENT_ROUTE}`,successPaymentRoute());
     
     /* this route allows someone to search for a list of items based on an item category name */
     router.get('/:category_name',csrfProtection, async(request, response) => { 
@@ -175,7 +189,7 @@ module.exports = () => {
 
     /* This should be the last route to catch errors */
     
-    router.use(['/*','/f404'], f404Route());
+    router.use(['/*',`${F404_ROUTE}`], f404Route());
     
     return router;
 };

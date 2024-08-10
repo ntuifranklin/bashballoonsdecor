@@ -29,7 +29,7 @@ function updateCart(productID, source='', htmlID='#', alertIndex='', action='a')
             'action':action,
           },
     }).done((data) => {
-      //console.log(`Success data received : ${JSON.stringify(data)}`);
+      console.log(`Success data received : ${JSON.stringify(data)}`);
       var successHtml = `
       <div class="alert alert-success alert-dismissible fade show" role="alert">
         <strong>Success!</strong>  ${data.responseText}.

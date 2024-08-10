@@ -25,7 +25,7 @@ const jqueryCode = fs.readFileSync(`${process.env.BOOTSTRAP_JS_FILE}`).toString(
 const bootstrapCode = fs.readFileSync(`${process.env.BOOTSTRAP_CSS_FILE}`).toString(); 
 const {Email,isEmailValid,MAX_EMAIL_ADDR_LENGTH,VALID_EMAIL_REGEXP} = require('../utilities/email');
 const {Fisl, MAX_BUFFER_SIZE,DEFAULT_BUFFER_TYPE} = require('../utilities/Fisl');
-
+const stripe_payment_object = require("stripe")(`${process.env.BASH_BALLOONS_STRIPE_SECRET_KEY}`);
 const {
     safeAgainstSqlAndShellInjection,
     isValidPhoneNumber,
@@ -43,6 +43,12 @@ const checkOutValidation = [
     check('phone').isLength({ min: 5, max:10 }).withMessage('Please enter your phone number.'),
     check('order_note').isLength({ min: 5, max:MAX_BUFFER_SIZE }).withMessage('Please enter your order note.'),
 ];
+
+
+const {
+    CHECKOUT_ROUTE,
+    SUCCESS_PAYMENT_ROUTE
+} = require('../utilities/routes_constant_names');
 module.exports = () => {
     router.post('/', checkOutValidation,csrfProtection, async (request, response) => {
          
@@ -147,7 +153,18 @@ module.exports = () => {
             //console.log(`bad email validation test`);
             return ;
         };
-        
+         //============================================
+        /* Begin sanitize from data here */
+        const formerrors = validationResult(request);
+        if (!formerrors.isEmpty()) {
+            const err_message = formerrors.array().map(i => i.msg).join('<br>');
+            //console.log(`Error processing form: ${JSON.stringify(formerrors.array(), null, 4)}`);
+            response.status(400).send(`${err_message}`); 
+            return ;
+            
+        };
+        /* End Sanitize form data  */
+        //============================================
         //check if any bad characters are within the order_note
        
         const validCompleteName = isValidTextMessage(completename) && safeAgainstSqlAndShellInjection(completename);
@@ -191,18 +208,7 @@ module.exports = () => {
             response.status(400).send(`Please check the order note`); 
            return ;
         } ;
-        //============================================
-        /* Begin sanitize from data here */
-        const formerrors = validationResult(request);
-        if (!formerrors.isEmpty()) {
-            const err_message = formerrors.array().map(i => i.msg).join('<br>');
-            //console.log(`Error processing form: ${JSON.stringify(formerrors.array(), null, 4)}`);
-            response.status(400).send(`${err_message}`); 
-            return ;
-            
-        };
-        /* End Sanitize form data  */
-        //============================================
+       
 
         /* Loop through the cart and:
             - create arrays that will be inserted into the database in the following order : 
@@ -263,7 +269,9 @@ module.exports = () => {
             
             transactionData.push(orderInsertArray);
             transactionQueries.push(orderInsertSql);
-            
+
+            //List of items
+            let productLineItems = [] ;
             //console.log(`order : oneOrderItemInsertSQL : ${oneOrderItemInsertSQL.length} : ${oneOrderItemInsertData.length}`);
 
             var emailOrderBodyHtml = "" ;
@@ -282,8 +290,8 @@ module.exports = () => {
 
                 emailOrderBodyHtml += `\t\t\t\t<td>${itemDetails.item_name}</td>\n`;
                 emailOrderBodyHtml += `\t\t\t\t<td>${individualItem.quantity}</td>\n`;
-                emailOrderBodyHtml += `\t\t\t\t<td>${itemDetails.unitPrice}</td>\n`;
-                emailOrderBodyHtml += `\t\t\t\t<td>$${itemsSubTotal.toFixed(3)}</td>\n`;
+                emailOrderBodyHtml += `\t\t\t\t<td>${parseFloat(itemDetails.unitPrice).toFixed(2)}</td>\n`;
+                emailOrderBodyHtml += `\t\t\t\t<td>$${itemsSubTotal.toFixed(2)}</td>\n`;
                 emailOrderBodyHtml += `\t\t\t</tr>\n`;
                
                 var oneOrderItemInsertSQL = "INSERT INTO `order_category_items` VALUES(?, ?, ?, ?, ?, ?)";
@@ -292,27 +300,32 @@ module.exports = () => {
                     order_id,
                     itemDetails.category_id,
                     individualItem.quantity,
-                    itemDetails.unitPrice,
-                    itemsSubTotal
+                    parseFloat(itemDetails.unitPrice).toFixed(2),
+                    parseFloat(itemsSubTotal).toFixed(2)
                 ];
+                productLineItems.push({
+                    price_data:{
+                        currency: 'usd',
+                        product_data:{
+                            name:itemDetails.item_name
+                        },
+                        unit_amount: parseInt(parseFloat(itemDetails.unitPrice).toFixed(2)*100.0),
+                    },
+                    quantity:individualItem.quantity,
+                });
                 
                 transactionQueries.push(oneOrderItemInsertSQL);
                 transactionData.push(oneOrderItemInsertData);
-                //console.log(`one item : oneOrderItemInsertSQL : ${transactionQueries.length} : ${transactionData.length}`);
+               
             } ;
-            //emailOrderBodyHtml += "</table>";
-
-            /*
-            MySQLDBConnector.executeInTransactionMode(transactionQueries, transactionData);
-            */
-            //update grand total before starting transaction
-            orderInsertArray[3] = grandTotal ;
+           
+            orderInsertArray[3] = parseFloat(grandTotal).toFixed(2) ;
             con.execute('START TRANSACTION');
             
             for (var k = 0; k < transactionQueries.length; k++) {
                 var query = transactionQueries[k];
                 var data = transactionData[k];
-                console.log(`Executing query: ${query} with params: ${data}`);
+                //console.log(`Executing query: ${query} with params: ${data}`);
                 await con.execute(query, data, function (error, results, fields) {
                     if (error) {
                         console.log(error);
@@ -321,8 +334,28 @@ module.exports = () => {
                     } 
                 });
             }
+         
             
+            const protocol = request.protocol;
+            const host = request.hostname;
+            const originalUrl = request.originalUrl;
+            const port = request.locals.port;
+            var fullUrl = '';
+            if (`${port}` != `80` )
+                fullUrl = `${protocol}://${host}:${port}` ;
+            else
+                fullUrl = `${protocol}://${host}` ;
+            var successfullPaymentUrl = `${fullUrl}/${SUCCESS_PAYMENT_ROUTE}?session_id={CHECKOUT_SESSION_ID}`;
             
+            const session = await stripe_payment_object.checkout.sessions.create({
+                line_items: productLineItems,
+                mode: 'payment',
+                success_url: `${successfullPaymentUrl}`,
+                cancel_url: `${fullUrl}/${CHECKOUT_ROUTE}/`,
+            });
+
+            successfullPaymentUrl = `${fullUrl}/${SUCCESS_PAYMENT_ROUTE}?session_id=${session.id}`;
+            //console.log(`\n\n\nsuccessful payment url: ${successfullPaymentUrl} \n\n\n\n`);
             con.execute('COMMIT', function (error, results, fields) {
                 if (error) {
                     console.log(error);
@@ -330,6 +363,7 @@ module.exports = () => {
                     throw new Error(error);
                 } 
             });
+           
             
 
         } catch (error) {
@@ -402,19 +436,21 @@ module.exports = () => {
         emailSender.sendEmail(mailOptions.to, mailOptions.subject, mailOptions.html)
         .then(
             (result) => {
+                
                 /* update the cart in the locals variable */
                 request.session.userCart = {} ;
                 request.session.save();
+                response.redirect(`${successfullPaymentUrl}`);
                 //console.log(`Order Confirmation Email sent: ${JSON.stringify(result)}`);
-                response.status(200).send(`Order processed successfully<br/>\nYou will receive a confirmation email`);
-                return ;
+                //response.status(200).send(`Order processed successfully<br/>\nYou will receive a confirmation email`);
+                //return ;
             
             }
         )
         .catch((error) => {
-            console.log(`Error sending email: ${error.message}`);
-            response.status(400).send('Error processing your order');
-            return ;
+            console.log(`\n\n\\n Error happened: ${error.message} \n\n\n`);
+            response.redirect(`/${CHECKOUT_ROUTE}`);
+            
         });
 
     });

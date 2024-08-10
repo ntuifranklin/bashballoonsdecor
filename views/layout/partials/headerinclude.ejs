@@ -19,8 +19,12 @@
    <link rel="stylesheet" href="/assets/css/responsive.css">
    <!-- color -->
    <link rel="stylesheet" href="/assets/css/color.css">
-
-		
+   
+	<% /* including strype payment for processing */ %>
+   	<% if ( typeof originalUrl != "undefined" &&  (originalUrl == `/${CHECKOUT_ROUTE}` || originalUrl == `/${SUCCESS_PAYMENT_ROUTE}`) )  { %>
+	<script src="https://js.stripe.com/v3/"></script>
+	<script src="/assets/js/process_checkout.js"></script>
+	<% } %>
 	<meta property="og:determiner" content="The" />
 	<meta property="og:locale" content="en_US" />
 	<meta name="author" content="<%= companyBusinessName %>">
