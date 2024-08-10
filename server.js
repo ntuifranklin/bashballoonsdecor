@@ -26,6 +26,20 @@ const {getCategories,getCategoriesItems} = require('./database/controllers/datab
 const {isTestEnvironment,isTestEnvUpgraded} = require('./utilities/functions');
 
 
+//import all routes here to use in app.locals
+const {
+    CHECKOUT_ROUTE,
+    CART_ROUTE,
+    CONTACT_ROUTE,
+    PRODUCT_DETAILS_ROUTE,
+    ADMIN_ROUTE,
+    LOGIN_ROUTE,
+    LOGOUT_ROUTE,
+    VERIFY_OTP_ROUTE,
+    F404_ROUTE,
+    SUCCESS_PAYMENT_ROUTE
+} = require('./utilities/routes_constant_names');
+
 /* File upload  */
 const fileUpload = require('express-fileupload');
 app.use(fileUpload({
@@ -133,10 +147,20 @@ app.locals.youtubeLink = process.env.YOUTUBE_LINK;
 app.locals.googleMapsLink = process.env.GOOGLE_MAPS_LINK ;
 app.locals.googleMapsFrameLink = process.env.GOOGLE_MAPS_FRAME_LINK ;
 app.locals.seoSiteLink = process.env.SEO_SITE_LINK;
+/* setting accepted routes */
+app.locals.CHECKOUT_ROUTE = CHECKOUT_ROUTE ;
+app.locals.CART_ROUTE = CART_ROUTE ;
+app.locals.CONTACT_ROUTE = CONTACT_ROUTE ;
+app.locals.PRODUCT_DETAILS_ROUTE = PRODUCT_DETAILS_ROUTE ;
+app.locals.ADMIN_ROUTE = ADMIN_ROUTE ;
+app.locals.LOGIN_ROUTE = LOGIN_ROUTE ;
+app.locals.LOGOUT_ROUTE = LOGOUT_ROUTE ;
+app.locals.VERIFY_OTP_ROUTE = VERIFY_OTP_ROUTE ;
+app.locals.F404_ROUTE = F404_ROUTE ;
+app.locals.SUCCESS_PAYMENT_ROUTE = SUCCESS_PAYMENT_ROUTE ;
+
+/* PORT we are launching from */
 app.locals.port = PORT ;
-
-
-
 
 /* now loop through the list_of_items */
 var index = 0 ;
@@ -238,16 +262,17 @@ app.use(parseForm, csrfProtection, async(request, response, next) => {
         
         const protocol = request.protocol;
         const host = request.hostname;
-        const url = request.originalUrl;
+        const originalUrl = request.originalUrl;
         const port = PORT;
         var fullUrl = '';
         if (`${PORT}` != `80` )
-            fullUrl = `${protocol}://${host}:${port}${url}` ;
+            fullUrl = `${protocol}://${host}:${port}${originalUrl}` ;
         else
-            fullUrl = `${protocol}://${host}${url}` ;
+            fullUrl = `${protocol}://${host}${originalUrl}` ;
+        app.locals.originalUrl = originalUrl;
         app.locals.fullUrl = fullUrl ;
         request.locals = app.locals ;
-        //console.log(`Full urls is ${fullUrl}`);
+        //console.log(`request.originalUrl is ${originalUrl}`);
 
         return next();
 

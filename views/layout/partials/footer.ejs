@@ -300,10 +300,25 @@
 <!-- fancybox -->
 <script src="/assets/js/jquery.fancybox.min.js"></script>
 <script src="/assets/js/custom.js"></script>
+<% //Regardless we can add an item to the cart from anywhere on the website %>
 <script src="/assets/js/cart.js"></script>
-<script src="/assets/js/process_order.js"></script>
-<script src="/assets/js/adminbackend.js"></script>
-<script src="/assets/js/processlogin.js"></script>
-<script src="/assets/js/contact.js"></script>
+<script src="/assets/js/script.js"></script>
+<% 
+	/* Adding dynamic inclusion of javascript required depending on the route */
+%>
+<% if( typeof originalUrl != "undefined") { %>
+
+	<% if ( originalUrl == `/${CONTACT_ROUTE}`)  { %>	
+		<script src="/assets/js/contact.js"></script>
+	<% } else if (  originalUrl == `/${ADMIN_ROUTE}` )  { %>	
+		<script src="/assets/js/adminbackend.js"></script>
+	<% } else if (  originalUrl == `/${VERIFY_OTP_ROUTE}` )  { %>
+		<script src="/assets/js/processlogin.js"></script>
+	<% } else if (  originalUrl == `/${LOGIN_ROUTE}`)  { %>
+		<script src="/assets/js/processlogin.js"></script>
+	<% } %>
+		
+<% } %>
+
 </body>
 </html>

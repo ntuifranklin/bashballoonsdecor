@@ -19,6 +19,13 @@ const {Email,VALID_EMAIL_REGEXP, isEmailValid} = require('../utilities/email');
 const {OTP_CODE_SIZE} = require('../utilities/functions');
 const { defaultMySQLDBConnectorConfig } = require('../database/models/MySQLDBConnector');
 
+const {
+    ADMIN_ROUTE,
+    LOGIN_ROUTE,
+    LOGOUT_ROUTE,
+    VERIFY_OTP_ROUTE,
+    F404_ROUTE
+} = require('../utilities/routes_constant_names');
 /* This is the only email regular expression used to check emails  */
 const loginCheckOutValidation = [
     check('email').matches(VALID_EMAIL_REGEXP).withMessage('Please enter a valid email address.'),
@@ -100,8 +107,8 @@ module.exports = () => {
             //return response.status(401).send(`You are already logged in as ${user.email}`);
             response.status(200).send(
                 `You are already logged in as ${user.email}\n
-                Click <a href="/logout">here</a> to logout\n<br>
-                Click <a href="/admin">here</a> to head to your dashboard\n<br>`
+                Click <a href="/${LOGOUT_ROUTE}">here</a> to logout\n<br>
+                Click <a href="/${ADMIN_ROUTE}">here</a> to head to your dashboard\n<br>`
             );
             return ;
         } ;

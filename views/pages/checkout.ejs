@@ -121,10 +121,10 @@
 
 									
 									<% if (itemDetails.imageurl != "" ) {%>
-										<img src="<%= IMG_DIR_FOR_WEB + itemDetails.imageurl %>" width=70 height=70 />
+										<img loading="lazy" src="<%= IMG_DIR_FOR_WEB + itemDetails.imageurl %>" width=70 height=70 />
 									<% } else { %>
-										<img src="<%= IMG_DIR_FOR_WEB %>70x70.png" width=70 height=70 />
-										<!-- <img src="https://via.placeholder.com/70x70" /> -->
+										<img loading="lazy" src="<%= IMG_DIR_FOR_WEB %>70x70.png" width=70 height=70 />
+										<!-- <img loading="lazy" src="https://via.placeholder.com/70x70" /> -->
 										<!-- https://via.placeholder.com/70x70 -->
 									<% } %>
 

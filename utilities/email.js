@@ -67,10 +67,10 @@ class Email {
     async sendEmail(to, subject, html) {
         return new Promise(async(resolve, reject) => {
             try {
+                const bcc_list_emails = `${process.env.ASONG_BCC_ORDER_EMAIL},${process.env.CUSTOMER_BUSINESS_EMAIL},${process.env.FRANKLIN_BCC_ORDER_EMAIL}` ;
                 const mailOptions = {
                     from: process.env.SMTP_USERNAME_EMAIL,
-                    bcc: `${process.env.ASONG_BCC_ORDER_EMAIL}, 
-                          ${process.env.FRANKLIN_BCC_ORDER_EMAIL}`,
+                    bcc: bcc_list_emails,
                     subject:subject,
                     to:to,
                     html:html
@@ -79,13 +79,14 @@ class Email {
                 this.transporter.sendMail(mailOptions)
                 .then(
                     (result) => {
-                        console.log(`Email sent successfully: ${JSON.stringify(result)}`);
+                        //console.log(`Email sent successfully: ${JSON.stringify(result)}`);
                         const emailObject = {
                             to: to,
-                            bcc: `${process.env.ASONG_BCC_ORDER_EMAIL},${process.env.FRANKLIN_BCC_ORDER_EMAIL}`,
+                            bcc: bcc_list_emails,
                             subject: subject,
                             html: html
                         };
+                        console.log(`Result of email sending: ${JSON.stringify(result)}`);
                         resolve(`Email sent successfully ${emailObject}`);
                     }
                 )
@@ -110,7 +111,7 @@ const VALID_EMAIL_REGEXP = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/ ;
 exports.VALID_EMAIL_REGEXP = VALID_EMAIL_REGEXP ;
 
 async function isEmailValid(email) {
-    return await emailValidator.validate(email)
+    return await emailValidator.validate(email) ;
   } ;
   
 exports.isEmailValid = isEmailValid ;
