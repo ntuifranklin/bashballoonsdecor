@@ -216,9 +216,9 @@
                 <% var item_name = decode(individual_item.item_name);  %>
                   <li class="grid-list  <%- ( i == category_items.length - 1 ) ? 'end' : '' %>" >
                     <div class="d-flex align-items-center">
-                      <!-- <img alt="product" src="https://via.placeholder.com/110x118"> -->
+                      <!-- <img loading="lazy" alt="product" src="https://via.placeholder.com/110x118"> -->
                       <% const trimmedName = trimItemName(name=item_name)%>
-                      <img alt="<%= 'Image for ' + trimmedName %>" src="<%= IMG_DIR_FOR_WEB + individual_item.imageurl %>" width=110 height=118 />
+                      <img loading="lazy" alt="<%= 'Image for ' + trimmedName %>" src="<%= IMG_DIR_FOR_WEB + individual_item.imageurl %>" width=110 height=118 />
                       
                       <div class="weekly-sellers-text">
                         <span><%= trimmedName %></span>

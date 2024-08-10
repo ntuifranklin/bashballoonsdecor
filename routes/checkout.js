@@ -270,7 +270,7 @@ module.exports = () => {
             transactionData.push(orderInsertArray);
             transactionQueries.push(orderInsertSql);
 
-            //List of items
+            //List of items for stripe payment
             let productLineItems = [] ;
             //console.log(`order : oneOrderItemInsertSQL : ${oneOrderItemInsertSQL.length} : ${oneOrderItemInsertData.length}`);
 
@@ -336,6 +336,8 @@ module.exports = () => {
             }
          
             
+            /*
+            //Stripe payment will be done later
             const protocol = request.protocol;
             const host = request.hostname;
             const originalUrl = request.originalUrl;
@@ -355,6 +357,7 @@ module.exports = () => {
             });
 
             successfullPaymentUrl = `${fullUrl}/${SUCCESS_PAYMENT_ROUTE}?session_id=${session.id}`;
+            */
             //console.log(`\n\n\nsuccessful payment url: ${successfullPaymentUrl} \n\n\n\n`);
             con.execute('COMMIT', function (error, results, fields) {
                 if (error) {
@@ -440,10 +443,10 @@ module.exports = () => {
                 /* update the cart in the locals variable */
                 request.session.userCart = {} ;
                 request.session.save();
-                response.redirect(`${successfullPaymentUrl}`);
+                //response.redirect(`${successfullPaymentUrl}`);
                 //console.log(`Order Confirmation Email sent: ${JSON.stringify(result)}`);
-                //response.status(200).send(`Order processed successfully<br/>\nYou will receive a confirmation email`);
-                //return ;
+                response.status(200).send(`Order processed successfully<br/>\nYou will receive a confirmation email`);
+                return ;
             
             }
         )
