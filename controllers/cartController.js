@@ -11,7 +11,7 @@ const {
 
 const cartPage = async (request, response) => { 
     
-    var userCart = {} ;
+    
     var app_cache = request.locals.app_cache ;   
     const categories = await app_cache.get(CATEGORIES_TABLE);
          

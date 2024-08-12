@@ -68,7 +68,7 @@
 
                                 <% for(var itemKey in userCart)  { %>
                                     <% var cartItem = JSON.parse(JSON.stringify(userCart[itemKey])) ;%>
-                                    <% var itemDetails = JSON.parse(JSON.stringify(cartItem["itemDetails"])) ;%>
+                                    <% var itemDetails = JSON.parse(JSON.stringify(cartItem[ITEMS_DETAILS_NAME])) ;%>
                                     <% const trimmedName = trimItemName(name=itemDetails.item_name); %>
                                     <tr class="product">
                                         <td class="product-name">

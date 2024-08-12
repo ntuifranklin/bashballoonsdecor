@@ -1,5 +1,5 @@
 
-const { body} = require('express-validator');
+const { body, validationResult} = require('express-validator');
 const {MIN_EMAIL_ADDR_LENGTH,
     MAX_EMAIL_ADDR_LENGTH
 } = require('../utilities/email');

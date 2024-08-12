@@ -1,20 +1,24 @@
 const request = require("supertest");
 const app = require("../../server.js");
-const { assert,expect,should } = require ("chai");  
+const {expect} = require ("chai");  
 const cheerio = require("cheerio");
 const { faker } = require('@faker-js/faker');
 
-const {VALID_EMAIL_REGEXP, MAX_EMAIL_ADDR_LENGTH,isEmailValid} = require('../../utilities/email');
+const {MAX_EMAIL_ADDR_LENGTH} = require('../../utilities/email');
 const {MAX_BUFFER_SIZE} = require('../../utilities/Fisl');
 
 require("dotenv").config();
 
-describe(`POST /contact`, () => {
+const {
+  CONTACT_ROUTE
+  
+} = require('../../utilities/routes_constant_names.js');
+describe(`POST /${CONTACT_ROUTE}`, () => {
 
   it("Testing submitting the contact from with good email, but lengthy one",async() => {
     
     //To submit a form, we need the csrf token
-    request(app).get(`/contact`)
+    request(app).get(`/${CONTACT_ROUTE}`)
     .end(async (err,result) => {
       expect(result.status).to.equal(200);
       
@@ -29,7 +33,7 @@ describe(`POST /contact`, () => {
       const comment = faker.string.alphanumeric(MAX_BUFFER_SIZE + 1);
       const phone = faker.phone.number();
       request(app)
-      .post(`/contact`)
+      .post(`/${CONTACT_ROUTE}`)
       .send({
           _csrf:csrf,
           name:name,

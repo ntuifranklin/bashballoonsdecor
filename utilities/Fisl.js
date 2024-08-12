@@ -15,7 +15,6 @@ const { Buffer } = require('node:buffer');
   All fields cannot be more than 255 long.
   If needs to be changed, then make sure it matches the size 
   of the field into the database where the data will be placed.
-
  */
 const MAX_BUFFER_SIZE = 255 ; 
 exports.MAX_BUFFER_SIZE = MAX_BUFFER_SIZE ;

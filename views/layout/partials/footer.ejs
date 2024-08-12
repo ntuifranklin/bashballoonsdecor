@@ -13,12 +13,40 @@
 		
 		<div class="col-lg-2 col-md-2">
 			<div class="account">
-				<h5>My Account</h5>
+				<h5>Menu</h5>
 				<ul>
-				<li>
-					<i class="fa-solid fa-angle-right"></i>
-					<a href="/cart">Cart</a>
-				</li>
+
+					<% if (user && user.email ) { %>
+						<li>
+							<i class="fa-solid fa-angle-right"></i>
+							<a href="/<%= ADMIN_ROUTE %>">Admin Dashboard</a>
+						</li>
+						<li>
+							<i class="fa-solid fa-angle-right"></i>
+							<a href="/<%= LOGOUT_ROUTE%>">Logout</a>
+						</li>
+					<%  } else { %>
+						<li>
+							<i class="fa-solid fa-angle-right"></i>
+							<a href="/<%= LOGIN_ROUTE %>">Login</a>
+						</li>
+						
+					<% } %>
+					
+						<li>
+							<i class="fa-solid fa-angle-right"></i>
+							<a  href="/<%= CART_ROUTE %>">Your Shopping Cart</a>
+						</li>					  
+	
+						<li>
+							<i class="fa-solid fa-angle-right"></i>
+							<a  href="/<%= CHECKOUT_ROUTE %>">Cart Checkout</a>
+						</li>
+						
+						<li>
+							<i class="fa-solid fa-angle-right"></i>
+							<a  href="/<%= CONTACT_ROUTE %>">Contact</a>
+						</li>
 				</ul>
 			</div>
 		</div>
@@ -267,7 +295,7 @@
 	  </div>
 	  <div class="footer-bottom">
 		<div>
-		  <a href="/checkout">
+		  <a href="/<%= CHECKOUT_ROUTE %>">
 			<img alt="card" src="/assets/img/card.png">
 		  </a>
 		  <p><span>© 2021 - <%= (new Date()).getFullYear() %> </span> <%= siteName %> </p>

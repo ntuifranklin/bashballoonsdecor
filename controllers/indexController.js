@@ -1,19 +1,13 @@
 
 const {decode, encode} = require('html-entities');
 
-
-const {Email} = require('../utilities/email');
-
+const {IMG_DIR_FOR_WEB} = require('../utilities/fileupload');
 const {
     ITEMS_ARRAY,
-    ITEMS_BY_ID,
     ITEMS_BY_CATEGORY_ID,
-    ITEMS_BY_CATEGORY_WEB_ID,
-    ITEMS_DETAILS,
     CATEGORIES_TABLE,
     USER_CART,
-    USER,
-    IMG_DIR_FOR_WEB
+    USER
 } = require('../utilities/web_page_variables');
 
 const homePage =  async (request, response) => { 
@@ -181,7 +175,7 @@ const f404Page = async(request, response) => {
         categories: categories,
         csrfToken: request.csrfToken(),
         decode: decode,
-        encode:encode
+        encode: encode
     });
 } ;
 
