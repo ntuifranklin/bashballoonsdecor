@@ -49,7 +49,7 @@ function isValidOTPCode(code) {
 
 exports.isValidOTPCode = isValidOTPCode ;
 
-const VALID_PHONE_REGEXP = /^[0-9]{10,15}$/ ;
+const VALID_PHONE_REGEXP = /^[0-9\-\+]{10,15}$/ ;
 exports.VALID_PHONE_REGEXP = VALID_PHONE_REGEXP;
 
 function isValidPhoneNumber(number){

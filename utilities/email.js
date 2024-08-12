@@ -103,7 +103,8 @@ class Email {
     }
 };
 exports.Email = Email;
-
+const MIN_EMAIL_ADDR_LENGTH = 6 ;
+exports.MIN_EMAIL_ADDR_LENGTH = MIN_EMAIL_ADDR_LENGTH ;
 const MAX_EMAIL_ADDR_LENGTH = 50 ;
 exports.MAX_EMAIL_ADDR_LENGTH = MAX_EMAIL_ADDR_LENGTH ;
 

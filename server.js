@@ -2,7 +2,6 @@ const express = require('express');
 const { faker } = require('@faker-js/faker');
 const path = require('path');
 const createError = require('http-errors');
-
 const bodyParser = require('body-parser');
 const {decode} = require('html-entities');
 const template_folder = 'static_template';
@@ -25,6 +24,10 @@ const cookieParser = require('cookie-parser');
 const {getCategories,getCategoriesItems} = require('./database/controllers/database');
 const {isTestEnvironment,isTestEnvUpgraded} = require('./utilities/functions');
 
+/* App caching */
+
+const nodecache = require('node-cache');
+const app_cache = new nodecache({stdTTL: 1799}); //30 minutes
 
 //import all routes here to use in app.locals
 const {
@@ -40,6 +43,7 @@ const {
     SUCCESS_PAYMENT_ROUTE
 } = require('./utilities/routes_constant_names');
 
+//import all routes here to use in app.locals
 /* File upload  */
 const fileUpload = require('express-fileupload');
 app.use(fileUpload({
@@ -64,15 +68,13 @@ if ( !isTestingEnv) {
 
 var csrf = require('csurf');
 // csrf protection
-var csrfProtection = csrf({ cookie: true });
-const cookieSession = require('cookie-session');
+let csrfProtection = csrf({ cookie: true });
+
 var parseForm = bodyParser.urlencoded({ extended: false });
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(parseForm);
 
-const site_secret = faker.internet.password({ length:30 });
-//console.log(`Generated site secret as : ${site_secret}`);
-const session_mysql_connection = mysql.createConnection(session_database_options);
-const sessionStore = new MySQLStore(session_database_options, session_mysql_connection);
+const site_secret = faker.internet.password({ length:16 });
 
 var dynamicCookie =  {
     sameSite: 'none',
@@ -80,14 +82,6 @@ var dynamicCookie =  {
     secure: false,
     httpOnly: false,
 };
-var sessionBasedOnEnvironment = {
-    name: process.env.SESSION_NAME,
-    secret: site_secret,
-    resave: false,
-    saveUninitialized: false,
-    store: sessionStore,
-    cookie: dynamicCookie,
-} ;
 
 /* If in a production environment, then use un secure cookies */
 if (PORT == PROD_PORT) {
@@ -106,7 +100,6 @@ if (PORT == PROD_PORT) {
     app.use(cookieParser(site_secret, dynamicCookie));
 } ;
 
-app.use(session(sessionBasedOnEnvironment));
 
 /* Prevent attackes from guessing passwords with rate limiting per IP address */
 const { rateLimit } = require('express-rate-limit');
@@ -168,35 +161,43 @@ var index = 0 ;
 const customers_feedback = require(process.env.CUSTOMERS_FEEDBACK_FILE);
 app.locals.customers_feedback = customers_feedback ;
 
-/* location where images are being sotred */
+/* location where images are being stored */
 const {IMG_DIR_FOR_WEB} = require('./utilities/fileupload');
 const { exit } = require('process');
+
+/* We need to cache the database of items needed to load a page */
 
 /* rejected firewall domains  */
 const firewall = require('./utilities/firewall');
 app.use(firewall);
-app.use(parseForm, csrfProtection, async(request, response, next) => { 
 
-    
+const {
+    ITEMS_ARRAY,
+    ITEMS_BY_ID,
+    ITEMS_BY_CATEGORY_ID,
+    ITEMS_BY_CATEGORY_WEB_ID,
+    ITEMS_DETAILS,
+    CATEGORIES_TABLE,
+    USER_CART,
+    USER,
+    QUANTITY
+} = require('./utilities/web_page_variables');
 
-        var userCart = {} ;
-            
+app.use(csrfProtection, async(request, response, next) => { 
+         
         var items_array = null ;
-        var itemsByID = null ;
+        var itemsByID = {} ;
         var itemsByCategoryID = {}
         var categories = null ;
         var itemsByCategoryWebID = {};
 
-        if (request.session.userCart)
-            userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
-        
+       
         var item = null ;
+
+        items_array = app_cache.get(ITEMS_ARRAY);
     
-        if (!items_array) {
-            itemsByID = {} ;
-            itemsByCategoryID = {} ;
-            itemsByCategoryWebID = {};
-            
+        if (items_array == undefined ) {
+            //console.log('Cache miss for ITEMS_ARRAY ');;
             items_array = await getCategoriesItems ();
             
             for (var j=0 ; j < items_array.length; j++ ) {
@@ -221,45 +222,32 @@ app.use(parseForm, csrfProtection, async(request, response, next) => {
                 if (!(category_webid in itemsByCategoryWebID)) {
                     itemsByCategoryWebID[category_webid] = {};
                 } ;
-
             
                 itemsByCategoryWebID[category_webid] = JSON.parse(JSON.stringify(item)) ;
 
-                itemsByID[itemID]["itemDetails"] = JSON.parse(JSON.stringify(item)) ;
+                itemsByID[itemID][ITEMS_DETAILS] = JSON.parse(JSON.stringify(item)) ;
+                app_cache.set(ITEMS_ARRAY, items_array);
+                app_cache.set(ITEMS_BY_ID, itemsByID);
+                app_cache.set(ITEMS_BY_CATEGORY_ID, itemsByCategoryID);
+                app_cache.set(ITEMS_BY_CATEGORY_WEB_ID, itemsByCategoryWebID);
+
             } ;
 
-        
-
-            request.session.items_array = JSON.parse(JSON.stringify(items_array));
-            request.session.itemsByID = JSON.parse(JSON.stringify(itemsByID)) ;
-            request.session.itemsByCategoryID = JSON.parse(JSON.stringify(itemsByCategoryID));
-            request.session.itemsByCategoryWebID = JSON.parse(JSON.stringify(itemsByCategoryWebID));
-            
-            request.session.save();
         } ;
 
         //console.log(`itemsByID in server.js: ${JSON.stringify(request.session.itemsByID,null,4)}`);
-        
-        if (!categories ) {
-            categories = await getCategories (tableName='categories') ;
+        categories = app_cache.get(CATEGORIES_TABLE)
+        if (categories == undefined) {
+            //console.log(`Cache miss for ${CATEGORIES_TABLE}`);
+            categories = await getCategories (tableName=CATEGORIES_TABLE) ;
             for (var i = 0; i <  categories.length; i++) {
                 var category = JSON.parse(JSON.stringify( categories[i]));
                 category.category_name = decode(category.category_name);
                 //categories[i].category_name = category.category_name;
             };
-            
-            request.session.categories = await JSON.parse(JSON.stringify(categories));
-            request.session.save();
+            app_cache.set(CATEGORIES_TABLE, categories);
         } ;
 
-        request.session.userCart = await JSON.parse(JSON.stringify(userCart)) ;
-        request.session.IMG_DIR_FOR_WEB = IMG_DIR_FOR_WEB ;
-        request.session.save();
-        response.locals.csrfToken = request.csrfToken();
-        
-        
-        //need full url for SEO
-        
         const protocol = request.protocol;
         const host = request.hostname;
         const originalUrl = request.originalUrl;
@@ -272,10 +260,13 @@ app.use(parseForm, csrfProtection, async(request, response, next) => {
         app.locals.originalUrl = originalUrl;
         app.locals.fullUrl = fullUrl ;
         request.locals = app.locals ;
-        //console.log(`request.originalUrl is ${originalUrl}`);
-
+        request.locals.app_cache = app_cache ;
+        request.locals.USER_CART_NAME = USER_CART;
+        request.locals.QUANTITY_NAME = QUANTITY ;
+        request.locals.ITEMS_DETAILS_NAME = ITEMS_DETAILS;
+        request.locals.LOGGEDIN_USER_VARIABLE_NAME = USER;
+        response.locals.csrfToken = request.csrfToken();
         return next();
-
 
 });
 

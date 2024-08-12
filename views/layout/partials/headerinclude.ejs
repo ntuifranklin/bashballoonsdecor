@@ -147,7 +147,7 @@
 							<ul>
 								<% for (var itemKey in userCart ) { %>
 									<% var item = JSON.parse(JSON.stringify(userCart[itemKey])) ;%>
-									<% var itemDetails = JSON.parse(JSON.stringify(item["itemDetails"])) ; %>
+									<% var itemDetails = JSON.parse(JSON.stringify(item[ITEMS_DETAILS_NAME])) ; %>
 									<li class="d-flex align-items-center position-relative">
 										
 		
@@ -165,7 +165,12 @@
 				
 										<h3 class="font-semi-bold"><%= decode(itemDetails["item_name"]) %></h3>
 				
-										<p class="theme-clr font-semi-bold"><%= item["quantity"] %> x $<%= itemDetails["unitPrice"] %></p>
+										<p class="theme-clr font-semi-bold">
+											<%= item["quantity"] %> 
+											x 
+											$
+											<%= itemDetails["unitPrice"] %>
+										</p>
 										<% grandTotal = grandTotal + (item["quantity"] * itemDetails["unitPrice"]) ; %>
 										</div>
 				
