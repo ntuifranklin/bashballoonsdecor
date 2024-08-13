@@ -11,6 +11,7 @@ const loginRoute = require('./login');
 const logoutRoute = require('./logout');
 const verifyOTPRoute = require('./verifyotp');
 const successPaymentRoute = require('./success-payment-route');
+const webstatsRoute = require('./webstats');
 const bodyParser = require('body-parser');
 var csrf = require('csurf');
 // csrf protection
@@ -27,7 +28,8 @@ const {
     LOGOUT_ROUTE,
     VERIFY_OTP_ROUTE,
     F404_ROUTE,
-    SUCCESS_PAYMENT_ROUTE
+    SUCCESS_PAYMENT_ROUTE,
+    WEBSTATS_ROUTE
 } = require('../utilities/routes_constant_names');
 
 const {
@@ -53,7 +55,7 @@ module.exports = () => {
     router.use(`/${LOGOUT_ROUTE}`, logoutRoute());
     router.use(`/${VERIFY_OTP_ROUTE}`, verifyOTPRoute());
     router.use(`/${SUCCESS_PAYMENT_ROUTE}`,successPaymentRoute());
-    
+    router.use(`/${WEBSTATS_ROUTE}`, webstatsRoute()) ;
     /* this route allows someone to search for a list of items based on an item category name */
     router.get('/:category_name',csrfProtection, rentalItemsPerCategoryPage);
 
