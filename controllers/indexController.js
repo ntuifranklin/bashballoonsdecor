@@ -14,7 +14,7 @@ const homePage =  async (request, response) => {
     /* must have been loaded in server.js file  */  
     
     var app_cache = request.locals.app_cache ;    
-    const categories = app_cache.get(CATEGORIES_TABLE);
+    const categories = await app_cache.get(CATEGORIES_TABLE);
          
     var userCart = {} ;
     var user = {} ;

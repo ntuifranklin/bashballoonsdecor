@@ -1,10 +1,10 @@
 const express = require('express');
 const { faker } = require('@faker-js/faker');
 const path = require('path');
-const createError = require('http-errors');
+
 const bodyParser = require('body-parser');
 const {decode} = require('html-entities');
-const template_folder = 'static_template';
+const template_folder = 'static_template';  
 const routes = require('./routes');
 
 const app = express();
@@ -14,20 +14,16 @@ const SERVER_IP =  ip.address() ;
 
 app.use(express.json());
 
-var mysql = require('mysql');
-const session = require('express-session');
-const MySQLStore = require('express-mysql-session')(session);
 require('dotenv').config();
 
-const {session_database_options} = require('./sessionmanagement/session') ;
 const cookieParser = require('cookie-parser');
 const {getCategories,getCategoriesItems} = require('./database/controllers/database');
-const {isTestEnvironment,isTestEnvUpgraded} = require('./utilities/functions');
+const {isTestEnvUpgraded} = require('./utilities/functions');
 
 /* App caching */
 
 const nodecache = require('node-cache');
-const app_cache = new nodecache({stdTTL: 1799}); //30 minutes
+const app_cache = new nodecache({stdTTL: 899}); //15 minutes
 
 //import all routes here to use in app.locals
 const {

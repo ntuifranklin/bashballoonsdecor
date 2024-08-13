@@ -1,6 +1,6 @@
 
 
-const {IMG_DIR_FOR_WEB} = require('../utilities/fileupload');
+const {IMG_DIR_FOR_WEB,upload_folder} = require('../utilities/fileupload');
 const {decode, encode} = require('html-entities');
 require('dotenv').config();
 
@@ -23,6 +23,7 @@ const {
     ITEMS_BY_CATEGORY_ID, 
     ITEMS_BY_CATEGORY_WEB_ID
 } = require('../utilities/web_page_variables');
+const IMG_DIR = upload_folder ;
 const {ADMIN_ROUTE} = require('../utilities/routes_constant_names');
 /* generate a pool of mysql connection  */
 var con = mysql2.createPool(defaultMySQLDBConnectorConfig);
