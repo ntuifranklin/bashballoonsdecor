@@ -15,10 +15,13 @@ const { Buffer } = require('node:buffer');
   All fields cannot be more than 255 long.
   If needs to be changed, then make sure it matches the size 
   of the field into the database where the data will be placed.
-
  */
 const MAX_BUFFER_SIZE = 255 ; 
 exports.MAX_BUFFER_SIZE = MAX_BUFFER_SIZE ;
+const MAX_ITEM_NAME_SIZE = 255 ; 
+exports.MAX_ITEM_NAME_SIZE = MAX_ITEM_NAME_SIZE ;
+const MAX_DESCRIPTION_SIZE = 1024 ;
+exports.MAX_DESCRIPTION_SIZE = MAX_DESCRIPTION_SIZE ;
 const DEFAULT_BUFFER_TYPE = "utf8";
 exports.DEFAULT_BUFFER_TYPE = DEFAULT_BUFFER_TYPE ;
 class Fisl {

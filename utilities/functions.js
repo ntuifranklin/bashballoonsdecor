@@ -49,7 +49,7 @@ function isValidOTPCode(code) {
 
 exports.isValidOTPCode = isValidOTPCode ;
 
-const VALID_PHONE_REGEXP = /^[0-9]{10,15}$/ ;
+const VALID_PHONE_REGEXP = /^[0-9\-\+]{10,15}$/ ;
 exports.VALID_PHONE_REGEXP = VALID_PHONE_REGEXP;
 
 function isValidPhoneNumber(number){
@@ -63,3 +63,9 @@ function isValidTextMessage(message){
 
 exports.isValidTextMessage = isValidTextMessage ;
 
+const MIN_MESSAGE_SIZE = 5 ;
+exports.MIN_MESSAGE_SIZE = MIN_MESSAGE_SIZE ;
+const MIN_FULL_NAME_SIZE = 1 ;
+exports.MIN_FULL_NAME_SIZE = MIN_FULL_NAME_SIZE ;
+const MAX_FULL_NAME_SIZE = 255 ;
+exports.MAX_FULL_NAME_SIZE = MAX_FULL_NAME_SIZE ;

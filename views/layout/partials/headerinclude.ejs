@@ -120,14 +120,14 @@
 						<i class="bi bi-person"></i>
 						<%= user.email %>
 					</a>
-					<a class="d-flex" href="/admin">Admin Dashboard</a>
-					<a class="d-flex" href="/logout">Logout</a>
+					<a class="d-flex" href="/<%= ADMIN_ROUTE %>">Admin Dashboard</a>
+					<a class="d-flex" href="/<%= LOGOUT_ROUTE %>">Logout</a>
 				</div>
 
 			<%  } else { %>
 				
 				<div>
-					<a class="d-flex" href="/login">login</a>
+					<a class="d-flex"  href="/<%= LOGIN_ROUTE %>">login</a>
 				</div>
 			<% } %>
 		 
@@ -147,7 +147,7 @@
 							<ul>
 								<% for (var itemKey in userCart ) { %>
 									<% var item = JSON.parse(JSON.stringify(userCart[itemKey])) ;%>
-									<% var itemDetails = JSON.parse(JSON.stringify(item["itemDetails"])) ; %>
+									<% var itemDetails = JSON.parse(JSON.stringify(item[ITEMS_DETAILS_NAME])) ; %>
 									<li class="d-flex align-items-center position-relative">
 										
 		
@@ -165,7 +165,12 @@
 				
 										<h3 class="font-semi-bold"><%= decode(itemDetails["item_name"]) %></h3>
 				
-										<p class="theme-clr font-semi-bold"><%= item["quantity"] %> x $<%= itemDetails["unitPrice"] %></p>
+										<p class="theme-clr font-semi-bold">
+											<%= item["quantity"] %> 
+											x 
+											$
+											<%= itemDetails["unitPrice"] %>
+										</p>
 										<% grandTotal = grandTotal + (item["quantity"] * itemDetails["unitPrice"]) ; %>
 										</div>
 				
@@ -180,15 +185,15 @@
 
 							<span class="font-semi-bold">Total:</span>
 
-							<span class="font-semi-bold">$<%= grandTotal %></span>
+							<span class="font-semi-bold">$<%= parseFloat(grandTotal).toFixed(2) %></span>
 
 							</div>
 
 							<div class="cart-btns d-flex align-items-center justify-content-between">
 
-							<a class="font-bold" href="/cart">View Cart</a>
+							<a class="font-bold" href="/<%= CART_ROUTE %>">View Cart</a>
 
-							<a class="font-bold theme-bg-clr text-white checkout" href="/checkout">Checkout</a>
+							<a class="font-bold theme-bg-clr text-white checkout" href="/<%= CHECKOUT_ROUTE %>">Checkout</a>
 
 							</div>
 
@@ -244,15 +249,15 @@
 					</li>
 					
 					<li class="navbar-dropdown">
-					<a href="/cart">Your Shopping Cart</a>
+					<a  href="/<%= CART_ROUTE %>">Your Shopping Cart</a>
 					</li>					  
 
 					<li class="navbar-dropdown">
-					<a href="/checkout">Cart Checkout</a>
+					<a  href="/<%= CHECKOUT_ROUTE %>">Cart Checkout</a>
 					</li>
 					
 					<li class="navbar-dropdown">
-					<a href="/contact">Contact</a>
+					<a  href="/<%= CONTACT_ROUTE %>">Contact</a>
 					</li>
 		  </ul>
 		  
@@ -291,13 +296,13 @@
 			<li class="menu-item-children">
 				<ul class="sub-menu">
 					<li><a class="d-flex"><i class="bi bi-person"></i><%= user.email %></a></li>
-					<li><a class="d-flex" href="/admin">Admin Dashboard</a></li>
-					<li><a class="d-flex" href="/logout">Logout</a></li>
+					<li><a class="d-flex" href="/<%= ADMIN_ROUTE %>">Admin Dashboard</a></li>
+					<li><a class="d-flex" href="/<%= LOGOUT_ROUTE %>">Logout</a></li>
 				</ul>
 			</li>
 			<%  } else { %>
 			<li>
-				<a class="d-flex" href="/login">login</a>
+				<a class="d-flex" href="/<%= LOGIN_ROUTE %>">login</a>
 			</li>
 			<% } %>
 
@@ -316,10 +321,10 @@
 			  </ul>
 			</li>
 			
-			<li><a href="/cart">Shopping Cart</a></li>
-			<li><a href="/checkout">Cart Checkout</a></li>
+			<li><a  href="/<%= CART_ROUTE %>">Shopping Cart</a></li>
+			<li><a  href="/<%= CHECKOUT_ROUTE %>">Cart Checkout</a></li>
   
-			<li><a href="/contact">Contact</a></li>
+			<li><a  href="/<%= CONTACT_ROUTE %>">Contact</a></li>
   
 			</ul>
   

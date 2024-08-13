@@ -1,7 +1,9 @@
 const multer = require('multer');
 const IMG_DIR_FOR_WEB = `/assets/img/itemimgs/`;
-module.exports.IMG_DIR_FOR_WEB = IMG_DIR_FOR_WEB ;
-const upload_folder = `../static_template${IMG_DIR_FOR_WEB}`;
+
+const template_folder = 'static_template';
+const upload_folder = `../${template_folder}${IMG_DIR_FOR_WEB}`;
+
 // Set up storage for uploaded files
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -38,4 +40,9 @@ const fileuploads = multer({
     },
 }); // .single("itemimgurl")
 
-module.exports.fileuploads = fileuploads;
+module.exports = {
+  fileuploads,  
+  template_folder,
+  upload_folder,
+  IMG_DIR_FOR_WEB
+};

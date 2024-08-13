@@ -22,7 +22,7 @@ describe('Testing The URL For Each Category Name', async() => {
           var jsonObject = JSON.parse(JSON.stringify(category_name_object));
           var category_name = jsonObject.category_name ;
           const lowerCaseCatName = category_name.toLowerCase();
-          it(`Testing of url /${lowerCaseCatName} `, async()=> {
+          it(`Testing of url /${lowerCaseCatName} of lower case category name`, async()=> {
             
             expect(lowerCaseCatName).to.not.equal(null);
             request(app).get(`/${lowerCaseCatName}`)
@@ -36,26 +36,25 @@ describe('Testing The URL For Each Category Name', async() => {
             
 
           });
+          const upperCaseCatName = category_name.toUpperCase();
+          
+          it(`Testing of url /${upperCaseCatName} the upper case of category title ${lowerCaseCatName}`, async()=> {
+            
+            expect(upperCaseCatName).to.not.equal(null);
+            request(app).get(`/${upperCaseCatName}`)
+            .end(async(err, categoryUrlRequestResult) => {
+              
+              expect(upperCaseCatName).to.not.equal(null);
+              expect(upperCaseCatName).to.not.equal("");
+              expect(categoryUrlRequestResult.status).to.equal(200);
+
+            }) ;
+            
+
+          });
         });
       });
 
   });
-  /*
-  category_names.forEach((category_name_object) => {
-    var cat_name = JSON.parse(JSON.stringify(category_name_object)) ;
-    var category_name = new String(cat_name.category_name);
-    category_name = category_name.toLowerCase();
-    //console.log(`Before it : ${category_name}`);
-    it(`Testing of url /${category_name}`, async() => {
-      //console.log(`After entering it: ${category_name}`);
-      
-      expect(category_name).to.not.equal(null);
-      const result = await request(app).get(`/${category_name}`) ;
-      expect(category_name).to.not.equal(null);
-      expect(category_name).to.not.equal("");
-      expect(result.status).to.equal(200);
-    });   
-  }) ; 
-  */
     
 }) ;

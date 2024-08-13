@@ -5,14 +5,15 @@ const cheerio = require("cheerio");
 
 const {MySQLDBConnector} = require("../../database/models/MySQLDBConnector.js");
 
+const {LOGIN_ROUTE,VERIFY_OTP_ROUTE} = require('../../utilities/routes_constant_names.js');
 require("dotenv").config();
 
-describe('GET /login', () => {
+describe(`GET /${LOGIN_ROUTE}`, () => {
  
   const email = process.env.ADMIN_USER_EMAIL;
   const password = process.env.ADMIN_USER_PASSWORD;
   it("Testing the login url",async() => {
-      request(app).get(`/login`)
+      request(app).get(`/${LOGIN_ROUTE}`)
       .end(async(err, loginPageResult) => {
       expect(loginPageResult.status).to.equal(200);
         
@@ -20,7 +21,7 @@ describe('GET /login', () => {
       const csrf = $("[name=_csrf]") ;
       //console.log(`obtained csrf: ${csrf}`);
       request(app)
-        .post('/login')
+        .post(`/${LOGIN_ROUTE}`)
         .send({
           _csrf:csrf,
           email:email,
@@ -47,11 +48,11 @@ describe('GET /login', () => {
           expect(uemail).to.equal(email)
           const csrf2 = loginResult.body.data._csrf2;
           request(app)
-            .post('/verifyotp')
+            .post(`/${VERIFY_OTP_ROUTE}`)
             .send({
               user_email:email,
               otp:otp,
-              _csrf:csrf
+              _csrf:csrf2
             }).expect((verifyOtpResult) => {
 
               expect(verifyOtpResult.body).to.be.an('object');

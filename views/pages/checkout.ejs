@@ -6,7 +6,7 @@
 	
 	for (var itemKey in userCart)  { 
 		var item = JSON.parse(JSON.stringify(userCart[itemKey]));
-		var itemDetails = JSON.parse(JSON.stringify(item["itemDetails"])) ;
+		var itemDetails = JSON.parse(JSON.stringify(item[ITEMS_DETAILS_NAME])) ;
 		var itemSubTotal = item["quantity"] * itemDetails["unitPrice"] ;
 		totalCost += ( 
 			itemSubTotal
@@ -115,7 +115,7 @@
 						
 						<% for(var itemKey in userCart)  { %>
 							<% var item = JSON.parse(JSON.stringify(userCart[itemKey])) ;%>
-							<% var itemDetails = JSON.parse(JSON.stringify(item["itemDetails"])) ; %>
+							<% var itemDetails = JSON.parse(JSON.stringify(item[ITEMS_DETAILS_NAME])) ; %>
 							<tr class="product">
 								<td class="product-name">
 
