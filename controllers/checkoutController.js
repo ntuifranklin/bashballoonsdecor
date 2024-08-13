@@ -254,10 +254,10 @@ const showCheckoutPage = async(request, response) => {
     var user = {} ;
     if (app_cache.has(USER))
         user = await app_cache.get(USER) ;
-    user = JSON.parse(JSON.stringify(user));
+    user = await JSON.parse(JSON.stringify(user));
     if (app_cache.has(USER_CART))
         userCart = await app_cache.get(USER_CART);
-    userCart = JSON.parse(JSON.stringify(userCart));
+    userCart = await JSON.parse(JSON.stringify(userCart));
     //console.log('Passed cart : ' + JSON.stringify(userCart, null, 4));
     response.render('layout', 
         { 
@@ -272,7 +272,6 @@ const showCheckoutPage = async(request, response) => {
             categories: categories,
             decode: decode,
             encode: encode
-            
         }
     );
 } ;

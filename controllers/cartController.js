@@ -160,8 +160,25 @@ const cartPageUpdate = async (request, response) => {
     app_cache.set(USER_CART, JSON.parse(JSON.stringify(userCart))) ;
     response.status(200).send({ message: 'success', responseText: `Cart updated successfully` });
 } ;
+const deleteCartItemPost = async (request, response) => {
+         
+    var app_cache = request.locals.app_cache;
+    var userCart = {} ;
+    if (app_cache.has(USER_CART))
+        userCart = await app_cache.get(USER_CART);
+    userCart = JSON.parse(JSON.stringify(userCart));
+
+    const itemID = new String(request.body.itemID);
+
+     /* update cart save session */
+    delete userCart[itemID] ;
+    await app_cache.set(USER_CART, JSON.parse(JSON.stringify(userCart)))  ;
+    
+    return response.status(200).send({ message: 'success', responseText: `Item deleted from cart successfully` });
+} ;
 module.exports = {
     cartPage, 
     cartPagePost,
-    cartPageUpdate
+    cartPageUpdate,
+    deleteCartItemPost
 } ;

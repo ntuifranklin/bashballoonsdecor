@@ -1,41 +1,45 @@
 
 
-const bodyParser = require('body-parser');
-const {fileuploads, IMG_DIR_FOR_WEB} = require('../utilities/fileupload');
+const {IMG_DIR_FOR_WEB} = require('../utilities/fileupload');
 const {decode, encode} = require('html-entities');
 require('dotenv').config();
-const createError = require('http-errors');
+
 const {generateUniqueID, getCategoriesItems} = require('../database/controllers/database');
 
 const {MySQLDBConnector, defaultMySQLDBConnectorConfig} = require('../database/models/MySQLDBConnector');
-const { check,validationResult } = require('express-validator');
+
 var mysql2 = require('mysql2');
-const {getFakeCategoriesItems,getFakeEmailObject} = require('../utilities/fakedata');
 const { fa } = require('@faker-js/faker');
 const {Email} = require('../utilities/email');
 
         
-const {CATEGORIES_TABLE,USER_CART, USER, ITEMS_DETAILS, ITEMS_ARRAY, ITEMS_BY_ID, ITEMS_BY_CATEGORY_ID, ITEMS_BY_CATEGORY_WEB_ID} = require('../utilities/web_page_variables');
+const { 
+    CATEGORIES_TABLE,
+    USER_CART, 
+    USER, 
+    ITEMS_DETAILS, 
+    ITEMS_ARRAY, 
+    ITEMS_BY_ID, 
+    ITEMS_BY_CATEGORY_ID, 
+    ITEMS_BY_CATEGORY_WEB_ID
+} = require('../utilities/web_page_variables');
 const {ADMIN_ROUTE} = require('../utilities/routes_constant_names');
 /* generate a pool of mysql connection  */
 var con = mysql2.createPool(defaultMySQLDBConnectorConfig);
 const displayAdminDashboardPage = async(request, response) => {
 
-
         var app_cache = request.locals.app_cache ;
     
-        var categories = app_cache.get(CATEGORIES_TABLE); 
-        categories= await JSON.parse(JSON.stringify(categories));
+        var categories = await app_cache.get(CATEGORIES_TABLE); 
+        categories = await JSON.parse(JSON.stringify(categories));
     
         var userCart = {} ;
     
         var user = {};
         if (app_cache.has(USER) ) {
             user = JSON.parse(JSON.stringify(app_cache.get(USER))) ;
-            
-    
         } ;
-        user = JSON.parse(JSON.stringify(user));
+        user = await JSON.parse(JSON.stringify(user));
     
         
         if (app_cache.has(USER_CART))
@@ -107,17 +111,15 @@ const addItemPost = async(request, response) => {
         var app_cache = request.locals.app_cache ;
         /* get session array variables */
                 
-        var items_array = app_cache.get(ITEMS_ARRAY);
+        var items_array = await app_cache.get(ITEMS_ARRAY);
         items_array = await JSON.parse(JSON.stringify(items_array)) ;
-        var itemsByID = app_cache.get(ITEMS_BY_ID);
-        itemsByID = JSON.parse(JSON.stringify(itemsByID));
+        var itemsByID = await app_cache.get(ITEMS_BY_ID);
+        itemsByID = await JSON.parse(JSON.stringify(itemsByID));
         /* itemsByCategoryID should be an array  */
-        var itemsByCategoryID = app.get(ITEMS_BY_CATEGORY_ID);
-        itemsByCategoryID =  JSON.parse(JSON.stringify(itemsByCategoryID));
-        var itemsByCategoryWebID = app.get(ITEMS_BY_CATEGORY_WEB_ID); 
-        itemsByCategoryWebID = JSON.parse(JSON.stringify(itemsByCategoryWebID)) ;
-
-        //console.log(`itemsByCategoryID: ${JSON.stringify(itemsByCategoryID)}`);
+        var itemsByCategoryID = await  app.get(ITEMS_BY_CATEGORY_ID);
+        itemsByCategoryID =  await JSON.parse(JSON.stringify(itemsByCategoryID));
+        var itemsByCategoryWebID = await  app.get(ITEMS_BY_CATEGORY_WEB_ID); 
+        itemsByCategoryWebID = await JSON.parse(JSON.stringify(itemsByCategoryWebID)) ;
 
         const itemObjectJson = {
             "item_id" : item_id,
@@ -134,7 +136,7 @@ const addItemPost = async(request, response) => {
         if (!(item_id in itemsByID)) {
             itemsByID[item_id] = {} ;  
         } ;
-        itemsByID[item_id][ITEMS_DETAILS] = JSON.parse(JSON.stringify(itemObjectJson)) ;
+        itemsByID[item_id][ITEMS_DETAILS] = await JSON.parse(JSON.stringify(itemObjectJson)) ;
 
         
         if (!(category_id in itemsByCategoryID)) {
@@ -145,13 +147,12 @@ const addItemPost = async(request, response) => {
         if (!(category_webid in itemsByCategoryWebID)) {
             itemsByCategoryWebID[category_webid] = {} ;  
         } ;
-        itemsByCategoryWebID[category_webid] = JSON.parse(JSON.stringify(itemObjectJson));
+        itemsByCategoryWebID[category_webid] = await JSON.parse(JSON.stringify(itemObjectJson));
 
         await app_cache.set(ITEMS_ARRAY, items_array);
         await app_cache.set(ITEMS_BY_ID, itemsByID) ;
         await app_cache.set(ITEMS_BY_CATEGORY_ID, itemsByCategoryID);
         await app_cache.set(ITEMS_BY_CATEGORY_WEB_ID, itemsByCategoryWebID);
-        
         
         const success_message = `Item added to category successfully<br/>\n
         <a href='/${ADMIN_ROUTE}'>Back to Admin Dashboard</a>
@@ -162,20 +163,19 @@ const addItemPost = async(request, response) => {
         console.log(`Error in admin.js inserting new item: ${error.message}`);
         con.execute('ROLLBACK');//con.rollback();
         return response.status(400).send(`Error processing form`);
-    
     }
-    
 } ;
+
 const updateItemPost = async(request, response) => {
     
     var app_cache = request.locals.app_cache ; 
     var category_webid = new String(request.params.category_webid) ;
-    var itemsByCategoryWebID = app_cache.get(ITEMS_BY_CATEGORY_WEB_ID);
+    var itemsByCategoryWebID = await app_cache.get(ITEMS_BY_CATEGORY_WEB_ID);
     itemsByCategoryWebID =  await JSON.parse(JSON.stringify(itemsByCategoryWebID)) ;
      
     /* get cached or session array variables if necessary */
-    var itemsByID = app_cache.get(ITEMS_BY_ID);
-    itemsById = await JSON.parse(JSON.stringify(itemsByID)) ;
+    var itemsByID = await app_cache.get(ITEMS_BY_ID);
+    itemsByID = await JSON.parse(JSON.stringify(itemsByID)) ;
     
     var item_id = "";
     var item_name = new String(request.body.itemName);
@@ -189,7 +189,7 @@ const updateItemPost = async(request, response) => {
     var category_id = new String(oldItem.category_id);
     
 
-    var itemsByCategoryID = app_cache.get(ITEMS_BY_CATEGORY_ID);
+    var itemsByCategoryID = await app_cache.get(ITEMS_BY_CATEGORY_ID);
     itemsByCategoryID = await JSON.parse(JSON.stringify(itemsByCategoryID)) ;
              
     
@@ -231,11 +231,6 @@ const updateItemPost = async(request, response) => {
         imageurl = item_id + '.' + ext;
     } ;
     
-    
-     
-    /* Updates are done in transaction mode.
-    Below we update just the fields that changed 
-    */
     // Start Transaction
     con.execute('START TRANSACTION');
    
@@ -278,7 +273,7 @@ const updateItemPost = async(request, response) => {
             var query = queries[k];
             var data = values[k];
             console.log(`Executing query: ${query} with params: ${data}`);
-            await con.execute(query, data, function (error, results, fields) {
+            con.execute(query, data, function (error, results, fields) {
                 if (error) {
                     console.log(error);
                     //con.execute('ROLLBACK');
@@ -304,7 +299,7 @@ const updateItemPost = async(request, response) => {
             "unitPrice":unitPrice
         } ;
         /* update cache and or session variables */
-        var items_array = app_cache.get(ITEMS); 
+        var items_array = await app_cache.get(ITEMS_ARRAY); 
         items_array = await JSON.parse(JSON.stringify(items_array));
        
         /* find old item in array and get rid of it */
@@ -333,7 +328,7 @@ const updateItemPost = async(request, response) => {
 
         var itemsByCategoryIDIndexToDelete = -1;
         for (var i=0 ; i <  itemsByCategoryID[category_id].length; i++) {
-            var arrayItem = JSON.parse(JSON.stringify(itemsByCategoryID[category_id][i]));
+            var arrayItem = await JSON.parse(JSON.stringify(itemsByCategoryID[category_id][i]));
             if (arrayItem.item_id == oldItem.item_id) {
                 itemsByCategoryIDIndexToDelete  = i ;
                 break ;
@@ -357,9 +352,8 @@ const updateItemPost = async(request, response) => {
         const success_message = `Item updated successfully<br/>\n
         <a href='/${ADMIN_ROUTE}'>Back to Admin Dashboard</a>
         ` ;
-        response.status(200).send(success_message);
-        //response.status(200).send('Item updated successfully');
-        return ;
+        return response.status(200).send(success_message);
+        
     } catch (error) {
         console.log(`Error in admin.js updating item: ${error.message}`);
         con.execute('ROLLBACK');//con.rollback();
@@ -371,27 +365,41 @@ const updateItemPost = async(request, response) => {
 
 const displayUpdateItemPage = async (request, response) => { 
                 
-    var itemsByCategoryWebID =  await JSON.parse(JSON.stringify(request.session.itemsByCategoryWebID)) ;
+    var app_cache = request.locals.app_cache ;
+    var itemsByCategoryWebID = await app_cache.get(ITEMS_BY_CATEGORY_WEB_ID); 
+    itemsByCategoryWebID = await JSON.parse(JSON.stringify(itemsByCategoryWebID)) ;
    
     var category_webid = new String(request.params.category_webid);
     if (!(category_webid in itemsByCategoryWebID)) {
         console.log(`An update occured in ${__filename} with a category_webid that was not found in cache or session.`);
-        response.status(400).send(`An Error Occured`);
-        return ;
+        return response.status(400).send(`An Error Occured`);
     };
-    const itemToUpdate = await JSON.parse(JSON.stringify(itemsByCategoryWebID[category_webid]));
+    var itemToUpdate = await itemsByCategoryWebID[category_webid] ;
+    itemToUpdate = await JSON.parse(JSON.stringify(itemToUpdate));
     var userCart = {} ;
-    if (request.session.userCart)
-        userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
 
-    var categories = await JSON.parse(JSON.stringify(request.session.categories));
+    var user = {};
+    if (app_cache.has(USER) ) {
+        user = JSON.parse(JSON.stringify(app_cache.get(USER))) ;
+        
+
+    } ;
+    user = JSON.parse(JSON.stringify(user));
+
+    
+    if (app_cache.has(USER_CART))
+        userCart = JSON.parse(JSON.stringify(app_cache.get(USER_CART))) ;
+    userCart = JSON.parse(JSON.stringify(userCart));
+
+    var categories = await app_cache.get(CATEGORIES_TABLE); 
+    categories = await JSON.parse(JSON.stringify(categories));
     
 
     response.render('layout', { 
         pageTitle: `Updating ${decode(itemToUpdate.item_name).slice(0,20)}`, 
         template: 'updateitemform', 
         categories: categories,
-        user: loggedInUser,
+        user: user,
         userCart: userCart,
         item:itemToUpdate,
         IMG_DIR_FOR_WEB: IMG_DIR_FOR_WEB,
@@ -405,12 +413,12 @@ const getItemApiPost = async (request, response) => {
     
     var app_cache = request.locals.app_cache ;
     var category_id = new String(request.body.category_id);
-    let itemsByCategoryID = app_cache.get(ITEMS_BY_CATEGORY_ID);
-    itemsByCategoryID = JSON.parse(JSON.stringify(itemsByCategoryID)) ;
+    let itemsByCategoryID = await app_cache.get(ITEMS_BY_CATEGORY_ID);
+    itemsByCategoryID = await JSON.parse(JSON.stringify(itemsByCategoryID)) ;
     
     if (category_id in itemsByCategoryID) {
         
-        categoryItems = JSON.parse(JSON.stringify(itemsByCategoryID[category_id]));
+        var categoryItems = JSON.parse(JSON.stringify(itemsByCategoryID[category_id]));
         return response.status(200).json(categoryItems);
     } else {
         return response.status(401).json({'message':'Go away!!!'});

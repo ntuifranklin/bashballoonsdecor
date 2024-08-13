@@ -1,19 +1,17 @@
 const express = require('express');
 const router = express.Router();
-const bodyParser = require('body-parser');
+
 var csrf = require('csurf');
 const csrfProtection = csrf({ cookie: true }) ;
-const {decode, encode} = require('html-entities');
-
 
 require('dotenv').config();
-const createError = require('http-errors');
 //const {getCategoriesItems} = require('../database/controllers/database');
 
 const {
     cartPage,
     cartPagePost,
-    cartPageUpdate
+    cartPageUpdate,
+    deleteCartItemPost
 } = require('../controllers/cartController');
 
 module.exports = () => { 
@@ -25,6 +23,7 @@ module.exports = () => {
     
     router.post('/changeQuantity', csrfProtection, cartPageUpdate);
     
+    router.post('/deleteItem', csrfProtection, deleteCartItemPost);
 
 
     return router;

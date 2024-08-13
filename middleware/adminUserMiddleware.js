@@ -1,6 +1,5 @@
 
 const {USER} = require('../utilities/web_page_variables');
-const {LOGIN_ROUTE} = require('../utilities/routes_constant_names');
 const verifyAdminUserisLoggedIn = async(request, response, next) => {
     
     var app_cache = request.locals.app_cache ;
