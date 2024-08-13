@@ -349,15 +349,13 @@ const updateItemPost = async(request, response) => {
         itemsByCategoryWebID[category_webid] = await JSON.parse(JSON.stringify(itemObjectJson));
         
 
-        app_cache.get() = JSON.parse(JSON.stringify(items_array)); 
-        request.session.itemsByID = JSON.parse(JSON.stringify(itemsByID)) ;
-        request.session.itemsByCategoryID = JSON.parse(JSON.stringify(itemsByCategoryID));
-        request.session.itemsByCategoryWebID = JSON.parse(JSON.stringify(itemsByCategoryWebID));
-
-        request.session.save();
+        await app_cache.set(ITEMS_ARRAY,JSON.parse(JSON.stringify(items_array))); 
+        await app_cache.set(ITEMS_BY_ID,JSON.parse(JSON.stringify(itemsByID))) ;
+        await app_cache.set(ITEMS_BY_CATEGORY_ID,JSON.parse(JSON.stringify(itemsByCategoryID)));
+        await app_cache.set(ITEMS_BY_CATEGORY_WEB_ID,JSON.parse(JSON.stringify(itemsByCategoryWebID)));
         
         const success_message = `Item updated successfully<br/>\n
-        <a href='/admin'>Back to Admin Dashboard</a>
+        <a href='/${ADMIN_ROUTE}'>Back to Admin Dashboard</a>
         ` ;
         response.status(200).send(success_message);
         //response.status(200).send('Item updated successfully');
@@ -365,8 +363,8 @@ const updateItemPost = async(request, response) => {
     } catch (error) {
         console.log(`Error in admin.js updating item: ${error.message}`);
         con.execute('ROLLBACK');//con.rollback();
-        response.status(400).send('Error processing update item form');
-        return ;
+        return response.status(400).send('Error processing update item form');
+        
     }
     
 } ; 
