@@ -53,7 +53,12 @@ module.exports = () => {
     router.use(`/${LOGOUT_ROUTE}`, logoutRoute());
     router.use(`/${VERIFY_OTP_ROUTE}`, verifyOTPRoute());
     router.use(`/${SUCCESS_PAYMENT_ROUTE}`,successPaymentRoute());
-    
+    router.get('/webstats', async (request, response) => {
+        var app_cache = request.locals.app_cache ;
+        var app_stats = await app_cache.getStats();
+        app_stats = await JSON.parse(JSON.stringify(app_stats));
+        response.status(200).json(app_stats);
+    }) ;
     /* this route allows someone to search for a list of items based on an item category name */
     router.get('/:category_name',csrfProtection, rentalItemsPerCategoryPage);
 
