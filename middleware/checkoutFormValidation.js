@@ -8,8 +8,8 @@ const checkoutValidator = [
         .withMessage(`Full name must be between ${MIN_FULL_NAME_SIZE} and ${MAX_FULL_NAME_SIZE} characters.`),
     body('email')
         .isLength({min:MIN_EMAIL_ADDR_LENGTH, max:MAX_EMAIL_ADDR_LENGTH})
-        .withMessage(`Email should be between ${MIN_EMAIL_ADDR_LENGTH}  and ${MAX_EMAIL_ADDR_LENGTH} characters.`)
-        .isEmail()
+        .withMessage(`Email should be between ${MIN_EMAIL_ADDR_LENGTH} and ${MAX_EMAIL_ADDR_LENGTH} characters.`)
+        .matches(VALID_EMAIL_REGEXP)
         .withMessage('Email must be valid'),
     body('street_address')
         .isLength({ min: 5, max:MAX_BUFFER_SIZE }).withMessage('Please enter your street address.'),
@@ -17,7 +17,7 @@ const checkoutValidator = [
     body('state').isLength({ min: 2, max:MAX_BUFFER_SIZE }).withMessage('Please enter your state.'),
     body('zipcode')
         .isLength({ min: 5, max:5 })
-        .isZipCode()
+        .isPostalCode()
         .withMessage('Please a valid zipcode.'),
     body('phone').isLength({ min: 5, max:10 }).withMessage('Please enter your phone number.'),
     body('order_note').isLength({ min: 5, max:MAX_BUFFER_SIZE }).withMessage('Please enter your order note.'),

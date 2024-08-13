@@ -5,7 +5,6 @@ const {
     isValidTextMessage
 } = require('../utilities/functions');
 
-
 const { v4: uuidv4 } = require('uuid');
 const { check,validationResult } = require('express-validator');
 const checkoutFormValidator = async(request, response, next) => {

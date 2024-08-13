@@ -6,12 +6,13 @@ var csrf = require('csurf');
 var csrfProtection = csrf({ cookie: true });
 
 const {
-    contactFormValidation
+    validateContactForm
 } = require('../middleware/contactFormMiddleWare');
 
 const {
-    validateContactForm
-} = require('../middleware/contactFormValidator');
+    contactValidator
+} = require('../middleware/contactFormValidation');
+
 const {
     contactPage,
     contactFormPost
@@ -19,7 +20,7 @@ const {
 
 module.exports = () => { 
     router.get('/', csrfProtection, contactPage);
-    router.post('/', csrfProtection, contactFormValidation, validateContactForm,contactFormPost);
+    router.post('/', csrfProtection, contactValidator,validateContactForm ,contactFormPost);
     return router;
 };
 

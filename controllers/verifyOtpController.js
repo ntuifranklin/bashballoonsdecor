@@ -59,7 +59,6 @@ const verifyPagePost =  async(request, response) => {
         });
         
     } ;
-    next();
         
 
 } ;

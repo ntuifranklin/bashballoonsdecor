@@ -1,6 +1,9 @@
 var nodemailer = require('nodemailer');
 require('dotenv').config();
 
+const randomstring = require('randomstring');
+const {OTP_CODE_SIZE} = require('./functions');
+
 const emailValidator = require('deep-email-validator');
 
 const IMAP_EMAIL_AUTH_JSON = {
@@ -116,3 +119,60 @@ async function isEmailValid(email) {
   } ;
   
 exports.isEmailValid = isEmailValid ;
+
+
+async function sendOTP(email, otp) {
+    
+    return new Promise(async(resolve, reject) => {
+        
+
+        var mailOptions = {
+            from: `${process.env.BCC_ORDER_EMAIL}`,
+            to: `${email}`,
+            subject: `Your One-Time Password (OTP)`,
+            html: 
+            `<html>
+                <body>
+                    <p>
+                        Hi There!\n <br/>
+                        Here is your one time password (OTP) :<h3>${otp}</h3>\n
+                        It expires in 15 minutes.
+                        <br/>\n 
+                    </p>
+                </body>
+            </html>`,
+        };
+        try{
+
+            var emailSending = new Email();
+            emailSending.sendEmail(mailOptions.to, mailOptions.subject, mailOptions.html).
+            then(
+                (result) => {
+                    console.log(`OTP Email sent: ${JSON.stringify(result)}`);
+                    resolve(result);
+                }
+            ).catch(err => {
+                console.log(`Error sending OTP email: ${err}`);
+                reject(err);
+            });
+        } catch(err) {
+            console.log(`Error sending email: ${err.message}`);
+
+        }
+        
+    });
+};
+
+exports.sendOTP = sendOTP ;
+/* define a function that sends one time passwords */
+/* function that generates an OTP password */
+
+// Generate OTP
+function generateOTP() {
+    return randomstring.generate({
+      length: OTP_CODE_SIZE,
+      charset: 'numeric'
+    });
+} ;
+
+exports.generateOTP = generateOTP ;
