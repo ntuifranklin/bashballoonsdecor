@@ -1,0 +1,125 @@
+
+
+<% var c = JSON.parse(JSON.stringify(categories)) ;%>
+<% var all_items_array = JSON.parse(JSON.stringify(items_array)) ;%>
+<% //console.log(`On index page received categories : ${c}`) ;%>
+<% //console.log(`On index page received category_items : ${all_items_array}`) ;%>
+
+<% const imgItemWidth=360 ; %>
+<% const imgItemHeight=360 ; %>
+<%
+	
+	function trimItemName(name="",size=20) {
+		const n = new String(name);
+		if (n.length >= size )
+			return n.slice(0,(size-4)) + " ..." ;
+		
+		return n ;
+
+	}
+	
+%>
+<section class="slider-home-1 owl-carousel owl-theme">
+	<div class="hero-section item" style='background-image:url("<%= IMG_DIR_FOR_WEB %>1920x640.png")'>
+	  <div class="container">
+		<div class="row">
+		  <div class="col-lg-6">
+			<div class="featured-area">
+			  <span>IT'S NOT A PARTY WITHOUT</span>
+			  <h3><%= miniSiteName %> </h3>
+			  <h5>11,000+ PARTY RENTAL ITEMS IN STOCK</h5>
+			  <p>Bash Balloons Rentals Decor offers one of the largest online Party Rental Items in the DC Metro Area.</p>
+			</div>
+		  </div>
+		</div>
+	  </div>
+	</div>
+	<div class="hero-section item" style='background-image:url("<%= IMG_DIR_FOR_WEB %>1920x640.png")'>
+	  <div class="container">
+		<div class="row">
+		  <div class="col-lg-6">
+			<div class="featured-area">
+			  <span>IT'S NOT A PARTY WITHOUT</span>
+			  <h3><%= miniSiteName %> </h3>
+			  <h5>30,000+ PACKAGE ITEMS IN STOCK</h5>
+			  <p>Bash Balloons Rentals Decor offers one of the largest online Packages for Party Rentals in the DC Metro Area.</p>
+			</div>
+		  </div>
+		</div>
+	  </div>
+	</div>
+</section>
+<section class="gap">
+	<div class="container">
+		<div class="heading">
+			<img  loading="lazy"  alt="heading" src="/assets/img/heading.png">
+			<h2>Shop By Rentals Inventory</h2>
+			<p>Different Items based on your budget!</p>
+		</div>
+		<div class="balloon-slider owl-carousel owl-theme">
+			<% for(var counter=0; counter<c.length; counter++) { %>
+				<% var category = JSON.parse(JSON.stringify(c[counter])); %>
+				<div class="item">
+					<div class="balloon-shap">
+						<img  loading="lazy" src="<%= IMG_DIR_FOR_WEB %>169x160.png" width=169 height=160 />
+						<!-- <img  loading="lazy"  alt="balloon" src="https://via.placeholder.com/169x160"> -->
+						<a href="/<%= category.category_name %>"><h5><%= category.category_name %>...</h5></a>
+					</div>
+				</div>
+			<% } %>
+			
+		</div>
+	</div>
+</section>
+<section class="gap">
+    <div class="container">
+        <div class="row align-items-center">
+            
+            
+            
+            <% for (var j = 0; j < categories.length; j++) { %>
+
+                <% var category = JSON.parse(JSON.stringify(categories[j])); %>
+                <div class="col-lg-4">
+                    
+                    <div class="holiday">
+                        <img  loading="lazy"  alt="holiday" src="<%= IMG_DIR_FOR_WEB %>416x264.png" width=416 height=264 />
+                        <!-- <img  loading="lazy"  alt="holiday" src="https://via.placeholder.com/416x264"> -->
+                        <div class="holiday-text">
+                            <a href="/<%= category.category_name %>"><h3><%= category.category_name %></h3></a>
+                            <span>See Our Selection</span>
+                        </div>
+                    </div>
+                    
+                </div>
+            <% } %>
+        </div>
+    </div>
+</section>
+<section>
+    <div class="container">
+        <div class="heading">
+        <h2>Happy Customer Feedback</h2>
+        <p>whats trending at bargain balloons themes</p>
+        </div>
+        <div class="row feedback-slider owl-carousel owl-theme">
+            <% for (var j=0 ; j < customers_feedback.length; j++) { %>
+                <% var customer_feedback = JSON.parse(JSON.stringify( customers_feedback[j] )) ; %>
+                <div class="col-lg-12 item">
+                    <div class="customer-feedback">
+                        <i><img  loading="lazy"  class="quote" alt="quote" src="/assets/img/quote.png"></i>
+                        <p><%= customer_feedback["comments"] %></p>
+                        <h4><%= customer_feedback["fullname"] %></h4>
+                        <span><%= customer_feedback["date"] %></span>
+                        <div class="star">
+                            <% var nbstars = customer_feedback["nbstars"]; %>
+                            <% for (var i = 0; i < nbstars; i++) { %>
+                                <i class="fa-solid fa-star"></i>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</section>

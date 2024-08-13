@@ -38,7 +38,7 @@ const homePage =  async (request, response) => {
     response.render('layout', 
     { 
         pageTitle: request.locals.siteName, 
-        template: 'index', 
+        template: 'index_lightweight', 
         userCart : userCart,
         user:user,
         categories: categories,
