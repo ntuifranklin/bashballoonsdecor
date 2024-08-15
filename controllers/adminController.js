@@ -1,13 +1,14 @@
 
 
-const {IMG_DIR_FOR_WEB,upload_folder} = require('../utilities/fileupload');
+const {IMG_DIR_FOR_WEB,upload_folder, template_folder} = require('../utilities/fileupload');
 const {decode, encode} = require('html-entities');
 require('dotenv').config();
 
 const {generateUniqueID, getCategoriesItems} = require('../database/controllers/database');
 
 const {MySQLDBConnector, defaultMySQLDBConnectorConfig} = require('../database/models/MySQLDBConnector');
-
+const {Imageconverter} = require('../models/Imageconverter');
+let imageConverter = new Imageconverter();
 var mysql2 = require('mysql2');
 const { fa } = require('@faker-js/faker');
 const {Email} = require('../utilities/email');
@@ -23,7 +24,7 @@ const {
     ITEMS_BY_CATEGORY_ID, 
     ITEMS_BY_CATEGORY_WEB_ID
 } = require('../utilities/web_page_variables');
-const IMG_DIR = upload_folder ;
+var IMG_DIR = upload_folder ;
 const {ADMIN_ROUTE} = require('../utilities/routes_constant_names');
 /* generate a pool of mysql connection  */
 var con = mysql2.createPool(defaultMySQLDBConnectorConfig);
@@ -79,22 +80,28 @@ const addItemPost = async(request, response) => {
     
     // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
     const sampleFile = request.files.itemimgurl;
+    console.log(`Image from form: ${JSON.parse(JSON.stringify(sampleFile))}`);
     //get extension of the file 
     var ext = sampleFile.name.split('.').pop();
+    IMG_DIR = __dirname + '/../' +  template_folder + IMG_DIR_FOR_WEB ;
     const uploadPath = `${IMG_DIR}` + item_id + '.' + ext;
 
-    // Use the mv() method to place the file somewhere on your server
-    sampleFile.mv(uploadPath, function(errMoveImg) {
-        if (errMoveImg) {
-            console.log(`Error moving image : ${errMoveImg.message}`);
-            return response.status(400).send('Error uploading image');
-        }
-    });
-    const imageurl = item_id + '.' + ext;
-    /* generate a category_web id  that does not exist */
-    var category_webid = await generateUniqueID(con, 'category_items', 'category_webid');
-    category_webid = category_webid.substring(0,8);
     try {
+        // Save the file in the original format
+        sampleFile.mv(uploadPath, function(errMoveImg) {
+            if (errMoveImg) {
+                console.log(`Error moving image : ${errMoveImg.message}`);
+                throw new Error('Error uploading image');
+            }
+        });
+        //try saving the image to a specified folder   
+        let imageurl = "";
+        imageurl = await imageConverter.convert(request.files.itemimgurl, item_id);
+    
+            
+        /* generate a category_web id  that does not exist */
+        var category_webid = await generateUniqueID(con, 'category_items', 'category_webid');
+        category_webid = category_webid.substring(0,8);
         var sql = `INSERT INTO category_items VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
         var itemArray = [item_id, itemName, description, category_id, category_webid, imageurl, quantityAvailable, unitPrice]; 
         con.execute(sql,itemArray, 
@@ -117,9 +124,9 @@ const addItemPost = async(request, response) => {
         var itemsByID = await app_cache.get(ITEMS_BY_ID);
         itemsByID = await JSON.parse(JSON.stringify(itemsByID));
         /* itemsByCategoryID should be an array  */
-        var itemsByCategoryID = await  app.get(ITEMS_BY_CATEGORY_ID);
+        var itemsByCategoryID = await  app_cache.get(ITEMS_BY_CATEGORY_ID);
         itemsByCategoryID =  await JSON.parse(JSON.stringify(itemsByCategoryID));
-        var itemsByCategoryWebID = await  app.get(ITEMS_BY_CATEGORY_WEB_ID); 
+        var itemsByCategoryWebID = await  app_cache.get(ITEMS_BY_CATEGORY_WEB_ID); 
         itemsByCategoryWebID = await JSON.parse(JSON.stringify(itemsByCategoryWebID)) ;
 
         const itemObjectJson = {

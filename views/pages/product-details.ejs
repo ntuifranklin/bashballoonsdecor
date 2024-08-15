@@ -125,7 +125,7 @@ function trimItemName(name="",size=20) {
         
                   <% var htmlID = new String(item.item_id);  %>
                   <a id="<%= htmlID %>" class="btn" onclick='updateCart("<%= item.item_id %>", source="#", htmlID="<%= htmlID %>", alertIndex="productDetailsUpdateIndex")'>
-                    <span>Add to Cart</span>
+                    <span>Add To Wish List</span>
                   </a>
                   <a href="#" class="heart-wishlist">
                     <i class="fa-regular fa-heart"></i>
@@ -342,7 +342,7 @@ function trimItemName(name="",size=20) {
                 <div class="add-to-cart">
 
                   <% var htmlID2 = new String(item.item_id) + "2";  %>
-                  <a id="<%= htmlID2 %>" class="btn" onclick='updateCart("<%= similar_item.item_id %>", source="#", htmlID="<%= htmlID2 %>", alertIndex="productDetailsUpdateIndex2")'><span>Add to Cart</span></a>
+                  <a id="<%= htmlID2 %>" class="btn" onclick='updateCart("<%= similar_item.item_id %>", source="#", htmlID="<%= htmlID2 %>", alertIndex="productDetailsUpdateIndex2")'><span>Add To Wish List</span></a>
                   <a href="#" class="heart-wishlist">
                     <i class="fa-regular fa-heart"></i>
                   </a>

@@ -10,7 +10,7 @@
   "scripts": {
     "test": "mocha --timeout 100000 --recursive --exit",
     "start": "node server.js",
-    "prof":"NODE_ENV=production node --prof server.js",
+    "prof": "NODE_ENV=production node --prof server.js",
     "dev": "nodemon -e js,ejs,html -w . -w public -w views -w routes -w database server.js"
   },
   "author": "Franklin Nkokam Ngongang",
@@ -50,6 +50,7 @@
     "nodemailer": "^6.9.7",
     "randomstring": "^1.3.0",
     "secret-key": "^1.5.1",
+    "sharp": "^0.33.4",
     "sqlite3": "^5.1.6",
     "stripe": "^16.7.0",
     "supertest": "^6.3.4",

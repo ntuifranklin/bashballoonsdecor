@@ -68,8 +68,8 @@
 
 	<% if("itemImageUrl" in seoObject) { %>
 		<% const itemImageUrl = seoObject["itemImageUrl"];  %>
-		<meta property="og:image" content="<%= IMG_DIR_FOR_WEB %><%= itemImageUrl %>">
-		<meta property="twitter:image" content="<%= IMG_DIR_FOR_WEB %><%= itemImageUrl %>">
+		<meta property="og:image" content="<%=  BASE_SERVER_URL + IMG_DIR_FOR_WEB %><%= itemImageUrl %>">
+		<meta property="twitter:image" content="<%= BASE_SERVER_URL + IMG_DIR_FOR_WEB %><%= itemImageUrl %>">
 		<meta property="og:type" content="product">
 		<meta name="twitter:card" content="summary_large_image">
 	<% } %>
@@ -127,14 +127,14 @@
 			<%  } else { %>
 				
 				<div>
-					<a class="d-flex"  href="/<%= LOGIN_ROUTE %>">login</a>
+					<a class="d-flex"  href="/<%= LOGIN_ROUTE %>">Login</a>
 				</div>
 			<% } %>
 		 
 			<div class="donation">
 					
 					<a href="JavaScript:void(0)" class="pr-cart">
-						Cart
+						Wish List
 						<svg enable-background="new 0 0 512 512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><g><path d="m452 120h-60.946c-7.945-67.478-65.477-120-135.054-120s-127.109 52.522-135.054 120h-60.946c-11.046 0-20 8.954-20 20v352c0 11.046 8.954 20 20 20h392c11.046 0 20-8.954 20-20v-352c0-11.046-8.954-20-20-20zm-196-80c47.484 0 87.019 34.655 94.659 80h-189.318c7.64-45.345 47.175-80 94.659-80zm176 432h-352v-312h40v60c0 11.046 8.954 20 20 20s20-8.954 20-20v-60h192v60c0 11.046 8.954 20 20 20s20-8.954 20-20v-60h40z"></path></g></svg>
 					</a>
 					
@@ -193,7 +193,7 @@
 
 							<a class="font-bold" href="/<%= CART_ROUTE %>">View Wish List</a>
 
-							<a class="font-bold theme-bg-clr text-white checkout" href="/<%= CHECKOUT_ROUTE %>">Send Us Your Wish List</a>
+							<a class="font-bold theme-bg-clr text-white checkout" href="/<%= CHECKOUT_ROUTE %>">Send Your Wish List</a>
 
 							</div>
 
@@ -202,9 +202,9 @@
 								<li>
 									<div class="alert alert-dark" role="alert">
 										<hr>
-										<h4 class="alert-heading">Sorry. Your Cart is Empty!</h4>
+										<h4 class="alert-heading">Sorry. Your Wish List is Empty!</h4>
 										<hr>
-										<p class="mb-0">Please add some items to your cart.</p>
+										<p class="mb-0">Please add some items to your wish.</p>
 										<hr>
 									</div>
 								</li>
@@ -302,12 +302,12 @@
 			</li>
 			<%  } else { %>
 			<li>
-				<a class="d-flex" href="/<%= LOGIN_ROUTE %>">login</a>
+				<a class="d-flex" href="/<%= LOGIN_ROUTE %>">Login</a>
 			</li>
 			<% } %>
 
 
-			<li class="menu-item-has-children"><a href="JavaScript:void(0)">Our Party Rental Inventory</a>
+			<li class="menu-item-has-children"><a href="JavaScript:void(0)">Rental Inventory</a>
 			  <ul class="sub-menu">
 				
 						<% for (var j=0 ; j < categories.length; j++ ) { %>
@@ -321,8 +321,8 @@
 			  </ul>
 			</li>
 			
-			<li><a  href="/<%= CART_ROUTE %>">Shopping Cart</a></li>
-			<li><a  href="/<%= CHECKOUT_ROUTE %>">Cart Checkout</a></li>
+			<li><a  href="/<%= CART_ROUTE %>">Your Wish List</a></li>
+			<li><a  href="/<%= CHECKOUT_ROUTE %>">Send Your Wish List</a></li>
   
 			<li><a  href="/<%= CONTACT_ROUTE %>">Contact</a></li>
   
