@@ -249,12 +249,20 @@ app.use(csrfProtection, async(request, response, next) => {
         const originalUrl = request.originalUrl;
         const port = PORT;
         var fullUrl = '';
-        if (`${PORT}` != `80` )
-            fullUrl = `${protocol}://${host}:${port}${originalUrl}` ;
-        else
-            fullUrl = `${protocol}://${host}${originalUrl}` ;
+        var baseUrl = '';
+        if (`${PORT}` != `80` ) {
+            baseUrl = `${protocol}://${host}:${port}`;
+        } else{
+            
+            baseUrl = `${protocol}://${host}`;
+        }
+        //console.log(`base url: ${baseUrl}`);
+        fullUrl = `${baseUrl}${originalUrl}` ;
+        
+        //console.log(`full url: ${fullUrl}`);
         app.locals.originalUrl = originalUrl;
         app.locals.fullUrl = fullUrl ;
+        app.locals.BASE_SERVER_URL = baseUrl ;
         request.locals = app.locals ;
         request.locals.app_cache = app_cache ;
         request.locals.USER_CART_NAME = USER_CART;

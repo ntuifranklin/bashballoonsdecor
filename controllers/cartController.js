@@ -24,7 +24,7 @@ const cartPage = async (request, response) => {
         userCart = await app_cache.get(USER_CART);
     
     response.render('layout', { 
-        pageTitle: 'Your Shopping Cart', 
+        pageTitle: 'Your Wish List', 
         template: 'cart', 
         userCart: userCart,
         user:user,
@@ -86,25 +86,25 @@ const cartPagePost = async (request, response) => {
     /* update quantity and save session */
     if (action == subtractQuantity) {
         if (userCart[itemUpdateID][QUANTITY] < 1 ) {
-            response.status(400).send({ message: 'error', responseText: 'Item not in cart' });
+            response.status(400).send({ message: 'error', responseText: 'Item not in wish list' });
             
         } else if (userCart[itemUpdateID][QUANTITY] == 1) {
             delete userCart[itemUpdateID];
             await app_cache.set(USER_CART, JSON.parse(JSON.stringify(userCart))) ;
           
-            response.status(200).send({ message: 'success', responseText: 'Item removed from cart' });
+            response.status(200).send({ message: 'success', responseText: 'Item removed from wish list' });
           
         } else {
             userCart[itemUpdateID][QUANTITY] -= 1;
             await app_cache.set(USER_CART, JSON.parse(JSON.stringify(userCart))) ;
-            response.status(200).send({ message: 'success', responseText: 'Item removed from cart' });
+            response.status(200).send({ message: 'success', responseText: 'Item removed from wish list' });
         }
     
     } else {
         //console.log(`Successfully added to cart : ${JSON.stringify(userCart)}`);
         userCart[itemUpdateID][QUANTITY] += 1;
         await app_cache.set(USER_CART, JSON.parse(JSON.stringify(userCart))) ;
-        response.status(200).send({ message: 'success', responseText: 'Item added to cart' });
+        response.status(200).send({ message: 'success', responseText: 'Item added to wish list' });
     };
 } ;
 
@@ -116,7 +116,7 @@ const cartPageUpdate = async (request, response) => {
         userCart = await app_cache.get(USER_CART);
         userCart = await JSON.parse(JSON.stringify(userCart)) ;
     } else {
-        response.status(400).send({ message: 'error', responseText: "You don't have a cart yet" });
+        response.status(400).send({ message: 'error', responseText: "You don't have a wish list yet" });
         return; 
     } ;
     var itemsByID = await app_cache.get(ITEMS_BY_ID);
@@ -158,7 +158,7 @@ const cartPageUpdate = async (request, response) => {
      /* update quantity and save session */
     userCart[itemID][QUANTITY] = integerQuantity ;
     app_cache.set(USER_CART, JSON.parse(JSON.stringify(userCart))) ;
-    response.status(200).send({ message: 'success', responseText: `Cart updated successfully` });
+    response.status(200).send({ message: 'success', responseText: `Wish list updated successfully` });
 } ;
 const deleteCartItemPost = async (request, response) => {
          
@@ -174,7 +174,7 @@ const deleteCartItemPost = async (request, response) => {
     delete userCart[itemID] ;
     await app_cache.set(USER_CART, JSON.parse(JSON.stringify(userCart)))  ;
     
-    return response.status(200).send({ message: 'success', responseText: `Item deleted from cart successfully` });
+    return response.status(200).send({ message: 'success', responseText: `Item deleted from wish list successfully` });
 } ;
 module.exports = {
     cartPage, 
