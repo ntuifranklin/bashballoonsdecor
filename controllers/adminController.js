@@ -80,7 +80,7 @@ const addItemPost = async(request, response) => {
     
     // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
     const sampleFile = request.files.itemimgurl;
-    console.log(`Image from form: ${JSON.parse(JSON.stringify(sampleFile))}`);
+    //console.log(`Image from form: ${JSON.parse(JSON.stringify(sampleFile))}`);
     //get extension of the file 
     var ext = sampleFile.name.split('.').pop();
     IMG_DIR = __dirname + '/../' +  template_folder + IMG_DIR_FOR_WEB ;
@@ -88,15 +88,19 @@ const addItemPost = async(request, response) => {
 
     try {
         // Save the file in the original format
-        sampleFile.mv(uploadPath, function(errMoveImg) {
-            if (errMoveImg) {
-                console.log(`Error moving image : ${errMoveImg.message}`);
-                throw new Error('Error uploading image');
-            }
-        });
-        //try saving the image to a specified folder   
         let imageurl = "";
-        imageurl = await imageConverter.convert(request.files.itemimgurl, item_id);
+        if (sampleFile != null ) {
+            
+            sampleFile.mv(uploadPath, function(errMoveImg) {
+                if (errMoveImg) {
+                    console.log(`Error moving image : ${errMoveImg.message}`);
+                    throw new Error('Error uploading image');
+                }
+            });
+            //try saving the image to a specified folder   
+            
+            imageurl = await imageConverter.convert(request.files.itemimgurl, item_id);
+        }
     
             
         /* generate a category_web id  that does not exist */
@@ -211,6 +215,7 @@ const updateItemPost = async(request, response) => {
     //console.log(`Before checking the files array length`);
     var sampleFile = null;
     var uploadPath = "";
+    var fileWasUploaded = false ;
     if (request.files && Object.keys(request.files).length != 0) {
         //.log(`\nChecked the files array successful\nChecking the image type`);
         /* check the mimetype of the file */
@@ -221,28 +226,39 @@ const updateItemPost = async(request, response) => {
             return response.status(400).send(`Only images of this type ${acceptedImageTypes} are accepted`);
             
         } ;
-            
-        // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
-        sampleFile = request.files.itemimgurl;
-        //get extension of the file 
-        var ext = sampleFile.name.split('.').pop();
-        uploadPath = `${IMG_DIR}` + item_id + '.' + ext;
-
-        // Use the mv() method to place the file somewhere on your server
-        sampleFile.mv(uploadPath, function(errMoveImg) {
-            if (errMoveImg) {
-                console.log(`Error moving image : ${errMoveImg}`);
-                return response.status(500).send('Error uploading image');
-            }
-
-        });
-        imageurl = item_id + '.' + ext;
+           
     } ;
     
     // Start Transaction
     con.execute('START TRANSACTION');
-   
+    
     try {
+        
+        // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
+        if (sampleFile != null ) {
+                
+            sampleFile = request.files.itemimgurl;
+            //get extension of the file 
+            var ext = sampleFile.name.split('.').pop();
+            
+            IMG_DIR = __dirname + '/../' +  template_folder + IMG_DIR_FOR_WEB ;
+            uploadPath = `${IMG_DIR}` + item_id + '.' + ext;
+
+            // Use the mv() method to place the file somewhere on your server
+            sampleFile.mv(uploadPath, function(errMoveImg) {
+                if (errMoveImg) {
+                    console.log(`Error moving image : ${errMoveImg}`);
+                    return response.status(500).send('Error uploading image');
+                } else {
+                    fileWasUploaded = true ;
+                }
+
+            });
+            //try saving the image to a specified folder   
+            
+            imageurl = await imageConverter.convert(request.files.itemimgurl, item_id);
+    
+        }
         /* multiple or no updates might take place */
         var queries = []; //ana array of strings
         var values = []; // has to be an array of arrays
@@ -271,7 +287,8 @@ const updateItemPost = async(request, response) => {
             values.push([unitPrice, oldItem.item_id]);
         } ;
 
-        if (oldItem.imageurl != imageurl) {
+        //if a new image was uploaded
+        if (oldItem.imageurl != imageurl ) {
             
             queries.push(`UPDATE category_items SET imageurl = ? WHERE item_id=?`);
             values.push([imageurl, oldItem.item_id]);
@@ -320,10 +337,10 @@ const updateItemPost = async(request, response) => {
             }
         } ;
         if (indexToDelete >= 0 && indexToDelete < items_array.length) {
-            items_array.splice(indexToDelete,indexToDelete);
+            items_array.splice(indexToDelete,1,itemObjectJson);
         } ;
 
-        items_array.push(itemObjectJson);
+        //items_array.push(itemObjectJson);
         if (!(item_id in itemsByID)) {
             itemsByID[item_id] = {} ;  
         } ;
@@ -343,8 +360,8 @@ const updateItemPost = async(request, response) => {
             }
         } ;
 
-        itemsByCategoryID[category_id].splice(itemsByCategoryIDIndexToDelete, itemsByCategoryIDIndexToDelete);
-        itemsByCategoryID[category_id].push(itemObjectJson);
+        itemsByCategoryID[category_id].splice(itemsByCategoryIDIndexToDelete, 1, itemObjectJson);
+        //itemsByCategoryID[category_id].push(itemObjectJson);
         
         if (!(category_webid in itemsByCategoryWebID)) {
             itemsByCategoryWebID[category_webid] = {} ;  
@@ -360,7 +377,7 @@ const updateItemPost = async(request, response) => {
         const success_message = `Item updated successfully<br/>\n
         <a href='/${ADMIN_ROUTE}'>Back to Admin Dashboard</a>
         ` ;
-        return response.status(200).send(success_message);
+        response.status(200).send(success_message);
         
     } catch (error) {
         console.log(`Error in admin.js updating item: ${error.message}`);
