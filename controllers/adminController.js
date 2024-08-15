@@ -26,6 +26,7 @@ const {
 } = require('../utilities/web_page_variables');
 var IMG_DIR = upload_folder ;
 const {ADMIN_ROUTE} = require('../utilities/routes_constant_names');
+const { file } = require('googleapis/build/src/apis/file');
 /* generate a pool of mysql connection  */
 var con = mysql2.createPool(defaultMySQLDBConnectorConfig);
 const displayAdminDashboardPage = async(request, response) => {
@@ -244,6 +245,7 @@ const updateItemPost = async(request, response) => {
             IMG_DIR = __dirname + '/../' +  template_folder + IMG_DIR_FOR_WEB ;
             uploadPath = `${IMG_DIR}` + item_id + '.' + ext;
 
+            imageurl = "";
             // Use the mv() method to place the file somewhere on your server
             sampleFile.mv(uploadPath, function(errMoveImg) {
                 if (errMoveImg) {
@@ -257,6 +259,7 @@ const updateItemPost = async(request, response) => {
             //try saving the image to a specified folder   
             
             imageurl = await imageConverter.convert(request.files.itemimgurl, item_id);
+            console.log(`new image name : ${imageurl}, old image name: ${oldItem.imageurl}`);
     
         }
         /* multiple or no updates might take place */
@@ -268,30 +271,30 @@ const updateItemPost = async(request, response) => {
         */
         if (decode(oldItem.item_name) != decode(item_name) ) {
             queries.push(`UPDATE category_items SET item_name = ? WHERE item_id=?`);
-            values.push([encode(item_name), oldItem.item_id]);
+            values.push([encode(item_name), item_id]);
         } ;
         
         if (decode(oldItem.description) != decode(description) ) {
             queries.push(`UPDATE category_items SET description = ? WHERE item_id=?`);
-            values.push([encode(description), oldItem.item_id]);
+            values.push([encode(description), item_id]);
         } ;
         
         if (oldItem.quantityAvailable != quantityAvailable ) {
             queries.push(`UPDATE category_items SET quantityAvailable = ? WHERE item_id=?`);
-            values.push([quantityAvailable, oldItem.item_id]);
+            values.push([quantityAvailable, item_id]);
         } ;
 
         
         if (oldItem.unitPrice != unitPrice ) {
             queries.push(`UPDATE category_items SET unitPrice = ? WHERE item_id=?`);
-            values.push([unitPrice, oldItem.item_id]);
+            values.push([unitPrice, item_id]);
         } ;
 
         //if a new image was uploaded
-        if (oldItem.imageurl != imageurl ) {
+        if (oldItem.imageurl != imageurl || fileWasUploaded == true) {
             
             queries.push(`UPDATE category_items SET imageurl = ? WHERE item_id=?`);
-            values.push([imageurl, oldItem.item_id]);
+            values.push([imageurl, item_id]);
         };
         
         for (var k = 0; k < queries.length; k++) {
