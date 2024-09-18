@@ -57,12 +57,13 @@ const viewProductDetailsPage = async(request, response) => {
 
     //find the category name of the category to which this item belongs to.
     var category = categories.find(category => category.category_id === item_category_id) ;
-    const seoSiteLink = request.locals.seoSiteLink ;
+    const seoSiteLink = request.locals.BASE_SERVER_URL ;
 
     var seoObject = {
         title: `Elegant Event Rentals - ${itemTitle} at ${seoSiteLink}`,
         description: `Make your event memorable with our Elegant ${itemTitle}, Elevate your event with ${seoSiteLink}`,
         type:'product',
+        baseServerUrl: seoSiteLink,
     } ;
 
     const itemImageUrl = item.imageurl;

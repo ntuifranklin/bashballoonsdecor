@@ -261,7 +261,7 @@ const showCheckoutPage = async(request, response) => {
     //console.log('Passed cart : ' + JSON.stringify(userCart, null, 4));
     response.render('layout', 
         { 
-            pageTitle: 'Cart Checkout', 
+            pageTitle: 'Wish list checkout', 
             template: 'checkout', 
             userCart: userCart,
             error: null,
