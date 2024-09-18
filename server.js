@@ -249,7 +249,11 @@ app.use(csrfProtection, async(request, response, next) => {
         const originalUrl = request.originalUrl;
         const port = PORT;
         var fullUrl = '';
-        if (`${PORT}` != `80` )
+        /*
+            If we are in production environment, then it 
+            probably means that the isTestingEnv variable is set
+        */
+        if (isTestingEnv)
             fullUrl = `${protocol}://${host}:${port}${originalUrl}` ;
         else
             fullUrl = `${protocol}://${host}${originalUrl}` ;
