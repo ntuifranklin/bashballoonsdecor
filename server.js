@@ -253,7 +253,9 @@ app.use(csrfProtection, async(request, response, next) => {
             If we are in production environment, then it 
             probably means that the isTestingEnv variable is set
         */
-        if (isTestingEnv)
+        const areWeInTestingEnv = false ;
+        areWeInTestingEnv = isTestingEnv ;
+        if (areWeInTestingEnv)
             fullUrl = `${protocol}://${host}:${port}${originalUrl}` ;
         else
             fullUrl = `${protocol}://${host}${originalUrl}` ;
