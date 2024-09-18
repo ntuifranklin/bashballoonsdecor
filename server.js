@@ -198,7 +198,7 @@ app.use(csrfProtection, async(request, response, next) => {
             
             for (var j=0 ; j < items_array.length; j++ ) {
                 item = JSON.parse(JSON.stringify(items_array[j]));
-                items_array[j].item_name = decode(item.item_name);
+                //items_array[j].item_name = decode(item.item_name);
                 var categoryID = item.category_id ;
                 if (!(categoryID in itemsByCategoryID)) {
                     itemsByCategoryID[categoryID] = [] ;
@@ -238,7 +238,7 @@ app.use(csrfProtection, async(request, response, next) => {
             categories = await getCategories (tableName=CATEGORIES_TABLE) ;
             for (var i = 0; i <  categories.length; i++) {
                 var category = JSON.parse(JSON.stringify( categories[i]));
-                category.category_name = decode(category.category_name);
+                category.category_name = category.category_name;
                 //categories[i].category_name = category.category_name;
             };
             app_cache.set(CATEGORIES_TABLE, categories);
@@ -257,9 +257,9 @@ app.use(csrfProtection, async(request, response, next) => {
             fullUrl = `${protocol}://${host}:${port}${originalUrl}` ;
         else
             fullUrl = `${protocol}://${host}${originalUrl}` ;
-        
         app.locals.originalUrl = originalUrl;
         app.locals.fullUrl = fullUrl ;
+        app.locals.BASE_SERVER_URL = baseUrl ;
         request.locals = app.locals ;
         request.locals.app_cache = app_cache ;
         request.locals.USER_CART_NAME = USER_CART;

@@ -19,8 +19,7 @@ const addItemFormValidator = [
         .withMessage('Please enter a quantity'),
     body('category_id')
         .isLength({ min: 1 })
-        .escape()
-        .isAlphanumeric()
+        .notEmpty()
         .withMessage('Please select a category'),
     body('unitPrice')
         .isLength({ min: 1 })
