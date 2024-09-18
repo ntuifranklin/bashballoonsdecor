@@ -253,12 +253,17 @@ app.use(csrfProtection, async(request, response, next) => {
             If we are in production environment, then it 
             probably means that the isTestingEnv variable is set
         */
-        const areWeInTestingEnv = false ;
+        var areWeInTestingEnv = false ;
         areWeInTestingEnv = isTestingEnv ;
-        if (areWeInTestingEnv)
-            fullUrl = `${protocol}://${host}:${port}${originalUrl}` ;
-        else
-            fullUrl = `${protocol}://${host}${originalUrl}` ;
+        var baseUrl = '';
+        if (areWeInTestingEnv){
+            baseUrl = `${protocol}://${host}:${port}`;
+            fullUrl = `${baseUrl}${originalUrl}` ;
+        }else{
+            
+            baseUrl = `${protocol}://${host}`;
+            fullUrl = `${baseUrl}${originalUrl}` ;
+        }
         app.locals.originalUrl = originalUrl;
         app.locals.fullUrl = fullUrl ;
         app.locals.BASE_SERVER_URL = baseUrl ;
@@ -269,6 +274,7 @@ app.use(csrfProtection, async(request, response, next) => {
         request.locals.ITEMS_DETAILS_NAME = ITEMS_DETAILS;
         request.locals.LOGGEDIN_USER_VARIABLE_NAME = USER;
         response.locals.csrfToken = request.csrfToken();
+        //console.log('request came in');
         return next();
 
 });
