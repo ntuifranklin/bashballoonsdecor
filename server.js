@@ -257,6 +257,7 @@ app.use(csrfProtection, async(request, response, next) => {
             fullUrl = `${protocol}://${host}:${port}${originalUrl}` ;
         else
             fullUrl = `${protocol}://${host}${originalUrl}` ;
+        
         app.locals.originalUrl = originalUrl;
         app.locals.fullUrl = fullUrl ;
         request.locals = app.locals ;
