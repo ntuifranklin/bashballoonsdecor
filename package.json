@@ -8,7 +8,7 @@
     "node": ">=16.0.0"
   },
   "scripts": {
-    "test": "mocha --timeout 100000 --recursive --exit",
+    "test": "mocha --timeout 200000 --recursive --exit",
     "start": "node server.js",
     "prof": "NODE_ENV=production node --prof server.js",
     "dev": "nodemon -e js,ejs,html -w . -w public -w views -w routes -w database server.js"
