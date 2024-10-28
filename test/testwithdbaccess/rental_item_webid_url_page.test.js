@@ -3,7 +3,7 @@ const app = require("../../server.js");
 const { assert,expect,should } = require ("chai");  
 
 const {MySQLDBConnector} = require("../../database/models/MySQLDBConnector.js");
-const {PRODUCT_DETAILS_ROUTE} = require('../../utilities/routes_constant_names');
+const {RENTAL_DETAILS_ROUTE} = require('../../utilities/routes_constant_names.js');
 require("dotenv").config();
 
 describe('Testing the URL for each Category webid ', async() => {
@@ -22,10 +22,10 @@ describe('Testing the URL for each Category webid ', async() => {
           var jsonObject = JSON.parse(JSON.stringify(category_webid_object));
           var category_webid = jsonObject.category_webid ;
           //const lowerCaseCatName = category_webid.toLowerCase();
-          it(`Testing of url /${PRODUCT_DETAILS_ROUTE}/${category_webid}`, async()=> {
+          it(`Testing of url /${RENTAL_DETAILS_ROUTE}/${category_webid}`, async()=> {
             
             expect(category_webid).to.not.equal(null);
-            request(app).get(`/${PRODUCT_DETAILS_ROUTE}/${category_webid}`)
+            request(app).get(`/${RENTAL_DETAILS_ROUTE}/${category_webid}`)
             .end(async (err,category_webid_url_page_result) => {
               
               expect(category_webid).to.not.equal(null);

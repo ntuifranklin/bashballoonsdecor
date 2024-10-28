@@ -1,7 +1,7 @@
 const CHECKOUT_ROUTE = "checkout";
 const CART_ROUTE = "cart";
 const CONTACT_ROUTE = "contact";
-const PRODUCT_DETAILS_ROUTE = "product-details";
+const RENTAL_DETAILS_ROUTE = "rental-item-details";
 const ADMIN_ROUTE = "admin";
 const LOGIN_ROUTE = "login" ;
 const LOGOUT_ROUTE = "logout";
@@ -15,7 +15,7 @@ module.exports = {
     CHECKOUT_ROUTE,
     CART_ROUTE,
     CONTACT_ROUTE,
-    PRODUCT_DETAILS_ROUTE,
+    RENTAL_DETAILS_ROUTE,
     ADMIN_ROUTE,
     LOGIN_ROUTE,
     LOGOUT_ROUTE,

@@ -10,6 +10,7 @@ const {
     USER
 } = require('../utilities/web_page_variables');
 
+const {getCategoriesItems} = require('../database/controllers/database');
 const homePage =  async (request, response) => { 
     /* must have been loaded in server.js file  */  
     
@@ -55,13 +56,13 @@ const homePage =  async (request, response) => {
 
 const rentalItemsPerCategoryPage = async(request, response) => { 
         
-    var category_name = new String(request.params.category_name);
-    //console.log(`Category Name Encoded : ${category_name}`);
+    var category_weburl = new String(request.params.category_weburl);
+    console.log(`Category web url : ${category_weburl}`);
     var userCart = {} ;
     var app_cache = request.locals.app_cache ;   
     //console.log(`app_cache["${CATEGORIES_TABLE}"]: ${JSON.stringify(app_cache.get(CATEGORIES_TABLE))}`); 
     const categories = await app_cache.get(CATEGORIES_TABLE);
-    const itemsByCategoryID = await app_cache.get(ITEMS_BY_CATEGORY_ID)
+    //const itemsByCategoryID = await app_cache.get(ITEMS_BY_CATEGORY_ID)
          
    
     var user = {} ;
@@ -73,36 +74,39 @@ const rentalItemsPerCategoryPage = async(request, response) => {
         userCart = await app_cache.get(USER_CART);
     
     userCart = await JSON.parse(JSON.stringify(userCart)) ;
-    const items_array = await app_cache.get(ITEMS_ARRAY);
+    //const items_array = await app_cache.get(ITEMS_ARRAY);
     
     
     var category = {} ;
     var index = -1;
     var categoryID = "";
-    category_name = encode((new String(category_name)).toLocaleLowerCase());
     
     for (var i = 0; i < categories.length; i++) {
         var one_category = await JSON.parse(JSON.stringify(categories[i]));
         
-        //console.log(`Category Name Encoded : ${category_name}`);
-        if (encode(one_category.category_name.toLocaleLowerCase()) === category_name) {
-            category = one_category;
+        //console.log(`Category Name : ${one_category.category_name}`);
+        //console.log(`Category Web URL : ${one_category.category_weburl} \n\n`);
+        if (one_category.category_weburl.toLocaleLowerCase() === category_weburl.toLocaleLowerCase()) {
+            category = JSON.parse(JSON.stringify(one_category));
             index = i;
             categoryID = new String(JSON.parse(JSON.stringify(one_category.category_id)));
+            //console.log(`category id : ${categoryID}`);
             break;
         }
     }
     
     if (category == {} || index == -1 || categoryID == "") { 
-                    
+        //console.log(`category id not found`);
         response.status(200).redirect('/'); 
         
+        
     } else {
+        //Select all items in a category
                
-        var category_items = [] ;
+        var category_items = await getCategoriesItems(category_id=categoryID);
         const humanFriendlyCategoryName = decode(category.category_name);
-        if (categoryID in itemsByCategoryID) { 
-            category_items = itemsByCategoryID[categoryID];
+        if (category_items.length > 0) { 
+            
             const seoSiteLink = request.locals.seoSiteLink ;
             /* the seo meta tag og:type is set to website by default in headerinclude.ejs. */
             var seoObject = {
@@ -114,7 +118,6 @@ const rentalItemsPerCategoryPage = async(request, response) => {
                 pageTitle: decode(category.category_name),
                 template: 'rental-items-list',
                 categories: categories,
-                items_array:items_array,
                 userCart: userCart,
                 user:user,
                 IMG_DIR_FOR_WEB : IMG_DIR_FOR_WEB,

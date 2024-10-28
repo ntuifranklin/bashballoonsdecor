@@ -81,9 +81,28 @@ async function getCategories (con=null,tableName='categories') {
   
   }
   
-  exports.getCategories = getCategories ;
+exports.getCategories = getCategories ;
 
-  
+async function getCategoriesWebUrl(con=null,tableName='categories') {
+  var tableName = tableName;
+  return await new Promise(async(resolve, reject) => {
+    
+      try {            
+          selectsql = `
+          SELECT category_name,category_weburl 
+          FROM categories
+        `;
+        var result = await MySQLDBConnector.execute(selectsql, []) 
+          
+        resolve(result) ;
+      } catch( err ){
+        reject(err);
+      } ;
+  });
+
+} ;
+
+exports.getCategoriesWebUrl = getCategoriesWebUrl ;
 async function getCategoriesItems (tableName='category_items', category_id='') {
   
     var tableName = new String(tableName);

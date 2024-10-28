@@ -15,10 +15,10 @@ const {
     F404_ROUTE
 } = require('../utilities/routes_constant_names');
 
-const viewProductDetailsPage = async(request, response) => { 
+const viewRentalItemDetailsPage = async(request, response) => { 
    
     //Send to product-details page the item and all items in the same category
-    var category_webid = new String(request.params.category_webid);
+    var item_category_webid = new String(request.params.item_category_webid);
     
     //console.log(`Category Name Encoded : ${category_name}`);
     var userCart = {} ;
@@ -28,7 +28,7 @@ const viewProductDetailsPage = async(request, response) => {
     let categories = await app_cache.get(CATEGORIES_TABLE);
     let itemsByCategoryID = await app_cache.get(ITEMS_BY_CATEGORY_ID)
     categories = JSON.parse(JSON.stringify(categories));
-    itemsByCategoryID = JSON.parse(JSON.stringify(itemsByCategoryID));
+    //itemsByCategoryID = JSON.parse(JSON.stringify(itemsByCategoryID));
 
     if (app_cache.has(USER))
         user = await app_cache.get(USER) ;
@@ -38,10 +38,10 @@ const viewProductDetailsPage = async(request, response) => {
         userCart = await app_cache.get(USER_CART);
     
     userCart = await JSON.parse(JSON.stringify(userCart)) ;
-    itemsByCategoryID = await JSON.parse(JSON.stringify(itemsByCategoryID)) ;
+    //itemsByCategoryID = await JSON.parse(JSON.stringify(itemsByCategoryID)) ;
     let itemsByCategoryWebID = {};
-    itemsByCategoryWebID = await app_cache.get(ITEMS_BY_CATEGORY_WEB_ID);
-    itemsByCategoryWebID = await JSON.parse(JSON.stringify(itemsByCategoryWebID)) ;
+    //itemsByCategoryWebID = await app_cache.get(ITEMS_BY_CATEGORY_WEB_ID);
+    //itemsByCategoryWebID = await JSON.parse(JSON.stringify(itemsByCategoryWebID)) ;
     
     let  item = null ;
 
@@ -74,7 +74,7 @@ const viewProductDetailsPage = async(request, response) => {
             
     response.render('layout', { 
         pageTitle: itemTitle, 
-        template: 'product-details',
+        template: 'rental-item-details',
         csrfToken: request.csrfToken(),
         userCart:userCart,
         user:user,
@@ -89,4 +89,4 @@ const viewProductDetailsPage = async(request, response) => {
     });
 } ;
 
-exports.viewProductDetailsPage = viewProductDetailsPage;
+exports.viewRentalItemDetailsPage = viewRentalItemDetailsPage;

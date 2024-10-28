@@ -5,7 +5,7 @@ const f404Route = require('./f404');
 const cartRoute = require('./cart');
 //const rentalItemsListRoute = require('./rental-items-list');
 const contactRoute = require('./contact');
-const productDetailsRoute = require('./product-details');
+const rentalItemDetailsRoute = require('./rental-items-details');
 const adminRoute = require('./admin');
 const loginRoute = require('./login');
 const logoutRoute = require('./logout');
@@ -22,7 +22,7 @@ const {
     CHECKOUT_ROUTE,
     CART_ROUTE,
     CONTACT_ROUTE,
-    PRODUCT_DETAILS_ROUTE,
+    RENTAL_DETAILS_ROUTE,
     ADMIN_ROUTE,
     LOGIN_ROUTE,
     LOGOUT_ROUTE,
@@ -49,15 +49,16 @@ module.exports = () => {
     router.use(`/${CHECKOUT_ROUTE}`, checkoutRoute());
     router.use(`/${CART_ROUTE}`, cartRoute());
     router.use(`/${CONTACT_ROUTE}`, contactRoute());
-    router.use(`/${PRODUCT_DETAILS_ROUTE}`, productDetailsRoute());
+    router.use(`/${RENTAL_DETAILS_ROUTE}`, rentalItemDetailsRoute());
     router.use(`/${ADMIN_ROUTE}`, adminRoute());
     router.use(`/${LOGIN_ROUTE}`, loginRoute());
     router.use(`/${LOGOUT_ROUTE}`, logoutRoute());
     router.use(`/${VERIFY_OTP_ROUTE}`, verifyOTPRoute());
     router.use(`/${SUCCESS_PAYMENT_ROUTE}`,successPaymentRoute());
     router.use(`/${WEBSTATS_ROUTE}`, webstatsRoute()) ;
+
     /* this route allows someone to search for a list of items based on an item category name */
-    router.get('/:category_name',csrfProtection, rentalItemsPerCategoryPage);
+    router.get('/:category_weburl', rentalItemsPerCategoryPage);
 
     /* This should be the last route to catch errors */    
     router.use(['/*',`${F404_ROUTE}`], f404Route());
