@@ -1,4 +1,4 @@
-
+use bashrentaldbprodbbd ;
 --
 -- Table structure for table `categories`
 --

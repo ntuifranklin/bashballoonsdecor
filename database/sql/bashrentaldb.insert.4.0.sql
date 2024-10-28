@@ -1,3 +1,4 @@
+use bashrentaldbprodbbd ;
 INSERT INTO `categories` VALUES
 ('10G1coNRVArXAXyK','Flatware','9c19108cc70d42dc'),
 ('1Zx6DYqPodqATCyF','Tables','68c2964483c5dd89'),
