@@ -241,9 +241,10 @@
 								
 								<% var category = JSON.parse(JSON.stringify(categories[k])) ; %>
 								<% var category_name = category.category_name.toLowerCase();  %>
-								<% //console.log(`encoded : ${encode(category_name)}`);%>
+								<% var category_weburl = category.category_weburl;  %>
 								
-								<a href="/<%= category_name %>"><%= decode(category_name) %></a>
+								
+								<a href="/<%= category_weburl %>"><%= decode(category_name) %></a>
 							<% } %>
 						</div>
 					</li>

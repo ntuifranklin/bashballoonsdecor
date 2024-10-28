@@ -9,6 +9,8 @@ const CATEGORIES_TABLE = "categories";
 const USER_CART = "userCart";
 const USER = "user";
 const QUANTITY = "quantity";
+const CATEGORIES_WEB_URLS = "categoriesWebUrls";
+const CATEGORIES_NAMES_AND_WEB_URLS = "categoriesNamesAndWebUrls";
 
 module.exports = {
     ITEMS_ARRAY,
@@ -17,6 +19,8 @@ module.exports = {
     ITEMS_BY_CATEGORY_WEB_ID,
     ITEMS_DETAILS,
     CATEGORIES_TABLE,
+    CATEGORIES_WEB_URLS,
+    CATEGORIES_NAMES_AND_WEB_URLS,
     USER_CART,
     USER,
     IMG_DIR_FOR_WEB,

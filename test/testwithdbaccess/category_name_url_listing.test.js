@@ -6,52 +6,37 @@ const {MySQLDBConnector} = require("../../database/models/MySQLDBConnector.js");
 
 require("dotenv").config();
 
-describe('Testing The URL For Each Category Name', async() => {
+describe('Testing The URL For Each Category Web URL', async() => {
 
   const dbConn = MySQLDBConnector;
-  const selectCategoryNameSQL = "select category_name from categories"
-  var category_names ;
+  const selectCategoryWebUrlSQL = "select category_weburl from categories"
+  var category_weburls ;
   
   before(async() => {
-    category_names = await dbConn.execute(selectCategoryNameSQL);
+    category_weburls = await dbConn.execute(selectCategoryWebUrlSQL);
   });
-  it("GET /{Category Name}",() => {
+  it("GET /{Category Web URL}",() => {
 
       describe("Testing listing each items in each categories ", () => {
-        category_names.forEach((category_name_object, index) => {
-          var jsonObject = JSON.parse(JSON.stringify(category_name_object));
-          var category_name = jsonObject.category_name ;
-          const lowerCaseCatName = category_name.toLowerCase();
-          it(`Testing of url /${lowerCaseCatName} of lower case category name`, async()=> {
+        category_weburls.forEach((category_weburl_object, index) => {
+          var jsonObject = JSON.parse(JSON.stringify(category_weburl_object));
+          var category_weburl = jsonObject.category_weburl ;
+          const lowerCaseCatUrl = category_weburl.toLowerCase();
+          it(`Testing of url /${lowerCaseCatUrl}`, async()=> {
             
-            expect(lowerCaseCatName).to.not.equal(null);
-            request(app).get(`/${lowerCaseCatName}`)
+            expect(lowerCaseCatUrl).to.not.equal(null);
+            request(app).get(`/${lowerCaseCatUrl}`)
             .end(async(err, categoryUrlRequestResult) => {
               
-              expect(lowerCaseCatName).to.not.equal(null);
-              expect(lowerCaseCatName).to.not.equal("");
+              expect(lowerCaseCatUrl).to.not.equal(null);
+              expect(lowerCaseCatUrl).to.not.equal("");
               expect(categoryUrlRequestResult.status).to.equal(200);
 
             }) ;
             
 
           });
-          const upperCaseCatName = category_name.toUpperCase();
-          
-          it(`Testing of url /${upperCaseCatName} the upper case of category title ${lowerCaseCatName}`, async()=> {
-            
-            expect(upperCaseCatName).to.not.equal(null);
-            request(app).get(`/${upperCaseCatName}`)
-            .end(async(err, categoryUrlRequestResult) => {
-              
-              expect(upperCaseCatName).to.not.equal(null);
-              expect(upperCaseCatName).to.not.equal("");
-              expect(categoryUrlRequestResult.status).to.equal(200);
-
-            }) ;
-            
-
-          });
+        
         });
       });
 

@@ -5,9 +5,9 @@ const bodyParser = require('body-parser');
 var csrf = require('csurf');
 // csrf protection
 var csrfProtection = csrf({ cookie: true });
-const {viewProductDetailsPage} = require('../controllers/productDetailsController');
+const {viewRentalItemDetailsPage} = require('../controllers/rentalItemDetailsController');
 module.exports = () => { 
   
-    router.get('/:category_webid',  csrfProtection, viewProductDetailsPage);
+    router.get('/:category_webid',  csrfProtection, viewRentalItemDetailsPage);
     return router;
 };

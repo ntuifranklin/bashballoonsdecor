@@ -16,6 +16,7 @@ CREATE TABLE `categories` (
   `category_id` varchar(16) NOT NULL,
   `category_name` varchar(255) NOT NULL,
   `category_webid` varchar(16) NOT NULL,
+  `category_weburl` varchar(255) NOT NULL,
   PRIMARY KEY (`category_id`),
   UNIQUE KEY `category_name` (`category_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
