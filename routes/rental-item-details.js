@@ -8,6 +8,6 @@ var csrfProtection = csrf({ cookie: true });
 const {viewRentalItemDetailsPage} = require('../controllers/rentalItemDetailsController');
 module.exports = () => { 
   
-    router.get('/:category_webid',  csrfProtection, viewRentalItemDetailsPage);
+    router.get('/:item_category_webid',  csrfProtection, viewRentalItemDetailsPage);
     return router;
 };

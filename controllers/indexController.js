@@ -14,7 +14,8 @@ const {
     RENTAL_DETAILS_ROUTE
 } = require('../utilities/routes_constant_names');
 
-const {getCategoriesItems} = require('../database/controllers/database');
+
+const {MySQLDBConnector} = require('../database/models/MySQLDBConnector');
 const homePage =  async (request, response) => { 
     /* must have been loaded in server.js file  */  
     
@@ -87,14 +88,15 @@ const rentalItemsPerCategoryPage = async(request, response) => {
     
     for (var i = 0; i < categories.length; i++) {
         var one_category = await JSON.parse(JSON.stringify(categories[i]));
-        
+        var thiscatwweburl = one_category.category_weburl;
+        thiscatwweburl = await JSON.parse(JSON.stringify(thiscatwweburl));
         //console.log(`Category Name : ${one_category.category_name}`);
         //console.log(`Category Web URL : ${one_category.category_weburl} \n\n`);
-        if (one_category.category_weburl.toLocaleLowerCase() === category_weburl.toLocaleLowerCase()) {
+        if (thiscatwweburl == category_weburl) {
             category = JSON.parse(JSON.stringify(one_category));
             index = i;
             categoryID = new String(JSON.parse(JSON.stringify(one_category.category_id)));
-            console.log(`category id : ${categoryID}`);
+            //console.log(`category id found : ${categoryID}`);
             break;
         }
     }
@@ -107,7 +109,20 @@ const rentalItemsPerCategoryPage = async(request, response) => {
     } else {
         //Select all items in a category
                
-        var category_items = await getCategoriesItems(category_id=categoryID);
+        /* Select categories that match this categoryweburl */
+                        
+        const selectsql = `
+            SELECT * 
+            FROM category_items WHERE category_id = ?
+            `;
+        const params = [categoryID] ;
+        //console.log(`category_id: ${categoryID}, category_weburl: ${category_weburl}`);
+        
+        //console.log(`Running sql ${selectsql}`);
+        var category_items = await MySQLDBConnector.execute(selectsql, params)  ;
+        //console.log(`${JSON.parse(JSON.stringify(result))}`);
+        /* End of Select */
+       
         const humanFriendlyCategoryName = decode(category.category_name);
         if (category_items.length > 0) { 
             
@@ -126,8 +141,8 @@ const rentalItemsPerCategoryPage = async(request, response) => {
                 RENTAL_DETAILS_ROUTE:RENTAL_DETAILS_ROUTE,
                 user:user,
                 IMG_DIR_FOR_WEB : IMG_DIR_FOR_WEB,
-                category: decode(category.category_name),
-                category_id: category.category_id,
+                category: humanFriendlyCategoryName,
+                category_id: categoryID,
                 category_items: category_items,
                 csrfToken: request.csrfToken(),
                 decode: decode,

@@ -95,7 +95,7 @@ class MySQLDBConnector{
             if (params !== null && params.length != 0){ 
                     
                 await pool.execute(query, params, (err, rows, fields) => {
-                    console.log(`Executing query: ${query} with params: ${params}`);
+                    //console.log(`Executing query: ${query} with params: ${params}`);
                     if (err) {
                         console.log(err);
                         reject(err);
