@@ -61,7 +61,7 @@ const homePage =  async (request, response) => {
 const rentalItemsPerCategoryPage = async(request, response) => { 
         
     var category_weburl = new String(request.params.category_weburl);
-    console.log(`Category web url : ${category_weburl}`);
+    //console.log(`Category web url : ${category_weburl}`);
     var userCart = {} ;
     var app_cache = request.locals.app_cache ;   
     //console.log(`app_cache["${CATEGORIES_TABLE}"]: ${JSON.stringify(app_cache.get(CATEGORIES_TABLE))}`); 
@@ -94,7 +94,7 @@ const rentalItemsPerCategoryPage = async(request, response) => {
             category = JSON.parse(JSON.stringify(one_category));
             index = i;
             categoryID = new String(JSON.parse(JSON.stringify(one_category.category_id)));
-            //console.log(`category id : ${categoryID}`);
+            console.log(`category id : ${categoryID}`);
             break;
         }
     }
