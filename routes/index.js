@@ -58,7 +58,7 @@ module.exports = () => {
     router.use(`/${WEBSTATS_ROUTE}`, webstatsRoute()) ;
 
     /* this route allows someone to search for a list of items based on an item category name */
-    router.get('/:category_weburl', rentalItemsPerCategoryPage);
+    router.get('/:category_weburl', csrfProtection, rentalItemsPerCategoryPage);
 
     /* This should be the last route to catch errors */    
     router.use(['/*',`${F404_ROUTE}`], f404Route());

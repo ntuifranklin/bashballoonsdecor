@@ -132,6 +132,36 @@ async function getCategoriesItems (tableName='category_items', category_id='') {
 
 exports.getCategoriesItems = getCategoriesItems ;
 
+async function getUniqueCategoryItemByCategoryWebID (tableName='category_items', category_webid='') {
+  
+  var tableName = new String(tableName);
+  var category_webid = new String(category_webid);
+
+  return await new Promise(async(resolve, reject) => {
+    try {            
+      selectsql = `
+                    SELECT * 
+                    FROM category_items
+                  `;
+      var params = [] ;
+      if (category_webid != '') {
+        params[0] = category_webid ;
+        selectsql += ` WHERE category_webid = ? `;
+      } ;
+      //console.log(`Running sql ${selectsql}`);
+      var result = await MySQLDBConnector.execute(selectsql, params)  ;
+      resolve(result) ;
+  } catch( err ){
+    console.log(`Error in getUniqueCategoryItemByCategoryWebID: ${err}`);
+    reject(err);
+  } ;
+  }) ;
+
+
+}
+
+exports.getUniqueCategoryItemByCategoryWebID = getUniqueCategoryItemByCategoryWebID ;
+
 
 /* This function below takes a text and generates the mysql password for it */
 
