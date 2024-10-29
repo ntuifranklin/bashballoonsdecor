@@ -17,29 +17,43 @@
 	
 %>
 <section class="slider-home-1 owl-carousel owl-theme">
-	<div class="hero-section item" style='background-image:url("<%= IMG_DIR_FOR_WEB %>1920x640.png")'>
+	<div class="hero-section item" style='background-image:url("https://imagedelivery.net/FsZO54BRtMf2GCnVBBnkWg/97b5467f-979e-47a8-72ce-a694fdf80600/1920x640")'>
 	  <div class="container">
 		<div class="row">
 		  <div class="col-lg-6">
 			<div class="featured-area">
 			  <span>IT'S NOT A PARTY WITHOUT</span>
 			  <h3><%= miniSiteName %> </h3>
-			  <h5>11,000+ PARTY RENTAL ITEMS IN STOCK</h5>
+			  <h5>Choose from 33,000+ Items</h5>
 			  <p>Bash Balloons Rentals Decor offers one of the largest online Party Rental Items in the DC Metro Area.</p>
 			</div>
 		  </div>
 		</div>
 	  </div>
 	</div>
-	<div class="hero-section item" style='background-image:url("<%= IMG_DIR_FOR_WEB %>1920x640.png")'>
+	<div class="hero-section item" style='background-image:url("https://imagedelivery.net/FsZO54BRtMf2GCnVBBnkWg/d5bed5ae-bd31-4bab-273d-d5b9643d0800/1920x640")'>
 	  <div class="container">
 		<div class="row">
 		  <div class="col-lg-6">
 			<div class="featured-area">
-			  <span>IT'S NOT A PARTY WITHOUT</span>
+			  <span>MAKE EVERY EVENT UNFORGETTABLE</span>
 			  <h3><%= miniSiteName %> </h3>
-			  <h5>30,000+ PACKAGE ITEMS IN STOCK</h5>
-			  <p>Bash Balloons Rentals Decor offers one of the largest online Packages for Party Rentals in the DC Metro Area.</p>
+			  <h5>33,000+ Party Items In Stock</h5>
+			  <p>At Bash Balloons Rentals Decor, we provide an extensive range of party rental items to elevate your celebration in the DC Metro Area.</p>
+			</div>
+		  </div>
+		</div>
+	  </div>
+	</div>
+	<div class="hero-section item" style='background-image:url("https://imagedelivery.net/FsZO54BRtMf2GCnVBBnkWg/dca1b174-74eb-4487-4bf7-ca7f9e9fd400/1920x640")'>
+	  <div class="container">
+		<div class="row">
+		  <div class="col-lg-6">
+			<div class="featured-area">
+			  <span>YOUR CELEBRATION STARTS HERE</span>
+			  <h3><%= miniSiteName %> </h3>
+			  <h5>Over 33,000+ Items Ready for You.</h5>
+			  <p>Bash Balloons Rentals Decor is your go-to destination for the largest selection of party rentals in the DC Metro Area!</p>
 			</div>
 		  </div>
 		</div>
@@ -51,16 +65,16 @@
 		<div class="heading">
 			<img  loading="lazy"  alt="heading" src="/assets/img/heading.png">
 			<h2>Shop By Rentals Inventory</h2>
-			<p>Different Items based on your budget!</p>
+			
 		</div>
 		<div class="balloon-slider owl-carousel owl-theme">
 			<% for(var counter=0; counter<c.length; counter++) { %>
 				<% var category = JSON.parse(JSON.stringify(c[counter])); %>
 				<div class="item">
 					<div class="balloon-shap">
-						<img  loading="lazy" src="<%= IMG_DIR_FOR_WEB %>169x160.png" width=169 height=160 />
+						<img  loading="lazy" alt="<%= category.category_name %>" src="<%= category.category_photourl %>"  />
 						<!-- <img  loading="lazy"  alt="balloon" src="https://via.placeholder.com/169x160"> -->
-						<a href="/<%= category.category_name %>"><h5><%= category.category_name %>...</h5></a>
+						<a href="/<%= category.category_weburl %>"><h5><%= category.category_name %></h5></a>
 					</div>
 				</div>
 			<% } %>
@@ -80,10 +94,12 @@
                 <div class="col-lg-4">
                     
                     <div class="holiday">
-                        <img  loading="lazy"  alt="holiday" src="<%= IMG_DIR_FOR_WEB %>416x264.png" width=416 height=264 />
+                        <a href="/<%= category.category_weburl %>">
+							<img  loading="lazy"  alt="<%= category.category_name %>" src="<%= category.category_photourl %>" width="416" height="264" />
+						</a>
                         <!-- <img  loading="lazy"  alt="holiday" src="https://via.placeholder.com/416x264"> -->
                         <div class="holiday-text">
-                            <a href="/<%= category.category_name %>"><h3><%= category.category_name %></h3></a>
+                            <a href="/<%= category.category_weburl %>"><h3><%= category.category_name %></h3></a>
                             <span>See Our Selection</span>
                         </div>
                     </div>
