@@ -10,6 +10,10 @@ const {
     USER
 } = require('../utilities/web_page_variables');
 
+const {
+    RENTAL_DETAILS_ROUTE
+} = require('../utilities/routes_constant_names');
+
 const {getCategoriesItems} = require('../database/controllers/database');
 const homePage =  async (request, response) => { 
     /* must have been loaded in server.js file  */  
@@ -119,6 +123,7 @@ const rentalItemsPerCategoryPage = async(request, response) => {
                 template: 'rental-items-list',
                 categories: categories,
                 userCart: userCart,
+                RENTAL_DETAILS_ROUTE:RENTAL_DETAILS_ROUTE,
                 user:user,
                 IMG_DIR_FOR_WEB : IMG_DIR_FOR_WEB,
                 category: decode(category.category_name),
