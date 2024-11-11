@@ -36,19 +36,10 @@ const displayAdminDashboardPage = async(request, response) => {
         var categories = await app_cache.get(CATEGORIES_TABLE); 
         categories = await JSON.parse(JSON.stringify(categories));
     
-        var userCart = {} ;
-    
-        var user = {};
-        if (app_cache.has(USER) ) {
-            user = JSON.parse(JSON.stringify(app_cache.get(USER))) ;
-        } ;
-        user = await JSON.parse(JSON.stringify(user));
-    
-        
-        if (app_cache.has(USER_CART))
-            userCart = JSON.parse(JSON.stringify(app_cache.get(USER_CART))) ;
-        userCart = JSON.parse(JSON.stringify(userCart));
-    
+        var userCart = request.locals.USER_CART ;
+        var user = request.locals.USER;
+        userCart = await JSON.parse(JSON.stringify(userCart));
+        user = JSON.parse(JSON.stringify(user));
         response.render('layout', { 
             pageTitle: 'Admin Dashboard', 
             template: 'admin', 

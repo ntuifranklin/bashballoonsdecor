@@ -1,6 +1,8 @@
 const {decode, encode} = require('html-entities');
-const defaultMySQLDBConnectorConfig = require('../database/models/MySQLDBConnector');
-const generateUniqueID = require('../database/controllers/database');
+const {Email} = require('../utilities/email');
+const {defaultMySQLDBConnectorConfig,MySQLDBConnector} = require('../database/models/MySQLDBConnector');
+const {generateUniqueID} = require('../database/controllers/database');
+const mysql2 = require('mysql2');
 const {
     ITEMS_DETAILS,
     USER_CART,
@@ -8,16 +10,21 @@ const {
     CATEGORIES_TABLE
 } = require('../utilities/web_page_variables');
 
+const {
+    writeDataToRedisCache, 
+    deleteDataFromRedisCache,
+    REDIS_DEFAULT_CACHING_OPTIONS
+} =  require('../middleware/redis');
 const {IMG_DIR_FOR_WEB} = require('../utilities/fileupload');
 
 const checkoutFormPost = async (request, response) => {
  
-    var app_cache = request.locals.app_cache ;   
-         
-    var userCart = {} ;
-
-    if (app_cache.has(USER_CART))
-        userCart = await app_cache.get(USER_CART);
+   
+    
+    var userCart = request.locals.USER_CART ;
+   
+    userCart = await JSON.parse(JSON.stringify(userCart)) ;
+    
 
     /* Get form data first, and sanitize or reject if necessary */
     const completename = new String(request.body.completename);
@@ -82,7 +89,8 @@ const checkoutFormPost = async (request, response) => {
         //console.log(`order : oneOrderItemInsertSQL : ${oneOrderItemInsertSQL.length} : ${oneOrderItemInsertData.length}`);
 
         var emailOrderBodyHtml = "" ;
-        var allIndividualItems = JSON.parse(JSON.stringify(userCart)) ;
+        var allIndividualItems = await JSON.parse(JSON.stringify(userCart)) ;
+        //console.log(`${__filename}: All individual items in cart: ${JSON.stringify(allIndividualItems)}`);
         //emailOrderBodyHtml += "<table>";
         for(var itemKey in allIndividualItems)  {
             var  order_category_items_id = await generateUniqueID(con=con, tableName="order_category_items", keyFieldName="order_category_items_id", size=64) ;
@@ -152,17 +160,23 @@ const checkoutFormPost = async (request, response) => {
             } 
         });
     
-        
-
     } catch (error) {
 
         console.error("Error loading data, reverting changes: ", error);
         var rollBack = await con.execute('ROLLBACK');
-        console.log(`Error on ${__filename} :  ${error.message}`);
+        //console.log(`Error on ${__filename} :  ${error.message}`);
         response.status(400).send('Error processing your order');
         return ;
-        
     };
+    //update cart here
+    
+    const userCartNameVariable = request.locals.USER_CART_NAME ;
+    const key = userCartNameVariable;
+    
+    await deleteDataFromRedisCache(key);
+    request.locals.USER_CART = {} ;
+    /* update the cart in the locals variable */
+    
     var orderHtml = `<html>\n`;
     orderHtml += `<head>\n`;
     orderHtml += `<title>Order Confirmation</title>\n`;
@@ -173,7 +187,7 @@ const checkoutFormPost = async (request, response) => {
                 }
     </style>\n`;
     orderHtml += `</head>\n`;
-    //orderHtml += `<script>${jqueryCode}</script>\n`;
+    
     orderHtml += `<body>\n`;
     orderHtml += `\t<div class="container">\n`;
     orderHtml += `\t\t<h1>Order Confirmation</h1>\n`;      
@@ -187,15 +201,14 @@ const checkoutFormPost = async (request, response) => {
     orderHtml += `\t\t<h3>Customer Order Note : ${order_note}</h3>\n`;
     orderHtml += `\t\t<h2>Order Details</h2>\n`;
     orderHtml += `\t\t<table class="table table-striped table-hover">\n`;
-    //orderHtml += `\t\t\t<thead>\n`; 
+    
     orderHtml += `\t\t\t\t<tr>\n`;
     orderHtml += `\t\t\t\t\t<th>Ordered Item</th>\n`;
     orderHtml += `\t\t\t\t\t<th>Quantity</th>\n`;
     orderHtml += `\t\t\t\t\t<th>Unit Cost</th>\n`;
     orderHtml += `\t\t\t\t\t<th>Sub Total in USD</th>\n`;
     orderHtml += `\t\t\t\t</tr>\n`;
-    //orderHtml += `\t\t\t</thead>\n`;
-    //orderHtml += `\t\t<tbody>\n`;
+
     orderHtml += `${emailOrderBodyHtml}`;
     orderHtml += `\t\t\t<tr>\n`;
     orderHtml += `\t\t\t\t<td>\n`;
@@ -225,13 +238,10 @@ const checkoutFormPost = async (request, response) => {
     .then(
         (result) => {
             
-            /* update the cart in the locals variable */
-            request.session.userCart = {} ;
-            request.session.save();
             //response.redirect(`${successfullPaymentUrl}`);
             //console.log(`Order Confirmation Email sent: ${JSON.stringify(result)}`);
-            response.status(200).send(`Order processed successfully<br/>\nYou will receive a confirmation email`);
-            return ;
+            return response.status(200).send(`Order processed successfully<br/>\nYou will receive a confirmation email`);
+             ;
         
         }
     )
@@ -250,14 +260,11 @@ const showCheckoutPage = async(request, response) => {
     var categories = await app_cache.get(CATEGORIES_TABLE);
     categories = await JSON.parse(JSON.stringify(categories));
          
-    var userCart = {} ;
-    var user = {} ;
-    if (app_cache.has(USER))
-        user = await app_cache.get(USER) ;
-    user = await JSON.parse(JSON.stringify(user));
-    if (app_cache.has(USER_CART))
-        userCart = await app_cache.get(USER_CART);
+    var userCart = request.locals.USER_CART ;
+    var user = request.locals.USER;
     userCart = await JSON.parse(JSON.stringify(userCart));
+    user = JSON.parse(JSON.stringify(user));
+   
     //console.log('Passed cart : ' + JSON.stringify(userCart, null, 4));
     response.render('layout', 
         { 

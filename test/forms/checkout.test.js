@@ -1,5 +1,6 @@
 const request = require("supertest");
-const app = require("../../server.js");
+const {startNewExpressServer} = require("../../server.js");
+const app = startNewExpressServer();
 const {expect} = require ("chai");  
 const cheerio = require("cheerio");
 const { faker } = require('@faker-js/faker');

@@ -3,7 +3,7 @@ $(document).ready(function() {
     // will process order and send email to both customer and email.
     // need email sender and stuff like that.
     $("#ordercheckout").submit(function (event) {
-
+        event.preventDefault();
         /* Then disable the submit button for the form to 
         prevent multiple submissions */
         $("#orderCheckoutSubmitButton").attr('disabled', true) ;
@@ -27,11 +27,12 @@ $(document).ready(function() {
         $.ajax({
             type: "POST",
             url: "/checkout",
-            data: data,
+            data: JSON.stringify(data),
+            contentType: "application/json",
             encode: true,
           }).done(function (data) {
             
-            console.log(`${JSON.stringify(data)}`);
+            console.log(`Success data received : ${JSON.stringify(data)}`);
             var successHtml = ` 
             <div class="alert alert-success alert-dismissible fade show" role="alert">
               <strong>Success!</strong> 
@@ -47,6 +48,7 @@ $(document).ready(function() {
 
           }).fail(function (data) { 
             //renable the submit button
+            console.log(`Errors received : ${JSON.stringify(data)}`);
             $("#orderCheckoutSubmitButton").attr('disabled', false) ;
             var errorHtml = ` 
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -59,7 +61,7 @@ $(document).ready(function() {
             
           });
 
-        event.preventDefault();
+          
     });
 
 });

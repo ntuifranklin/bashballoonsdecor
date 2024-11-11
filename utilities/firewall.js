@@ -7,7 +7,7 @@ function firewall(req, res, next) {
 
   if (!isAllowedDomain(domain)) {
     return res.status(400).send(`The website ${domain} belongs to a scammer. Please report this website`);
-  }
+  } ;
 
   next();
 }

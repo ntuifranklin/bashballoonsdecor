@@ -14,17 +14,14 @@ const {
 
 const contactPage = async(request, response) => { 
     
-    var userCart = {} ;
+    
     var app_cache = request.locals.app_cache ;   
     const categories = await app_cache.get(CATEGORIES_TABLE);
          
-    var userCart = {} ;
-    var user = {} ;
-    if (app_cache.has(USER))
-        user = await app_cache.get(USER) ;
-
-    if (app_cache.has(USER_CART))
-        userCart = await app_cache.get(USER_CART);
+    var userCart = request.locals.USER_CART ;
+    var user = request.locals.USER;
+    userCart = await JSON.parse(JSON.stringify(userCart));
+    user = JSON.parse(JSON.stringify(user));
 
     response.render('layout', { 
         pageTitle: 'Contact Us', 

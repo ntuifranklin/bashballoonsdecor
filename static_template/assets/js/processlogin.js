@@ -22,7 +22,8 @@ jQuery(document).ready(function(){
         $.ajax({
             type: "POST",
             url: "/login",
-            data: data,
+            data: JSON.stringify(data),
+            contentType: "application/json",
             encode: true,
         }).done(function (data) {
             //console.log(`${JSON.stringify(data)}`);

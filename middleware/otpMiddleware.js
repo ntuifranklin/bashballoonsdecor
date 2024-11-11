@@ -17,7 +17,8 @@ const verifyOTPFormValidation = [
             return response.status(400).json({ errors: errors.array() });
         }
         next();
-    }
+    },
+    
 ];
 
 exports.verifyOTPFormValidation = verifyOTPFormValidation ;

@@ -22,15 +22,11 @@ const homePage =  async (request, response) => {
     var app_cache = request.locals.app_cache ;    
     const categories = await app_cache.get(CATEGORIES_TABLE);
          
-    var userCart = {} ;
-    var user = {} ;
-    if (app_cache.has(USER))
-        user = await app_cache.get(USER) ;
+    var userCart = request.locals.USER_CART ;
+    var user = request.locals.USER;
+    userCart = await JSON.parse(JSON.stringify(userCart));
     user = await JSON.parse(JSON.stringify(user));
 
-    if (app_cache.has(USER_CART))
-        userCart = await app_cache.get(USER_CART);
-    userCart = await JSON.parse(JSON.stringify(userCart));
     const items_array = await app_cache.get(ITEMS_ARRAY);
     const seoSiteLink = request.locals.seoSiteLink ;
     var seoObject = {
@@ -63,22 +59,18 @@ const rentalItemsPerCategoryPage = async(request, response) => {
         
     var category_weburl = new String(request.params.category_weburl);
     //console.log(`Category web url : ${category_weburl}`);
-    var userCart = {} ;
+    
     var app_cache = request.locals.app_cache ;   
     //console.log(`app_cache["${CATEGORIES_TABLE}"]: ${JSON.stringify(app_cache.get(CATEGORIES_TABLE))}`); 
     const categories = await app_cache.get(CATEGORIES_TABLE);
     //const itemsByCategoryID = await app_cache.get(ITEMS_BY_CATEGORY_ID)
          
    
-    var user = {} ;
-    if (app_cache.has(USER))
-        user = await app_cache.get(USER) ;
+    var userCart = request.locals.USER_CART ;
+    var user = request.locals.USER;
+    userCart = await JSON.parse(JSON.stringify(userCart));
+    user = JSON.parse(JSON.stringify(user));
 
-    user = await JSON.parse(JSON.stringify(user)) ;
-    if (app_cache.has(USER_CART))
-        userCart = await app_cache.get(USER_CART);
-    
-    userCart = await JSON.parse(JSON.stringify(userCart)) ;
     //const items_array = await app_cache.get(ITEMS_ARRAY);
     
     
@@ -172,18 +164,15 @@ const rentalItemsPerCategoryPage = async(request, response) => {
 
 const f404Page = async(request, response) => { 
         
-    var userCart = {} ;
     var app_cache = request.locals.app_cache ;   
     //console.log(`app_cache["${CATEGORIES_TABLE}"]: ${JSON.stringify(app_cache.get(CATEGORIES_TABLE))}`); 
     const categories = await app_cache.get(CATEGORIES_TABLE);
          
-    var userCart = {} ;
-    var user = {} ;
-    if (app_cache.has(USER))
-        user = await app_cache.get(USER) ;
+    var userCart = request.locals.USER_CART ;
+    var user = request.locals.USER;
+    userCart = await JSON.parse(JSON.stringify(userCart));
+    user = JSON.parse(JSON.stringify(user));
 
-    if (app_cache.has(USER_CART))
-        userCart = await app_cache.get(USER_CART);
     //const items_array = await app_cache.get(ITEMS_ARRAY);
     
     
