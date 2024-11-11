@@ -32,8 +32,12 @@ const viewRentalItemDetailsPage = async(request, response) => {
     var category_item = await MySQLDBConnector.execute(selectsql, params)  ;
     //console.log(`${JSON.stringify(uniqueCategoryItem)}`);
     //console.log(`Category Name Encoded : ${category_name}`);
-    var userCart = {} ;
-    var user = {} ;
+   
+    var userCart = request.locals.USER_CART ;
+    var user = request.locals.USER;
+    userCart = await JSON.parse(JSON.stringify(userCart));
+    user = JSON.parse(JSON.stringify(user));
+    
     var app_cache = request.locals.app_cache ;   
     //console.log(`app_cache["${CATEGORIES_TABLE}"]: ${JSON.stringify(app_cache.get(CATEGORIES_TABLE))}`); 
     let categories = await app_cache.get(CATEGORIES_TABLE);
@@ -41,14 +45,6 @@ const viewRentalItemDetailsPage = async(request, response) => {
     categories = JSON.parse(JSON.stringify(categories));
     //itemsByCategoryID = JSON.parse(JSON.stringify(itemsByCategoryID));
 
-    if (app_cache.has(USER))
-        user = await app_cache.get(USER) ;
-    user = await JSON.parse(JSON.stringify(user)) ;
-
-    if (app_cache.has(USER_CART))
-        userCart = await app_cache.get(USER_CART);
-    
-    userCart = await JSON.parse(JSON.stringify(userCart)) ;
     //itemsByCategoryID = await JSON.parse(JSON.stringify(itemsByCategoryID)) ;
     
     //itemsByCategoryWebID = await app_cache.get(ITEMS_BY_CATEGORY_WEB_ID);

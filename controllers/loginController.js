@@ -25,20 +25,10 @@ const showLoginPage = async(request, response) => {
     var categories = app_cache.get(CATEGORIES_TABLE); 
     categories= await JSON.parse(JSON.stringify(categories));
 
-    var userCart = {} ;
-
-    var user = {};
-    if (app_cache.has(USER) ) {
-        user = JSON.parse(JSON.stringify(app_cache.get(USER))) ;
-        
-
-    } ;
+    var userCart = request.locals.USER_CART ;
+    var user = request.locals.USER;
+    userCart = await JSON.parse(JSON.stringify(userCart));
     user = JSON.parse(JSON.stringify(user));
-
-    
-    if (app_cache.has(USER_CART))
-        userCart = JSON.parse(JSON.stringify(app_cache.get(USER_CART))) ;
-    userCart = JSON.parse(JSON.stringify(userCart));
     //console.log('User Cart in cart.js: ' + JSON.stringify(userCart, null, 4));
     response.render('layout', { 
         pageTitle: 'Login Page', 

@@ -23,7 +23,7 @@ const validateContactForm = async(request, response, next) => {
     //console.log(`email validation : ${JSON.stringify(emailValidation)}`);
     if (!emailValidation && !emailValidation.valid && emailValidation.valid === false && !VALID_EMAIL_REGEXP.test(email)) {
         //email is not valid
-        return response.status(400).send(`Something wrong with your email.`); 
+        return response.status(400).json({errors:`Something wrong with your email.`}); 
         
     };
     
@@ -39,7 +39,7 @@ const validateContactForm = async(request, response, next) => {
         
     } ;
     if (!validComment) {
-        return response.status(400).send(`Something wrong with your message.`); 
+        response.status(400).send(`Something wrong with your message.`); 
         
     } ;
     /* Begin sanitize from data here */
@@ -49,9 +49,11 @@ const validateContactForm = async(request, response, next) => {
         //console.log(`Error processing form: ${JSON.stringify(formerrors.array(), null, 4)}`);
         return response.status(400).send(`${err_message}`); 
         
-    } ;
+    } else {
+        next();
+    };
 
-    next();
+    
 };
 exports.validateContactForm = validateContactForm ;
 

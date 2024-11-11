@@ -7,14 +7,22 @@ const {
 
 const { v4: uuidv4 } = require('uuid');
 const { check,validationResult } = require('express-validator');
-const checkoutFormValidator = async(request, response, next) => {
-    var app_cache = request.locals.app_cache ;
-    if (typeof request.session.userCart === "undefined" || request.session.userCart == undefined || Object.keys(request.session.userCart).length === 0 || !request.session.userCart || request.session.userCart == {} || request.session.userCart == null ) {
-        response.redirect(200, '/');
-        response.end(); 
-    };
 
-    var userCart = JSON.parse(JSON.stringify(request.session.userCart)) ;
+const {
+    USER_CART
+} = require('../utilities/web_page_variables');
+const { isEmailValid, VALID_EMAIL_REGEXP } = require('../utilities/email');
+const checkCheckoutForm = async(request, response, next) => {
+    const app_cache = request.locals.app_cache ;
+      
+    var userCart = request.locals.USER_CART ;
+    var user = request.locals.USER;
+    userCart = await JSON.parse(JSON.stringify(userCart));
+    user = JSON.parse(JSON.stringify(user));
+    if (! userCart || userCart == {} ) {
+        return response.status(500).send(`You don't seem to have items in your cart`); 
+        
+    } ;
     
    /* Get form data first, and sanitize or reject if necessary */
    const completename = new String(request.body.completename);
@@ -30,7 +38,7 @@ const checkoutFormValidator = async(request, response, next) => {
     const emailValidation = await isEmailValid(email) ;
     if (!emailValidation && !emailValidation.valid && emailValidation.valid === false && !VALID_EMAIL_REGEXP.test(email)) {
         //email is not valid
-        return response.status(400).send(`Something wrong with your form.`); 
+        return response.status(500).send(`Something wrong with the format of your email.`); 
         //console.log(`bad email validation test`);
          ; 
     };
@@ -40,7 +48,7 @@ const checkoutFormValidator = async(request, response, next) => {
     if (!formerrors.isEmpty()) {
         const err_message = formerrors.array().map(i => i.msg).join('<br>');
         //console.log(`Error processing form: ${JSON.stringify(formerrors.array(), null, 4)}`);
-        return response.status(400).send(`${err_message}`); 
+        return response.status(500).send(`${err_message}`); 
          ; 
         
     };
@@ -57,40 +65,32 @@ const checkoutFormValidator = async(request, response, next) => {
     const validOrderNote= isValidTextMessage(order_note) && safeAgainstSqlAndShellInjection(order_note);
    
     if (!validCompleteName) {
-        return  response.status(400).send(`Please check the name entered`); 
+        return response.status(500).send(`Please check the name entered`); 
         ; 
-    } ;
-    
-    if (!validStreetAddress) {
-        return  response.status(400).send(`Please check the street address`); 
+    } else if (!validStreetAddress) {
+          return response.status(500).send(`Please check the street address`); 
         ; 
-    } ;
-    if (!validCity) {
-        return  response.status(400).send(`Please check the city entered`); 
+    } else if (!validCity) {
+        return response.status(500).send(`Please check the city entered`); 
         ; 
-    } ;
-    if (!validState) {
-        return  response.status(400).send(`Please check the state.`); 
+    } else if (!validState) {
+        return response.status(500).send(`Please check the state.`); 
         ; 
-    } ;
-    if (!validZipCode) {
-        return  response.status(400).send(`Please check the zip code`); 
+    } else if (!validZipCode) {
+        return response.status(500).send(`Please check the zip code`); 
         ; 
-    } ;
-    if (!validPhone) {
-        return response.status(400).send(`Please check the phone number.`); 
+    } else if (!validPhone) {
+        return response.status(500).send(`Please check the phone number.`); 
         ; 
-    } ;
-    if (!validState) {
-        return response.status(400).send(`Please check the state.`); 
+    } else if (!validState) {
+        return response.status(500).send(`Please check the state.`); 
         ; 
-    } ;
-    if (!validOrderNote) {
-        return response.status(400).send(`Please check the order note`); 
+    } else if (!validOrderNote) {
+        return response.status(500).send(`Please check the order note`); 
        
     } ;
     next();
 } ;
 
 
-exports.checkoutFormValidator = checkoutFormValidator ;
+exports.checkCheckoutForm = checkCheckoutForm ;

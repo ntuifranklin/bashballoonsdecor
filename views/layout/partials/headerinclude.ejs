@@ -112,6 +112,7 @@
 		</form>
 		-->
 		
+
 		<div class="login-bar d-flex">
 			<% if (user && user.email ) { %>
 				
@@ -142,12 +143,16 @@
 						<% var grandTotal = 0 ; %>
 						<% var totalItems = 0 ; %>
 						<% var keysList = [...Object.keys(userCart)]; %>
+						<% //console.log(`usercart in headerinclude ${JSON.stringify(userCart)}`); %>
 						<% var noKeys = keysList; %>
 						<% if (userCart != null && noKeys.length > 0 ) { %>
 							<ul>
 								<% for (var itemKey in userCart ) { %>
 									<% var item = JSON.parse(JSON.stringify(userCart[itemKey])) ;%>
+									<% //console.log(`ITEMS_DETAILS_NAME in usercart in headerinclude ${JSON.stringify(ITEMS_DETAILS_NAME)}`); %>
 									<% var itemDetails = JSON.parse(JSON.stringify(item[ITEMS_DETAILS_NAME])) ; %>
+									
+									<% //console.log(`itemDetails in usercart in headerinclude ${JSON.stringify(itemDetails)}`); %>
 									<li class="d-flex align-items-center position-relative">
 										
 		

@@ -2,7 +2,7 @@ const { body, validationResult} = require('express-validator');
 const {Email,isEmailValid,MIN_EMAIL_ADDR_LENGTH, MAX_EMAIL_ADDR_LENGTH,VALID_EMAIL_REGEXP} = require('../utilities/email');
 const {MAX_BUFFER_SIZE} = require('../utilities/Fisl');
 const {MIN_FULL_NAME_SIZE,MAX_FULL_NAME_SIZE} = require('../utilities/functions');
-const checkoutValidator = [
+const checkoutFormDataFormatValidator = [
     body('completename')
         .isLength({ min: MIN_FULL_NAME_SIZE, max:MAX_FULL_NAME_SIZE })
         .withMessage(`Full name must be between ${MIN_FULL_NAME_SIZE} and ${MAX_FULL_NAME_SIZE} characters.`),
@@ -16,19 +16,22 @@ const checkoutValidator = [
     body('city').isLength({ min: 2, max:MAX_BUFFER_SIZE }).withMessage('Please enter your city.'),
     body('state').isLength({ min: 2, max:MAX_BUFFER_SIZE }).withMessage('Please enter your state.'),
     body('zipcode')
-        .isLength({ min: 5, max:5 })
-        .isPostalCode()
-        .withMessage('Please a valid zipcode.'),
+        .isPostalCode('US')
+        .withMessage('Please a valid US zipcode.'),
     body('phone').isLength({ min: 5, max:10 }).withMessage('Please enter your phone number.'),
     body('order_note').isLength({ min: 5, max:MAX_BUFFER_SIZE }).withMessage('Please enter your order note.'),
     
     (request, response, next) => {
         const errors = validationResult(request);
+        const err_message = errors.array().map(i => i.msg).join('<br>');
         if (!errors.isEmpty()) {
-          return response.status(400).json({ errors: errors.array() });
-        }
+          return response.status(500).send(`${err_message}`);
+          
+        } ;
         next();
-    }
+        
+    },
+    
 ];
 
-exports.checkoutValidator = checkoutValidator ;
+exports.checkoutFormDataFormatValidator = checkoutFormDataFormatValidator ;

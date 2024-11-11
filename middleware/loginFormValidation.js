@@ -15,10 +15,12 @@ const loginValidator = [
         .withMessage('Please enter a password.'),
     (request, response, next) => {
         const errors = validationResult(request);
+        const err_message = errors.array().map(i => i.msg).join('<br>');
         if (!errors.isEmpty()) {
-          return response.status(400).json({ errors: errors.array() });
+          return response.status(400).send(`${err_message}`);
         }
         next();
-    }
+    },
+    
 ];
 exports.loginValidator = loginValidator ;

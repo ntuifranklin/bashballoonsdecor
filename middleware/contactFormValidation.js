@@ -28,7 +28,8 @@ const contactValidator = [
           return response.status(400).json({ errors: errors.array() });
         }
         next();
-    }
+    },
+    
 ];
 
 exports.contactValidator = contactValidator ;

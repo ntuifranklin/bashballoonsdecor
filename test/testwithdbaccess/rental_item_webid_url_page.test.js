@@ -1,5 +1,6 @@
 const request = require("supertest");
-const app = require("../../server.js");
+const {startNewExpressServer} = require("../../server.js");
+const app = startNewExpressServer();
 const { assert,expect,should } = require ("chai");  
 
 const {MySQLDBConnector} = require("../../database/models/MySQLDBConnector.js");

@@ -22,7 +22,7 @@ INSERT INTO `categories` VALUES
 ('YduZmJFmovN99StC','Center Pieces','c7c0ba8f75526b63','center-pieces','https://imagedelivery.net/FsZO54BRtMf2GCnVBBnkWg/444101e7-e2ba-4a2f-aaa1-c33101520b00/webp');
 INSERT INTO `category_items` VALUES
 ('02ed0fead3294912','Cake Knife and Server Set Silver 3 Crystals Embedded on the Handles','Cake Knife and Server Set Silver 3 Crystals Embedded on the Handles\n\n\n','10G1coNRVArXAXyK','b5cd4c14','',87,20.00),
-('16052f8c91f449d3','Wood Folding Table 7&amp;amp;amp;amp;#x27; serpentine','                                                                Wood Folding Table 7&amp;amp;#x27; serpentine\r\n                            \r\n                            ','1Zx6DYqPodqATCyF','43f681e0','16052f8c91f449d3.jpeg',168,10.00),
+('16052f8c91f449d3','Wood Folding Table serpentine','                                                                Wood Folding Table 7&amp;amp;#x27; serpentine\r\n                            \r\n                            ','1Zx6DYqPodqATCyF','43f681e0','16052f8c91f449d3.jpeg',168,10.00),
 ('166f62f5e8f646d0','Ballroom Gold Dinner Spoon Blue Handle','Ballroom Gold Dinner Spoon Blue Handle When renting dinnerware, glassware, silverware, trays, bowls, serving pieces, etc. we require that return them in the crates, racks, and packaging in which they are delivered and remove any excess debris by scraping or rinsing off the equipment prior to returning. All silverware and dinnerware need to be rinse of food or drink before, they need to package for transportation in the same condition they was delivery. any damage on the items because customer don&#x27;t wrapped and package the items in the same way at delivery time will not be cover by DW fee, $150.00 will be charge for any quantity of silverware or dinnerware return with food or drink on (items return not rinse)','10G1coNRVArXAXyK','3fa42004','',47,1.25),
 ('22316275b8b74264','Ballroom Gold Dinner Knife White Handle','Ballroom Gold Dinner Knife White Handle\n\n','10G1coNRVArXAXyK','ed9bf239','',822,1.25),
 ('2b7b3265681b41cd','24K Blush&#x2F;Mauve Dining Chairs','24K Blush&#x2F;Mauve Dining Chairs\n\n','uKmwctxAcAbRby8O','64055c31','',18,16.00),
@@ -78,9 +78,3 @@ INSERT INTO `users` VALUES
 ('fe76c21a8aaaa283','Asong Nic','asong_nic@email.bashballoonsrentals.com','*2921B94DC19B5D28EC1046B803187CADAC23F939',NULL,NULL,'2024-04-09 22:29:48',0,'standard_admin','active'),
 ('q6qSVIlN84+2621uokE1','ntuifranklin','ntuifranklin2005@gmail.com','*EA194597C5AC17C91AC312B60493D835C56698FC',NULL,NULL,'2024-02-12 19:40:09',0,'standard_admin','active'),
 ('uMWMmhFMA1nmvZIpsXiOfjL4YQ8=','order','order@box.bashballoonsrentals.com','*EA194597C5AC17C91AC312B60493D835C56698FC','2024-02-29 02:29:02','2024-02-29 03:06:33','2024-02-29 02:29:02',0,'master_admin','active');
-
-INSERT INTO `otp` VALUES
-(164,'asong_nic@email.bashballoonsrentals.com','152240477','2024-04-16 14:05:22'),
-(168,'franklin@email.bashballoonsrentals.com','085360691','2024-04-23 23:03:03'),
-(169,'franklin@email.bashballoonsrentals.com','686306457','2024-04-23 23:53:03'),
-(170,'franklin.nkokam.ngongang@gmail.com','266356925','2024-04-24 00:40:53');

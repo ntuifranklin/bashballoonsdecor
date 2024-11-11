@@ -6,6 +6,7 @@ const {isEmailValid,VALID_EMAIL_REGEXP} = require('../utilities/email');
 const {isValidOTPCode} = require('../utilities/functions');
 const {USER} = require('../utilities/web_page_variables');
 const {ADMIN_ROUTE, LOGOUT_ROUTE } = require('../utilities/routes_constant_names');
+const {writeDataToRedisCache} = require('../middleware/redis');
 /* generate a pool of mysql connection  */
 const {MySQLDBConnector} = require('../database/models/MySQLDBConnector');
 const mysqlDbConnector = MySQLDBConnector ;
@@ -37,19 +38,20 @@ const verifyPagePost =  async(request, response) => {
         const delete_otp_query = "DELETE FROM otp WHERE user_email = \"?\" ";
         const delete_old_otp = await mysqlDbConnector.execute(delete_otp_query, [user_email]);
         console.log(`otp success user_email: ${user_email}`);
-        var app_cache = request.locals.app_cache ;
-        await app_cache.set(USER, {
+        const loggedInUser = {
             email: `${user_email}`,
             password: null,
             authenticated: true
-        });
-
+        } ;
+        const userStringedData = JSON.stringify(loggedInUser);
+        await writeDataToRedisCache(USER, userStringedData);
+       
         response.status(200).send(`OTP successfully verified\n<br/>
         You are logged in as ${user_email}\n<br/>
         <a href="/${ADMIN_ROUTE}">Click here to head to your dashboard</a>\n <br/>
         or <br/>
         <a href="/${LOGOUT_ROUTE}"> Click here to logout</a> \n<br>`);
-        
+        response.redirect(`/${ADMIN_ROUTE}`);
     } catch(err) {
         console.log(err);
         response.status(400).send({

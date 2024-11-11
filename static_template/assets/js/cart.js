@@ -26,7 +26,7 @@ function updateCart(productID, source='', htmlID='#', alertIndex='', action='a')
             '_csrf': token,
             'source': source,
             'htmlID': htmlID,
-            'action':action,
+            'action': action,
           },
     }).done((data) => {
       console.log(`Success data received : ${JSON.stringify(data)}`);

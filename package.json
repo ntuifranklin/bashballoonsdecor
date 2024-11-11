@@ -8,9 +8,10 @@
     "node": ">=16.0.0"
   },
   "scripts": {
+    "prestart": "echo 'Running source .env to select the environment.' && source .env",
     "test": "mocha --timeout 200000 --recursive --exit",
     "start": "node appclustering.js",
-    "prof": "NODE_ENV=production node --prof appclustering.js",
+    "prof": "node --prof appclustering.js",
     "dev": "nodemon -e js,ejs,html -w . -w public -w views -w routes -w database appclustering.js"
   },
   "author": "Franklin Nkokam Ngongang",
@@ -49,6 +50,7 @@
     "node-cache": "^5.1.2",
     "node-fetch": "^3.3.2",
     "nodemailer": "^6.9.7",
+    "object-hash": "^3.0.0",
     "package.json": "^0.0.0",
     "randomstring": "^1.3.0",
     "redis": "^4.7.0",

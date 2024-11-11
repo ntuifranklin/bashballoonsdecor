@@ -1,5 +1,10 @@
 const request = require("supertest");
-const app = require("../../server.js");
+const {startNewExpressServer } = require('../../server');
+const cluster = require('cluster');
+const os = require('os');
+
+const ip = require("ip");
+
 const {expect} = require ("chai");  
 const cheerio = require("cheerio");
 const { faker } = require('@faker-js/faker');
@@ -14,7 +19,24 @@ const {
   
 } = require('../../utilities/routes_constant_names.js');
 describe(`POST /${CONTACT_ROUTE}`, () => {
+  let server ;
+  before(() => {
+    if (cluster.isMaster) {
+      const numCPUs = os.cpus().length;
+      for (let i = 0; i < numCPUs; i++) {
+        cluster.fork();
+      }
+    } else {
+          
+      server = startNewExpressServer();
+    }
+  });
 
+  after(() => {
+    if (server) {
+      server.close();
+    }
+  });
   it("Testing submitting the contact from with good email, but lengthy one",async() => {
     
     //To submit a form, we need the csrf token
