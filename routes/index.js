@@ -24,6 +24,7 @@ const {
     CONTACT_ROUTE,
     RENTAL_DETAILS_ROUTE,
     ADMIN_ROUTE,
+    ADMIN_DASHBOARD_ROUTE,
     LOGIN_ROUTE,
     LOGOUT_ROUTE,
     VERIFY_OTP_ROUTE,
@@ -50,7 +51,7 @@ module.exports = () => {
     router.use(`/${CART_ROUTE}`, cartRoute());
     router.use(`/${CONTACT_ROUTE}`, contactRoute());
     router.use(`/${RENTAL_DETAILS_ROUTE}`, rentalItemDetailsRoute());
-    router.use(`/${ADMIN_ROUTE}`, adminRoute());
+    router.use([`/${ADMIN_ROUTE}`,`/${ADMIN_DASHBOARD_ROUTE}`], adminRoute());
     router.use(`/${LOGIN_ROUTE}`, loginRoute());
     router.use(`/${LOGOUT_ROUTE}`, logoutRoute());
     router.use(`/${VERIFY_OTP_ROUTE}`, verifyOTPRoute());

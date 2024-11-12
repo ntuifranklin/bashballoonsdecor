@@ -3,6 +3,7 @@ const CART_ROUTE = "cart";
 const CONTACT_ROUTE = "contact";
 const RENTAL_DETAILS_ROUTE = "rental-item-details";
 const ADMIN_ROUTE = "admin";
+const ADMIN_DASHBOARD_ROUTE = "admin_dashboard";
 const LOGIN_ROUTE = "login" ;
 const LOGOUT_ROUTE = "logout";
 const VERIFY_OTP_ROUTE = "verifyotp";
@@ -17,6 +18,7 @@ module.exports = {
     CONTACT_ROUTE,
     RENTAL_DETAILS_ROUTE,
     ADMIN_ROUTE,
+    ADMIN_DASHBOARD_ROUTE,
     LOGIN_ROUTE,
     LOGOUT_ROUTE,
     VERIFY_OTP_ROUTE,
