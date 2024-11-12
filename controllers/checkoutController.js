@@ -11,20 +11,16 @@ const {
 } = require('../utilities/web_page_variables');
 
 const {
-    writeDataToRedisCache, 
-    deleteDataFromRedisCache,
-    REDIS_DEFAULT_CACHING_OPTIONS
+    readDataFromRedisCache, 
+    deleteDataFromRedisCache
 } =  require('../middleware/redis');
 const {IMG_DIR_FOR_WEB} = require('../utilities/fileupload');
 
 const checkoutFormPost = async (request, response) => {
- 
-   
-    
+     
     var userCart = request.locals.USER_CART ;
    
-    userCart = await JSON.parse(JSON.stringify(userCart)) ;
-    
+    userCart = await JSON.parse(JSON.stringify(userCart)) ;    
 
     /* Get form data first, and sanitize or reject if necessary */
     const completename = new String(request.body.completename);
@@ -256,9 +252,8 @@ const checkoutFormPost = async (request, response) => {
 const showCheckoutPage = async(request, response) => { 
         
     
-    var app_cache = request.locals.app_cache ;   
-    var categories = await app_cache.get(CATEGORIES_TABLE);
-    categories = await JSON.parse(JSON.stringify(categories));
+    var categories = await readDataFromRedisCache(CATEGORIES_TABLE);
+    categories = await JSON.parse(categories);
          
     var userCart = request.locals.USER_CART ;
     var user = request.locals.USER;

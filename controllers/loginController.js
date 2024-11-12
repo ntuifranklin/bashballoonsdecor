@@ -10,6 +10,9 @@ const {sendOTP,generateOTP} = require('../utilities/email');
 const { defaultMySQLDBConnectorConfig } = require('../database/models/MySQLDBConnector');
 
 const {
+    readDataFromRedisCache
+} =  require('../middleware/redis');
+const {
     ADMIN_ROUTE,
     LOGOUT_ROUTE
 } = require('../utilities/routes_constant_names');
@@ -20,10 +23,8 @@ const {IMG_DIR_FOR_WEB} = require('../utilities/fileupload');
 
 const showLoginPage = async(request, response) => { 
 
-    var app_cache = request.locals.app_cache ;
-    
-    var categories = app_cache.get(CATEGORIES_TABLE); 
-    categories= await JSON.parse(JSON.stringify(categories));
+    var categories = await readDataFromRedisCache(CATEGORIES_TABLE);
+    categories = await JSON.parse(categories);
 
     var userCart = request.locals.USER_CART ;
     var user = request.locals.USER;

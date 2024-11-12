@@ -14,7 +14,7 @@ const {
 
 const {
     writeDataToRedisCache, 
-    deleteDataFromRedisCache,
+    readDataFromRedisCache,
     REDIS_DEFAULT_CACHING_OPTIONS
 } =  require('../middleware/redis');
 const {MySQLDBConnector} = require('../database/models/MySQLDBConnector');
@@ -22,8 +22,8 @@ const {MySQLDBConnector} = require('../database/models/MySQLDBConnector');
 const cartPage = async (request, response) => { 
     
     
-    var app_cache = request.locals.app_cache ;   
-    const categories = await app_cache.get(CATEGORIES_TABLE);
+    var categories = await readDataFromRedisCache(CATEGORIES_TABLE);
+    categories = await JSON.parse(categories);
          
     var userCart = request.locals.USER_CART ;
     var user = request.locals.USER;

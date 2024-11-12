@@ -2,10 +2,9 @@ const { createClient } = require("redis");
 const hash = require("object-hash");
 
 const {
-   
-    USER_CART,
-    USER
+   CATEGORIES_TABLE
 } = require('../utilities/web_page_variables');
+const {getCategories} = require('../database/controllers/database');
 let redisClient = undefined;
 
 
