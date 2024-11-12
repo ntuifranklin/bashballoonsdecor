@@ -1,6 +1,4 @@
 
-
-
 require('dotenv').config();
 const {isEmailValid,VALID_EMAIL_REGEXP} = require('../utilities/email');
 const {isValidOTPCode} = require('../utilities/functions');

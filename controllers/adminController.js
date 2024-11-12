@@ -10,9 +10,10 @@ const {MySQLDBConnector, defaultMySQLDBConnectorConfig} = require('../database/m
 const {Imageconverter} = require('../models/Imageconverter');
 let imageConverter = new Imageconverter();
 var mysql2 = require('mysql2');
-const { fa } = require('@faker-js/faker');
-const {Email} = require('../utilities/email');
 
+const {
+    readDataFromRedisCache
+} =  require('../middleware/redis');
         
 const { 
     CATEGORIES_TABLE,
@@ -31,10 +32,9 @@ const { file } = require('googleapis/build/src/apis/file');
 var con = mysql2.createPool(defaultMySQLDBConnectorConfig);
 const displayAdminDashboardPage = async(request, response) => {
 
-        var app_cache = request.locals.app_cache ;
-    
-        var categories = await app_cache.get(CATEGORIES_TABLE); 
-        categories = await JSON.parse(JSON.stringify(categories));
+  
+        var categories = await readDataFromRedisCache(CATEGORIES_TABLE);
+        categories = await JSON.parse(categories);
     
         var userCart = request.locals.USER_CART ;
         var user = request.locals.USER;
@@ -395,23 +395,15 @@ const displayUpdateItemPage = async (request, response) => {
     };
     var itemToUpdate = await itemsByCategoryWebID[category_webid] ;
     itemToUpdate = await JSON.parse(JSON.stringify(itemToUpdate));
-    var userCart = {} ;
-
-    var user = {};
-    if (app_cache.has(USER) ) {
-        user = JSON.parse(JSON.stringify(app_cache.get(USER))) ;
-        
-
-    } ;
-    user = JSON.parse(JSON.stringify(user));
-
+   
     
-    if (app_cache.has(USER_CART))
-        userCart = JSON.parse(JSON.stringify(app_cache.get(USER_CART))) ;
-    userCart = JSON.parse(JSON.stringify(userCart));
-
-    var categories = await app_cache.get(CATEGORIES_TABLE); 
-    categories = await JSON.parse(JSON.stringify(categories));
+    var userCart = request.locals.USER_CART ;
+    var user = request.locals.USER;
+    userCart = await JSON.parse(JSON.stringify(userCart));
+    user = JSON.parse(JSON.stringify(user));
+    
+    var categories = await readDataFromRedisCache(CATEGORIES_TABLE);
+    categories = await JSON.parse(categories);
     
 
     response.render('layout', { 

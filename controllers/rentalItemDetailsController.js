@@ -1,5 +1,3 @@
-
-
 const {decode, encode} = require('html-entities');
 
 const {
@@ -16,6 +14,8 @@ const {
 } = require('../utilities/routes_constant_names');
 
 const {MySQLDBConnector} = require('../database/models/MySQLDBConnector');
+
+const {readDataFromRedisCache} = require("../middleware/redis");
 const viewRentalItemDetailsPage = async(request, response) => { 
    
     //Send to product-details page the item and all items in the same category
@@ -38,17 +38,8 @@ const viewRentalItemDetailsPage = async(request, response) => {
     userCart = await JSON.parse(JSON.stringify(userCart));
     user = JSON.parse(JSON.stringify(user));
     
-    var app_cache = request.locals.app_cache ;   
-    //console.log(`app_cache["${CATEGORIES_TABLE}"]: ${JSON.stringify(app_cache.get(CATEGORIES_TABLE))}`); 
-    let categories = await app_cache.get(CATEGORIES_TABLE);
-    
-    categories = JSON.parse(JSON.stringify(categories));
-    //itemsByCategoryID = JSON.parse(JSON.stringify(itemsByCategoryID));
-
-    //itemsByCategoryID = await JSON.parse(JSON.stringify(itemsByCategoryID)) ;
-    
-    //itemsByCategoryWebID = await app_cache.get(ITEMS_BY_CATEGORY_WEB_ID);
-    //itemsByCategoryWebID = await JSON.parse(JSON.stringify(itemsByCategoryWebID)) ;
+    var categories = await readDataFromRedisCache(CATEGORIES_TABLE);
+    categories = await JSON.parse(categories);
     
     let  item = null ;
     var categorywebIDFound = false ;

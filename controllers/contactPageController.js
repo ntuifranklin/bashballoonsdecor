@@ -5,18 +5,19 @@ const {Email} = require('../utilities/email');
 
 const {
     CATEGORIES_TABLE,
-    USER_CART,
-    USER,
     IMG_DIR_FOR_WEB
 } = require('../utilities/web_page_variables');
 
 
+const {
+   
+    readDataFromRedisCache
+} =  require('../middleware/redis');
 
 const contactPage = async(request, response) => { 
     
-    
-    var app_cache = request.locals.app_cache ;   
-    const categories = await app_cache.get(CATEGORIES_TABLE);
+    var categories = await readDataFromRedisCache(CATEGORIES_TABLE);
+    categories = await JSON.parse(categories);
          
     var userCart = request.locals.USER_CART ;
     var user = request.locals.USER;

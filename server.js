@@ -8,12 +8,7 @@ const template_folder = 'static_template';
 const routes = require('./routes');
 
 
-//clustering
-const cluster = require("cluster");
-const totalCPUs = require("os").availableParallelism();
-
-
-const { initializeRedisClient } = require("./middleware/redis");
+const { initializeRedisClient, readDataFromRedisCache,writeDataToRedisCache } = require("./middleware/redis");
 // for server ip :
 const ip = require("ip");
 
@@ -108,7 +103,10 @@ const form_rate_limiter = rateLimit({
 }) ;
 
 
-const {setRedisUserCartCacheMiddleware, setRedisLoggedInUserCacheMiddleware} = require('./middleware/redis');
+const {
+    setRedisUserCartCacheMiddleware, 
+    setRedisLoggedInUserCacheMiddleware
+} = require('./middleware/redis');
 
 async function startNewExpressServer() {
     
@@ -191,45 +189,30 @@ async function startNewExpressServer() {
     const {IMG_DIR_FOR_WEB} = require('./utilities/fileupload');
     const { exit } = require('process');
 
-    /* We need to cache the database of items needed to load a page */
 
     /* rejected firewall domains  */
     const firewall = require('./utilities/firewall');
     app.use(firewall);
     app.use(csrfProtection);
-
+    const key = CATEGORIES_TABLE;
+    
+    /* We need to cache the database of categories needed to load a page */
+    var categories = await getCategories (tableName=CATEGORIES_TABLE) ;
+    const categoriesString = JSON.stringify(categories);
+        
+    const customized_write_option = 
+    {
+        
+        //EX: 43200, //3600 is 1h turning off the time to expire as this should stay alive for ever
+        NX: true, // write the data even if the key already exists
+    } ;
+    await writeDataToRedisCache(key, categoriesString, customized_write_option);
     app.use(async(request, response, next) => { 
             
-            var items_array = null ;
-            var itemsByID = {} ;
-            var itemsByCategoryID = {}
             var categories = null ;
-            var itemsByCategoryWebID = {};
-            var categories_names_and_weburls = null ;
-            var categoriesWebUrlsArray = [] ;
-            var categoriesNameArray = [] ;
 
+            categories = await readDataFromRedisCache(CATEGORIES_TABLE) ;
             
-            var item = null ; 
-            var categoryweburl = null ;
-
-            items_array = app_cache.get(ITEMS_ARRAY);
-        
-
-            //console.log(`itemsByID in server.js: ${JSON.stringify(request.session.itemsByID,null,4)}`);
-            categories = app_cache.get(CATEGORIES_TABLE)
-            if (categories == undefined) {
-                //console.log(`Cache miss for ${CATEGORIES_TABLE}`);
-                categories = await getCategories (tableName=CATEGORIES_TABLE) ;
-                /*
-                for (var i = 0; i <  categories.length; i++) {
-                    var category = JSON.parse(JSON.stringify( categories[i]));
-                    category.category_name = category.category_name;
-                    //categories[i].category_name = category.category_name;
-                };
-                */
-                app_cache.set(CATEGORIES_TABLE, categories);
-            } ;
 
             const protocol = request.protocol;
             const host = request.hostname;
@@ -262,8 +245,6 @@ async function startNewExpressServer() {
             request.locals.ITEMS_DETAILS_NAME = ITEMS_DETAILS;
             request.locals.LOGGEDIN_USER_VARIABLE_NAME = USER;
             response.locals.csrfToken = request.csrfToken();
-            //console.log('request came in');
-            //remvoing X-powered-By
             response.removeHeader("X-Powered-By");
             
             return next();
@@ -279,8 +260,6 @@ async function startNewExpressServer() {
         console.log(`Express server listening on : ${SERVER_IP}:${PORT} `);     
     });
 
-    //useful when testing all files in test folder.
-    //not needed in appclustering.js
     return server ;
 }
 

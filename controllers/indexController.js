@@ -2,6 +2,9 @@
 const {decode, encode} = require('html-entities');
 
 const {IMG_DIR_FOR_WEB} = require('../utilities/fileupload');
+
+const { readDataFromRedisCache, writeDataToRedisCache } = require("../middleware/redis");
+// for server ip :
 const {
     ITEMS_ARRAY,
     ITEMS_BY_CATEGORY_ID,
@@ -19,15 +22,16 @@ const {MySQLDBConnector} = require('../database/models/MySQLDBConnector');
 const homePage =  async (request, response) => { 
     /* must have been loaded in server.js file  */  
     
-    var app_cache = request.locals.app_cache ;    
-    const categories = await app_cache.get(CATEGORIES_TABLE);
-         
+    
+    var categories = await readDataFromRedisCache(CATEGORIES_TABLE);
+    categories = await JSON.parse(categories);
+
     var userCart = request.locals.USER_CART ;
     var user = request.locals.USER;
     userCart = await JSON.parse(JSON.stringify(userCart));
     user = await JSON.parse(JSON.stringify(user));
 
-    const items_array = await app_cache.get(ITEMS_ARRAY);
+    
     const seoSiteLink = request.locals.seoSiteLink ;
     var seoObject = {
         title: request.locals.siteName,
@@ -44,7 +48,6 @@ const homePage =  async (request, response) => {
         userCart : userCart,
         user:user,
         categories: categories,
-        items_array: items_array,
         IMG_DIR_FOR_WEB : IMG_DIR_FOR_WEB,
         csrfToken: request.csrfToken(),
         customers_feedback: request.locals.customers_feedback,
@@ -59,12 +62,9 @@ const rentalItemsPerCategoryPage = async(request, response) => {
         
     var category_weburl = new String(request.params.category_weburl);
     //console.log(`Category web url : ${category_weburl}`);
-    
-    var app_cache = request.locals.app_cache ;   
-    //console.log(`app_cache["${CATEGORIES_TABLE}"]: ${JSON.stringify(app_cache.get(CATEGORIES_TABLE))}`); 
-    const categories = await app_cache.get(CATEGORIES_TABLE);
-    //const itemsByCategoryID = await app_cache.get(ITEMS_BY_CATEGORY_ID)
-         
+
+    var categories = await readDataFromRedisCache(CATEGORIES_TABLE);
+    categories = await JSON.parse(categories);
    
     var userCart = request.locals.USER_CART ;
     var user = request.locals.USER;
@@ -164,10 +164,10 @@ const rentalItemsPerCategoryPage = async(request, response) => {
 
 const f404Page = async(request, response) => { 
         
-    var app_cache = request.locals.app_cache ;   
-    //console.log(`app_cache["${CATEGORIES_TABLE}"]: ${JSON.stringify(app_cache.get(CATEGORIES_TABLE))}`); 
-    const categories = await app_cache.get(CATEGORIES_TABLE);
-         
+      
+    var categories = await readDataFromRedisCache(CATEGORIES_TABLE);
+    categories = await JSON.parse(categories);
+     
     var userCart = request.locals.USER_CART ;
     var user = request.locals.USER;
     userCart = await JSON.parse(JSON.stringify(userCart));
@@ -180,7 +180,6 @@ const f404Page = async(request, response) => {
     { 
         pageTitle: 'Sorry We Could Not Find What You Are Looking For', 
         template: 'f404',
-        category_items: categories,
         userCart: userCart, 
         user:user,
         IMG_DIR_FOR_WEB: IMG_DIR_FOR_WEB,
