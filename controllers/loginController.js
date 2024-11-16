@@ -25,11 +25,15 @@ const showLoginPage = async(request, response) => {
 
     var categories = await readDataFromRedisCache(CATEGORIES_TABLE);
     categories = await JSON.parse(categories);
-
-    var userCart = request.locals.USER_CART ;
-    var user = request.locals.USER;
-    userCart = await JSON.parse(JSON.stringify(userCart));
-    user = JSON.parse(JSON.stringify(user));
+    var userCart = await readDataFromRedisCache(USER_CART);
+    var user = await readDataFromRedisCache(USER);
+    
+    if (!userCart)
+        userCart = {} ;
+    if (!user)
+        user = {} ;
+    userCart = await JSON.parse(userCart);
+    user = await JSON.parse(user);
     //console.log('User Cart in cart.js: ' + JSON.stringify(userCart, null, 4));
     response.render('layout', { 
         pageTitle: 'Login Page', 

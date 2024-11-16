@@ -18,10 +18,9 @@ const {IMG_DIR_FOR_WEB} = require('../utilities/fileupload');
 
 const checkoutFormPost = async (request, response) => {
      
-    var userCart = request.locals.USER_CART ;
+    var userCart = await readDataFromRedisCache(USER_CART);
+    userCart = await JSON.parse(userCart);
    
-    userCart = await JSON.parse(JSON.stringify(userCart)) ;    
-
     /* Get form data first, and sanitize or reject if necessary */
     const completename = new String(request.body.completename);
     const email = new String(request.body.email) ;
@@ -251,14 +250,12 @@ const checkoutFormPost = async (request, response) => {
 
 const showCheckoutPage = async(request, response) => { 
         
-    
     var categories = await readDataFromRedisCache(CATEGORIES_TABLE);
     categories = await JSON.parse(categories);
-         
-    var userCart = request.locals.USER_CART ;
-    var user = request.locals.USER;
-    userCart = await JSON.parse(JSON.stringify(userCart));
-    user = JSON.parse(JSON.stringify(user));
+    var userCart = await readDataFromRedisCache(USER_CART);
+    var user = await readDataFromRedisCache(USER);
+    userCart = await JSON.parse(userCart);
+    user = await JSON.parse(user);
    
     //console.log('Passed cart : ' + JSON.stringify(userCart, null, 4));
     response.render('layout', 

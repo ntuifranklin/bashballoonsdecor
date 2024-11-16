@@ -33,13 +33,13 @@ const viewRentalItemDetailsPage = async(request, response) => {
     //console.log(`${JSON.stringify(uniqueCategoryItem)}`);
     //console.log(`Category Name Encoded : ${category_name}`);
    
-    var userCart = request.locals.USER_CART ;
-    var user = request.locals.USER;
-    userCart = await JSON.parse(JSON.stringify(userCart));
-    user = JSON.parse(JSON.stringify(user));
     
     var categories = await readDataFromRedisCache(CATEGORIES_TABLE);
     categories = await JSON.parse(categories);
+    var userCart = await readDataFromRedisCache(USER_CART);
+    var user = await readDataFromRedisCache(USER);
+    userCart = await JSON.parse(userCart);
+    user = await JSON.parse(user);
     
     let  item = null ;
     var categorywebIDFound = false ;
@@ -85,6 +85,12 @@ const viewRentalItemDetailsPage = async(request, response) => {
             baseServerUrl: seoSiteLink,
         } ;
 
+        //Temporal transformation. Needs more fixing that is global
+        //for details page we need the larger format.
+        //Fixing image urls from cloud flare with multiple variants
+        var imageurl = new String(item.imageurl);
+        imageurl.replace("110x118","384x320");
+        item.imageurl = imageurl.replace("110x118","384x320");;
         const itemImageUrl = item.imageurl;
         if (itemImageUrl != "" ) {
             seoObject["itemImageUrl"] = itemImageUrl ;

@@ -25,11 +25,14 @@ const homePage =  async (request, response) => {
     
     var categories = await readDataFromRedisCache(CATEGORIES_TABLE);
     categories = await JSON.parse(categories);
-
-    var userCart = request.locals.USER_CART ;
-    var user = request.locals.USER;
-    userCart = await JSON.parse(JSON.stringify(userCart));
-    user = await JSON.parse(JSON.stringify(user));
+    var userCart = await readDataFromRedisCache(USER_CART);
+    var user = await readDataFromRedisCache(USER);
+    if (!userCart)
+        userCart = {} ;
+    if (!user)
+        user = {} ;
+    userCart = await JSON.parse(userCart);
+    user = await JSON.parse(user);
 
     
     const seoSiteLink = request.locals.seoSiteLink ;
@@ -65,11 +68,15 @@ const rentalItemsPerCategoryPage = async(request, response) => {
 
     var categories = await readDataFromRedisCache(CATEGORIES_TABLE);
     categories = await JSON.parse(categories);
-   
-    var userCart = request.locals.USER_CART ;
-    var user = request.locals.USER;
-    userCart = await JSON.parse(JSON.stringify(userCart));
-    user = JSON.parse(JSON.stringify(user));
+    var userCart = await readDataFromRedisCache(USER_CART);
+    var user = await readDataFromRedisCache(USER);
+    
+    if (!userCart)
+        userCart = {} ;
+    if (!user)
+        user = {} ;
+    userCart = await JSON.parse(userCart);
+    user = await JSON.parse(user);
 
     //const items_array = await app_cache.get(ITEMS_ARRAY);
     
@@ -167,11 +174,15 @@ const f404Page = async(request, response) => {
       
     var categories = await readDataFromRedisCache(CATEGORIES_TABLE);
     categories = await JSON.parse(categories);
-     
-    var userCart = request.locals.USER_CART ;
-    var user = request.locals.USER;
-    userCart = await JSON.parse(JSON.stringify(userCart));
-    user = JSON.parse(JSON.stringify(user));
+    var userCart = await readDataFromRedisCache(USER_CART);
+    var user = await readDataFromRedisCache(USER);
+    
+    if (!userCart)
+        userCart = {} ;
+    if (!user)
+        user = {} ;
+    userCart = await JSON.parse(userCart);
+    user = await JSON.parse(user);
 
     //const items_array = await app_cache.get(ITEMS_ARRAY);
     

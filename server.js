@@ -8,7 +8,7 @@ const template_folder = 'static_template';
 const routes = require('./routes');
 
 
-const { initializeRedisClient, readDataFromRedisCache,writeDataToRedisCache } = require("./middleware/redis");
+const { initializeRedisClient, clearRedisClientDB,readDataFromRedisCache,writeDataToRedisCache } = require("./middleware/redis");
 // for server ip :
 const ip = require("ip");
 
@@ -108,17 +108,26 @@ const {
     setRedisLoggedInUserCacheMiddleware
 } = require('./middleware/redis');
 
+/* location where images are being stored */
+const {ABSOLUTE_PATH_TO_UPLOAD_FOLDER} = require('./utilities/fileupload');
+//console.log(`Absolute path to uploaded folder ${ABSOLUTE_PATH_TO_UPLOAD_FOLDER}`);
+const { exit } = require('process');
 async function startNewExpressServer() {
     
     const app = express();
 
     app.use(express.json());
-
+    
     await initializeRedisClient();
+
+    //manages file uploads
     app.use(fileUpload({
         limits: { fileSize: 50 * 1024 * 1024 }, //maximum 50 MB
+        useTempFiles : true,
+        tempFileDir : ABSOLUTE_PATH_TO_UPLOAD_FOLDER,
+        debug: false,//set to true to see what is going on behind the scenes
     }));
-    app.use(bodyParser.urlencoded({extended: true}));
+    app.use(bodyParser.urlencoded({extended: false}));
     app.use(parseForm);
     // Apply the rate limiting middleware to all requests.
     app.use(form_rate_limiter); 
@@ -127,6 +136,8 @@ async function startNewExpressServer() {
     app.set('view engine', 'ejs');
     app.set('views', path.join(__dirname, './views'));
     //app.set('assets', path.join(__dirname, './assets'));
+    //just to test uploading a file 
+    
     app.use(express.static(path.join(__dirname, `./${template_folder}`)));
 
             /* If in a production environment, then use un secure cookies */
@@ -185,9 +196,6 @@ async function startNewExpressServer() {
     const customers_feedback = require(process.env.CUSTOMERS_FEEDBACK_FILE);
     app.locals.customers_feedback = customers_feedback ;
 
-    /* location where images are being stored */
-    const {IMG_DIR_FOR_WEB} = require('./utilities/fileupload');
-    const { exit } = require('process');
 
 
     /* rejected firewall domains  */

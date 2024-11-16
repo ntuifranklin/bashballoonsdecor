@@ -6,6 +6,7 @@ const ITEMS_BY_CATEGORY_ID = "itemsByCategoryID";
 const ITEMS_BY_CATEGORY_WEB_ID = "itemsByCategoryWebID";
 const ITEMS_DETAILS = "itemsDetails";
 const CATEGORIES_TABLE = "categories";
+const CATEGORY_ITEMS_TABLE = "category_items";
 const USER_CART = "userCart";
 const USER = "user";
 const QUANTITY = "quantity";
@@ -25,6 +26,7 @@ module.exports = {
     ITEMS_BY_CATEGORY_WEB_ID,
     ITEMS_DETAILS,
     CATEGORIES_TABLE,
+    CATEGORY_ITEMS_TABLE,
     CATEGORIES_WEB_URLS,
     CATEGORIES_NAMES_AND_WEB_URLS,
     USER_CART,

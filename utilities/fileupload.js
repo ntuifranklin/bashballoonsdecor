@@ -1,16 +1,21 @@
 const multer = require('multer');
+const path = require('path');
+
 const IMG_DIR_FOR_WEB = `/assets/img/itemimgs/`;
 
 const template_folder = 'static_template';
 const upload_folder = `../${template_folder}${IMG_DIR_FOR_WEB}`;
 
-// Set up storage for uploaded files
+const ABSOLUTE_PATH_TO_UPLOAD_FOLDER = path.resolve(__dirname, upload_folder);
+// Set up storage for uploaded files-
+const datetimenow = Date.now() ; 
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
+  destination: (request, file, cb) => {
     cb(null, upload_folder);
   },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + '-' + file.originalname);
+  filename: (request, file, cb) => {
+    cb(null, datetimenow + file.originalname);
+    request.locals.NEWLY_UPLOADED_FILE = datetimenow + file.originalname ;
   }
 });
 
@@ -41,8 +46,9 @@ const fileuploads = multer({
 }); // .single("itemimgurl")
 
 module.exports = {
-  fileuploads,  
+  
   template_folder,
   upload_folder,
-  IMG_DIR_FOR_WEB
+  IMG_DIR_FOR_WEB,
+  ABSOLUTE_PATH_TO_UPLOAD_FOLDER
 };

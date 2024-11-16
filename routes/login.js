@@ -7,7 +7,7 @@ const csrfProtection = csrf({ cookie: true })
 const {showLoginPage, loginPost} = require('../controllers/loginController');
 const {loginValidator} = require('../middleware/loginFormValidation');
 const {checkLoginForm} = require('../middleware/loginMiddleware');
-const {redirectUserToAdminDashboardIfLoggedIn} = require('../middleware/adminUserMiddleware');
+const {verifyAdminUserisLoggedIn, redirectUserToAdminDashboardIfLoggedIn} = require('../middleware/adminUserMiddleware');
 module.exports = () => { 
     
     

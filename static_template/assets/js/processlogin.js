@@ -1,13 +1,17 @@
+const LOGIN_FORM_HTML_ID='#loginform';
+const SPINNER_HTML_ID='#loadingspinner';
 jQuery(document).ready(function(){
-
+    
     /* 
         On loading of the login page, set the display for
         the otp login form input to be none.
     */
     $('#otpverifyform').css('display','none');
-
-    $('#loginform').on('submit',function(event) {  //Don't foget to change the id form
-       
+        
+    $(SPINNER_HTML_ID).css('display','none');
+    //by default the spinner is disabled
+    $(LOGIN_FORM_HTML_ID).on('submit',function(event) {  //Don't foget to change the id form
+        $(SPINNER_HTML_ID).toggle();
         /* get the form data */
         $.ajaxSetup({
             headers: {
@@ -42,7 +46,7 @@ jQuery(document).ready(function(){
             $('input[name="user_email"]').val($('input[name="email"]').val());
 
             /* Hide the login form to leave room for the one time password form */
-            $('#loginform').toggle();
+            $(LOGIN_FORM_HTML_ID).toggle();
             
         }).fail(function (data) { 
             //console.log(`${JSON.stringify(data)}`);
@@ -56,9 +60,11 @@ jQuery(document).ready(function(){
             
             $(`#loginfeedback`).html(errorHtml);
         });
+        $(SPINNER_HTML_ID).toggle();
           
         event.preventDefault();
     });
+    
 
 
 

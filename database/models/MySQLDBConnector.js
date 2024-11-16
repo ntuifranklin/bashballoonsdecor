@@ -11,8 +11,8 @@ const TEST_MARIADB_CONFIG = {
     password: process.env.UPGRADED_DATABASE_PASSWORD,
     database: process.env.TEST_DATABASE_UPGRADED_NAME,
     waitForConnections: true,
-    connectionLimit: 20,
-    maxIdle: 20, // max idle connections, the default value is the same as `connectionLimit`
+    connectionLimit: 80,
+    maxIdle: 80, // max idle connections, the default value is the same as `connectionLimit`
     idleTimeout: 360000, // idle connections timeout, in milliseconds, the default value 60000
     queueLimit: 0,
     enableKeepAlive: true,
@@ -27,8 +27,8 @@ const PROD_MARIADB_CONFIG = {
     password: process.env.UPGRADED_DATABASE_PASSWORD,
     database: process.env.PROD_DATABASE_UPGRADED_NAME,
     waitForConnections: true,
-    connectionLimit: 20,
-    maxIdle: 20, // max idle connections, the default value is the same as `connectionLimit`
+    connectionLimit: 80,
+    maxIdle: 80, // max idle connections, the default value is the same as `connectionLimit`
     idleTimeout: 360000, // idle connections timeout, in milliseconds, the default value 60000
     queueLimit: 0,
     enableKeepAlive: true,
@@ -108,7 +108,7 @@ class MySQLDBConnector{
             } else {
                 await pool.execute(query, (err, rows, fields) => {
                     if (err) {
-                        console.log(`error in MySQLDBConnector.execute: ${err}`);
+                        //console.log(`error in MySQLDBConnector.execute: ${err}`);
                         reject(err);
                     } else {
                         //conn.release();
