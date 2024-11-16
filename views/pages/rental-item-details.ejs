@@ -36,7 +36,7 @@ function trimItemName(name="",size=20) {
                       <a href="JavaScript:void(0)">
                         <% const trimmedName = trimItemName(name=decode(item.item_name)); %>
                         <% if (item.imageurl != "" ) {%>
-                          <img src="<%= IMG_DIR_FOR_WEB + item.imageurl %>" width=55 height=59 />
+                          <img src="<%= item.imageurl %>" width=55 height=59 />
                         <% } else { %>
                           <img src="<%= IMG_DIR_FOR_WEB %>55x59.png" width=55 height=59 />
                           <!-- <img src="https://via.placeholder.com/55x59" /> -->
@@ -64,7 +64,7 @@ function trimItemName(name="",size=20) {
                 <!-- <img id="NZoomImg" alt="ballon" src="https://via.placeholder.com/384x320" > -->
                 
                 <% if (item.imageurl != "" ) {%>
-                  <img src="<%= IMG_DIR_FOR_WEB + item.imageurl %>" width=384 height=320 />
+                  <img src="<%= item.imageurl %>" width=384 height=320 />
                 <% } else { %>
                   <img src="<%= IMG_DIR_FOR_WEB %>384x320.png" width=384 height=320 />
                   <!-- <img src="https://via.placeholder.com/384x320" /> -->

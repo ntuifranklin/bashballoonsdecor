@@ -54,6 +54,29 @@ async function initializeRedisClient() {
 exports.redisClient = redisClient ;
 exports.initializeRedisClient = initializeRedisClient ;
 
+async function clearRedisClientDB(){
+    if (isRedisWorking()){
+                
+        // Clear the current database
+        redisClient.flushdb((err, succeeded) => {
+            if (err) {
+            console.error('Error clearing Redis cache:', err);
+            } else {
+            console.log('Redis cache cleared successfully:', succeeded);
+            }
+        });
+        
+        // Clear all databases
+        redisClient.flushall((err, succeeded) => {
+            if (err) {
+            console.error('Error clearing all Redis databases:', err);
+            } else {
+            console.log('All Redis databases cleared successfully:', succeeded);
+            }
+        });
+    }
+}
+exports.clearRedisClientDB = clearRedisClientDB ;
 
 function requestToKey(request) {
 // build a custom object to use as part of the Redis key
@@ -85,7 +108,7 @@ if (isRedisWorking()) {
     await redisClient.set(key, data, options);
     //console.log(`Logging [${__filename}] : on Writing data : ${data} to Redis`);
     } catch (e) {
-    console.error(`Failed to cache data for key=${key}`, e);
+        console.error(`Failed to cache data for key=${key}`, e);
     }
 }
 }  ;
@@ -97,10 +120,14 @@ let cachedValue = undefined;
 
 if (isRedisWorking()) {
     // try to get the cached response from redis
+    //console.log(`Redis attempting to read key : ${key}`);
     cachedValue = await redisClient.get(key);
     if (cachedValue) {
+        //console.log(`Redis returning value for key : `);
+        //console.log(JSON.stringify(cachedValue, null, 2));
         return cachedValue;
     }
+    return null ;
 }
 }
 
@@ -175,16 +202,25 @@ async function setRedisUserCartCacheMiddleware (request, response, next) {
             var cachedValue = await readDataFromRedisCache(key);
             if (cachedValue) {
                 cachedValue = await JSON.parse(cachedValue);
-                request.locals.USER_CART = cachedValue ;
-            } else if (typeof request.locals.USER_CART == "undefined"){
-                request.locals.USER_CART = {} ;
-            }
-            // continue to the controller function
-            next();
-        } else {
+                //request.locals.USER_CART = cachedValue ;
+            } else {
+                
+                const USER_CART_REDIS_CACHING_OPTIONS = 
+                {
+                    
+                    EX: process.env.ADMIN_USER_EXPIRE_TIME, // 15 minutes. User has to log in every 15 minutes
+                    NX: true, // write the data even if the key already exists
+                } ;
+                cachedValue = JSON.stringify({});
+                await writeDataToRedisCache(key, cachedValue, USER_CART_REDIS_CACHING_OPTIONS);
+                
+            } ;
+            request.locals.USER_CART = cachedValue ;
+           
+        } 
         // proceed with no caching
-            next();
-        }
+        next();
+        
 };
 
 exports.setRedisUserCartCacheMiddleware = setRedisUserCartCacheMiddleware ;
@@ -198,20 +234,29 @@ async function setRedisLoggedInUserCacheMiddleware (request, response, next) {
         // if there is some cached data, retrieve it and return it
         var cachedValue = await readDataFromRedisCache(key);
         if (cachedValue) {
+            
+            //console.log(`Redis returning value for user key : `);
+            //console.log(JSON.stringify(cachedValue, null, 2));
             cachedValue = await JSON.parse(cachedValue);
-            request.locals.USER = cachedValue ;
-            next() ;
+            //request.locals.USER = cachedValue ;
         } else {
             
-            if (typeof request.locals.USER == "undefined")
-                request.locals.USER = {} ;
-            // continue to the controller function
-            next();
-        }
-    } else {
+            const USER_REDIS_CACHING_OPTIONS = 
+            {
+                
+                EX: process.env.ADMIN_USER_EXPIRE_TIME, // 15 minutes. User has to log in every 15 minutes
+                NX: true, // write the data even if the key already exists
+            } ;
+            cachedValue = JSON.stringify({});
+            await writeDataToRedisCache(key, cachedValue, USER_REDIS_CACHING_OPTIONS);
+            //request.locals.USER = cachedValue ;
+        } ;
+        request.locals.USER = cachedValue ;
+        
+    } 
     // proceed with no caching
-        next();
-    }
+    next();
+    
 };
 
 exports.setRedisLoggedInUserCacheMiddleware = setRedisLoggedInUserCacheMiddleware ;

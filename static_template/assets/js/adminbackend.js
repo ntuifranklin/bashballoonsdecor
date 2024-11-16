@@ -12,7 +12,8 @@ $(document).ready(function() {
         
         $.ajaxSetup({
             headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                "Content-Type": "multipart/form-data",
             }
         });
         
@@ -142,14 +143,15 @@ $(document).ready(function() {
   });
 
     /* This function below will take from the database the list of category items selected */
-    $('#category_id').on('change', function (e) {
+    $('#category_id').on('change', function (event) {
+      event.preventDefault();
       const selectedCategoryIDValue = $(this).val()
       if ( selectedCategoryIDValue != ''){
         //reload only if category_id is not empty
         reloadCategoryTable();
       } else {
         //clear the table on admin page
-        $("#itemTableBody").html('');
+        $("#itemTableBody").html('No Items In This Category Selected');
         //update the select category title 
         $("#selectedCategoryTitle").html('Select a Category Title On Left');
       }
@@ -168,8 +170,7 @@ function reloadCategoryTable() {
    var optionSelected = $("#category_id").find("option:selected");
    var valueSelected  = optionSelected.val();
    var textSelected   = optionSelected.text();
-   
-    
+       
     $.ajaxSetup({
       headers: {
          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

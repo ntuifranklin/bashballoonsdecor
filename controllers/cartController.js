@@ -24,11 +24,14 @@ const cartPage = async (request, response) => {
     
     var categories = await readDataFromRedisCache(CATEGORIES_TABLE);
     categories = await JSON.parse(categories);
-         
-    var userCart = request.locals.USER_CART ;
-    var user = request.locals.USER;
-    userCart = await JSON.parse(JSON.stringify(userCart));
-    user = JSON.parse(JSON.stringify(user));
+    var userCart = await readDataFromRedisCache(USER_CART);
+    var user = await readDataFromRedisCache(USER);
+    if (!userCart)
+        userCart = {} ;
+    if (!user)
+        user = {} ;
+    userCart = await JSON.parse(userCart);
+    user = await JSON.parse(user);
     
     response.render('layout', { 
         pageTitle: 'Your Wish List', 
@@ -46,10 +49,14 @@ const cartPage = async (request, response) => {
 const cartPagePost = async (request, response) => {
     
     
-    var userCart = request.locals.USER_CART ;
-    var user = request.locals.USER;
-    userCart = await JSON.parse(JSON.stringify(userCart));
-    user = JSON.parse(JSON.stringify(user));
+    var userCart = await readDataFromRedisCache(USER_CART);
+    var user = await readDataFromRedisCache(USER);
+    if (!userCart)
+        userCart = {} ;
+    if (!user)
+        user = {} ;
+    userCart = await JSON.parse(userCart);
+    user = await JSON.parse(user);
     
     
     const itemUpdateID = request.body.itemUpdateID;
@@ -147,15 +154,13 @@ const cartPagePost = async (request, response) => {
 } ;
 
 const cartPageUpdate = async (request, response, next) => {
-         
      
-    var userCart = request.locals.USER_CART ;
-    userCart = JSON.parse(JSON.stringify(userCart));
+    var userCart = await readDataFromRedisCache(USER_CART);
+    
     if (!userCart) {
         response.status(400).send({ message: 'error', responseText: "You don't have a wish list yet" });
         next(); 
-    } 
-
+    };
    
     //console.log(`current cart before update: ${JSON.stringify(userCart)}`);
     const itemUpdateID = new String(request.body.itemID);
@@ -198,10 +203,10 @@ const cartPageUpdate = async (request, response, next) => {
 } ;
 const deleteCartItemPost = async (request, response) => {
          
-     
-    var userCart = request.locals.USER_CART ;
-   
-    userCart = await JSON.parse(JSON.stringify(userCart));
+         
+    var userCart = await readDataFromRedisCache(USER_CART);
+    userCart = await JSON.parse(userCart);
+    
     if (!userCart) {
         response.status(400).send({ message: 'error', responseText: "You don't have a wish list yet" });
         next(); 
@@ -218,7 +223,7 @@ const deleteCartItemPost = async (request, response) => {
     
     const data = JSON.stringify(userCart) ;
     await writeDataToRedisCache(key, data, options);
-    request.locals.USER_CART = userCart ;
+    //request.locals.USER_CART = userCart ;
     
     return response.status(200).send({ message: 'success', responseText: `Item deleted from wish list successfully` });
 } ;

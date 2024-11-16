@@ -62,14 +62,14 @@ exports.generateUniqueID = generateUniqueID ;
 
 
 
-async function getCategories (con=null,tableName='categories') {
+var getCategories = async function (con=null,tableName='categories') {
     var tableName = tableName;
     return await new Promise(async(resolve, reject) => {
       
         try {            
             selectsql = `
             SELECT * 
-            FROM categories
+            FROM ${tableName} ORDER BY category_name ASC
           `;
           var result = await MySQLDBConnector.execute(selectsql, []) 
             
@@ -103,7 +103,7 @@ async function getCategoriesWebUrl(con=null,tableName='categories') {
 } ;
 
 exports.getCategoriesWebUrl = getCategoriesWebUrl ;
-async function getCategoriesItems (tableName='category_items', category_id='') {
+var getCategoriesItems = async(tableName='category_items', category_id='') => {
   
     var tableName = new String(tableName);
     var category_id = new String(category_id);
@@ -111,12 +111,12 @@ async function getCategoriesItems (tableName='category_items', category_id='') {
     return await new Promise(async(resolve, reject) => {
       try {            
         selectsql = `
-                      SELECT * 
-                      FROM category_items
+                      SELECT *
+                      FROM ${tableName}
                     `;
         var params = [] ;
         if (category_id != '') {
-          params[0] = category_id ;
+          params.push(category_id) ;
           selectsql += ` WHERE category_id = ? `;
         } ;
         var result = await MySQLDBConnector.execute(selectsql, params)  ;
@@ -132,7 +132,7 @@ async function getCategoriesItems (tableName='category_items', category_id='') {
 
 exports.getCategoriesItems = getCategoriesItems ;
 
-async function getUniqueCategoryItemByCategoryWebID (tableName='category_items', category_webid='') {
+var getUniqueCategoryItemByCategoryWebID =  async function (tableName='category_items', category_webid='') {
   
   var tableName = new String(tableName);
   var category_webid = new String(category_webid);
@@ -141,18 +141,18 @@ async function getUniqueCategoryItemByCategoryWebID (tableName='category_items',
     try {            
       selectsql = `
                     SELECT * 
-                    FROM category_items
+                    FROM ${tableName}
                   `;
       var params = [] ;
       if (category_webid != '') {
-        params[0] = category_webid ;
+        params.push(category_webid) ;
         selectsql += ` WHERE category_webid = ? `;
       } ;
       //console.log(`Running sql ${selectsql}`);
       var result = await MySQLDBConnector.execute(selectsql, params)  ;
       resolve(result) ;
   } catch( err ){
-    console.log(`Error in getUniqueCategoryItemByCategoryWebID: ${err}`);
+    console.log(`Error in ${__filename}.getUniqueCategoryItemByCategoryWebID: ${err}`);
     reject(err);
   } ;
   }) ;

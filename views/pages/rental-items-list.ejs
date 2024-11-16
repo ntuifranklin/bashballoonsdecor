@@ -218,7 +218,7 @@
                     <div class="d-flex align-items-center">
                       <!-- <img loading="lazy" alt="product" src="https://via.placeholder.com/110x118"> -->
                       <% const trimmedName = trimItemName(name=item_name)%>
-                      <img loading="lazy" alt="<%= 'Image for ' + trimmedName %>" src="<%= IMG_DIR_FOR_WEB + individual_item.imageurl %>" width=110 height=118 />
+                      <img loading="lazy" alt="<%= 'Image for ' + trimmedName %>" src="<%= individual_item.imageurl %>" width=110 height=118 />
                       
                       <div class="weekly-sellers-text">
                         <span><%= trimmedName %></span>

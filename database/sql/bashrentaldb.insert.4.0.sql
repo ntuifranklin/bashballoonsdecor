@@ -1,80 +1,137 @@
 use bashrentaldbprodbbd ;
+
 INSERT INTO `categories` VALUES
-('10G1coNRVArXAXyK','Flatware','9c19108cc70d42dc', 'flatware','https://imagedelivery.net/FsZO54BRtMf2GCnVBBnkWg/c94f7d34-357e-44ba-4043-8e8cefa9a400/webp'),
-('1Zx6DYqPodqATCyF','Tables','68c2964483c5dd89' , 'tables','https://imagedelivery.net/FsZO54BRtMf2GCnVBBnkWg/9d51f429-5347-4e94-c02c-dcddb4491100/webp'),
-('4cAZzlORUK/x9pff','Candy Carts','e45fb3f53ec72314', 'candy-carts','https://imagedelivery.net/FsZO54BRtMf2GCnVBBnkWg/58442c6b-87b8-4407-36d8-d1d045f1c300/webp'),
-('4FbNYK2SlX97+tbX','Serveware','174bdb74a17a2c61', 'serveware','https://imagedelivery.net/FsZO54BRtMf2GCnVBBnkWg/861ac898-08ba-4d19-7449-834be6a67a00/webp'),
-('6e0ebqYdZ1226Ts3','Silverware','2ac244c6cac19c17', 'silverware','https://imagedelivery.net/FsZO54BRtMf2GCnVBBnkWg/903170d6-c57a-4c6b-588e-7de6c64a3b00/webp'),
-('98xC4R9kw+qXxlp/','Drinkware','3633cb86cb3aeda3', 'drinkware','https://imagedelivery.net/FsZO54BRtMf2GCnVBBnkWg/bb9defca-9b6b-4cc1-a2d8-f37aee5de200/webp'),
-('aMgUNqzSrYQnbkYN','Draping','cdd430c68b12f394','draping','https://imagedelivery.net/FsZO54BRtMf2GCnVBBnkWg/565973e4-0567-4564-1b64-a016f927ee00/webp'),
-('CzcfVrglF1cORrS/','Pedestal and Plinths','c3b1dc73ad3e8a83', 'pedestal-and-plinths','https://imagedelivery.net/FsZO54BRtMf2GCnVBBnkWg/b68f29a0-ecdc-4cf9-5695-d66c14538400/webp'),
-('EH/hrvVp5Oc3uIrt','Candles','a8c867c0f708a7c8', 'candles','https://imagedelivery.net/FsZO54BRtMf2GCnVBBnkWg/5c91adfe-12ca-4e9b-64a8-cc30f8c77000/webp'),
-('hlliNpVwEmCLI0cp','Lighting','dc32f42895f52767', 'lighting','https://imagedelivery.net/FsZO54BRtMf2GCnVBBnkWg/ea9d4379-d4c9-4963-fb46-815edb631300/webp'),
-('ISQdbBvXb6SGHFh0','Flowers, Plants and Trees','d42d4a8dc51fccc5','flowers-plants-and-trees','https://imagedelivery.net/FsZO54BRtMf2GCnVBBnkWg/2cc1075f-37d1-4caa-fa2a-ea60362a9e00/webp'),
-('JGnG0WO5wyeNGxc5','Marquee and LED Signs','46073ffedd2c6888','marquee-and-led-signs','https://imagedelivery.net/FsZO54BRtMf2GCnVBBnkWg/66a750b2-f77e-4683-8c18-f35fad088d00/webp'),
-('l9MaaH3gDylnsN73','Napkins','4dcd9a8e107efb15', 'napkins','https://imagedelivery.net/FsZO54BRtMf2GCnVBBnkWg/6ab04f9d-9891-493f-49eb-d814c316c600/webp'),
-('mEfkVpMmFSgyuWEd','Teaware or Coffeeware','9fec515ceeb00b9d','teaware-or-coffeeware','https://imagedelivery.net/FsZO54BRtMf2GCnVBBnkWg/49a00e41-12fd-4761-a506-0c3f06e6a100/webp'),
-('s17g5ptViTQWQb3o','Table Cloths','a416759fdf771f87','tablecloths','https://imagedelivery.net/FsZO54BRtMf2GCnVBBnkWg/039acdab-67c3-4929-3cd4-12daae8ebc00/webp'),
-('NOdc2PSP2bz6BR0Q','Table Runners','89583b90176011c4', 'table-runners','https://imagedelivery.net/FsZO54BRtMf2GCnVBBnkWg/a69b82c2-acd4-4b6a-be94-5fd141fc7200/webp'),
-('DnHoyCl8+xr/ySho','Chair Covers','3984fb7bb5ba328d','chair-covers','https://imagedelivery.net/FsZO54BRtMf2GCnVBBnkWg/6c0e6144-fd23-42a3-dfac-0b6b76ec3e00/webp'),
-('uKmwctxAcAbRby8O','Chairs','891d021aa00ac630','chairs','https://imagedelivery.net/FsZO54BRtMf2GCnVBBnkWg/ea7789f9-157e-411a-9519-08ba65f1bc00/webp'),
-('w7nKt148IWrnVr6Q','Children Party Rentals','ec0fa50fad58f55e', 'children-party-rentals','https://imagedelivery.net/FsZO54BRtMf2GCnVBBnkWg/4be331b5-c367-4ffc-be76-9bf3afb48100/webp'),
-('YduZmJFmovN99StC','Center Pieces','c7c0ba8f75526b63','center-pieces','https://imagedelivery.net/FsZO54BRtMf2GCnVBBnkWg/444101e7-e2ba-4a2f-aaa1-c33101520b00/webp');
+('10G1coNRVArXAXyK', 'Flatware', '9c19108cc70d42dc', 'flatware', 'https://imagedelivery.net/FsZO54BRtMf2GCnVBBnkWg/c94f7d34-357e-44ba-4043-8e8cefa9a400/webp', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+('1Zx6DYqPodqATCyF', 'Tables', '68c2964483c5dd89' , 'tables', 'https://imagedelivery.net/FsZO54BRtMf2GCnVBBnkWg/9d51f429-5347-4e94-c02c-dcddb4491100/webp', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+('4cAZzlORUK/x9pff', 'Candy Carts', 'e45fb3f53ec72314', 'candy-carts', 'https://imagedelivery.net/FsZO54BRtMf2GCnVBBnkWg/58442c6b-87b8-4407-36d8-d1d045f1c300/webp', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+('4FbNYK2SlX97+tbX', 'Serveware', '174bdb74a17a2c61', 'serveware', 'https://imagedelivery.net/FsZO54BRtMf2GCnVBBnkWg/861ac898-08ba-4d19-7449-834be6a67a00/webp', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+('6e0ebqYdZ1226Ts3', 'Silverware', '2ac244c6cac19c17', 'silverware', 'https://imagedelivery.net/FsZO54BRtMf2GCnVBBnkWg/903170d6-c57a-4c6b-588e-7de6c64a3b00/webp', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+('98xC4R9kw+qXxlp/', 'Drinkware', '3633cb86cb3aeda3', 'drinkware', 'https://imagedelivery.net/FsZO54BRtMf2GCnVBBnkWg/bb9defca-9b6b-4cc1-a2d8-f37aee5de200/webp', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+('aMgUNqzSrYQnbkYN', 'Draping', 'cdd430c68b12f394', 'draping', 'https://imagedelivery.net/FsZO54BRtMf2GCnVBBnkWg/565973e4-0567-4564-1b64-a016f927ee00/webp', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+('CzcfVrglF1cORrS/', 'Pedestal and Plinths', 'c3b1dc73ad3e8a83', 'pedestal-and-plinths', 'https://imagedelivery.net/FsZO54BRtMf2GCnVBBnkWg/b68f29a0-ecdc-4cf9-5695-d66c14538400/webp', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+('EH/hrvVp5Oc3uIrt', 'Candles', 'a8c867c0f708a7c8', 'candles', 'https://imagedelivery.net/FsZO54BRtMf2GCnVBBnkWg/5c91adfe-12ca-4e9b-64a8-cc30f8c77000/webp', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+('hlliNpVwEmCLI0cp', 'Lighting', 'dc32f42895f52767', 'lighting', 'https://imagedelivery.net/FsZO54BRtMf2GCnVBBnkWg/ea9d4379-d4c9-4963-fb46-815edb631300/webp', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+('ISQdbBvXb6SGHFh0', 'Flowers, Plants and Trees', 'd42d4a8dc51fccc5', 'flowers-plants-and-trees', 'https://imagedelivery.net/FsZO54BRtMf2GCnVBBnkWg/2cc1075f-37d1-4caa-fa2a-ea60362a9e00/webp', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+('JGnG0WO5wyeNGxc5', 'Marquee and LED Signs', '46073ffedd2c6888', 'marquee-and-led-signs', 'https://imagedelivery.net/FsZO54BRtMf2GCnVBBnkWg/66a750b2-f77e-4683-8c18-f35fad088d00/webp', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+('l9MaaH3gDylnsN73', 'Napkins', '4dcd9a8e107efb15', 'napkins', 'https://imagedelivery.net/FsZO54BRtMf2GCnVBBnkWg/6ab04f9d-9891-493f-49eb-d814c316c600/webp', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+('mEfkVpMmFSgyuWEd', 'Teaware or Coffeeware', '9fec515ceeb00b9d', 'teaware-or-coffeeware', 'https://imagedelivery.net/FsZO54BRtMf2GCnVBBnkWg/49a00e41-12fd-4761-a506-0c3f06e6a100/webp', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+('s17g5ptViTQWQb3o', 'Table Cloths', 'a416759fdf771f87', 'tablecloths', 'https://imagedelivery.net/FsZO54BRtMf2GCnVBBnkWg/039acdab-67c3-4929-3cd4-12daae8ebc00/webp', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+('NOdc2PSP2bz6BR0Q', 'Table Runners', '89583b90176011c4', 'table-runners', 'https://imagedelivery.net/FsZO54BRtMf2GCnVBBnkWg/a69b82c2-acd4-4b6a-be94-5fd141fc7200/webp', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+('DnHoyCl8+xr/ySho', 'Chair Covers', '3984fb7bb5ba328d', 'chair-covers', 'https://imagedelivery.net/FsZO54BRtMf2GCnVBBnkWg/6c0e6144-fd23-42a3-dfac-0b6b76ec3e00/webp', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+('uKmwctxAcAbRby8O', 'Chairs', '891d021aa00ac630', 'chairs', 'https://imagedelivery.net/FsZO54BRtMf2GCnVBBnkWg/ea7789f9-157e-411a-9519-08ba65f1bc00/webp', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+('w7nKt148IWrnVr6Q', 'Children Party Rentals', 'ec0fa50fad58f55e', 'children-party-rentals', 'https://imagedelivery.net/FsZO54BRtMf2GCnVBBnkWg/4be331b5-c367-4ffc-be76-9bf3afb48100/webp', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP()),
+('YduZmJFmovN99StC', 'Center Pieces', 'c7c0ba8f75526b63', 'center-pieces', 'https://imagedelivery.net/FsZO54BRtMf2GCnVBBnkWg/444101e7-e2ba-4a2f-aaa1-c33101520b00/webp', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());
+
+
+
+LOCK TABLES `category_items` WRITE;
+/*!40000 ALTER TABLE `category_items` DISABLE KEYS */;
 INSERT INTO `category_items` VALUES
-('02ed0fead3294912','Cake Knife and Server Set Silver 3 Crystals Embedded on the Handles','Cake Knife and Server Set Silver 3 Crystals Embedded on the Handles\n\n\n','10G1coNRVArXAXyK','b5cd4c14','',87,20.00),
-('16052f8c91f449d3','Wood Folding Table serpentine','                                                                Wood Folding Table 7&amp;amp;#x27; serpentine\r\n                            \r\n                            ','1Zx6DYqPodqATCyF','43f681e0','16052f8c91f449d3.jpeg',168,10.00),
-('166f62f5e8f646d0','Ballroom Gold Dinner Spoon Blue Handle','Ballroom Gold Dinner Spoon Blue Handle When renting dinnerware, glassware, silverware, trays, bowls, serving pieces, etc. we require that return them in the crates, racks, and packaging in which they are delivered and remove any excess debris by scraping or rinsing off the equipment prior to returning. All silverware and dinnerware need to be rinse of food or drink before, they need to package for transportation in the same condition they was delivery. any damage on the items because customer don&#x27;t wrapped and package the items in the same way at delivery time will not be cover by DW fee, $150.00 will be charge for any quantity of silverware or dinnerware return with food or drink on (items return not rinse)','10G1coNRVArXAXyK','3fa42004','',47,1.25),
-('22316275b8b74264','Ballroom Gold Dinner Knife White Handle','Ballroom Gold Dinner Knife White Handle\n\n','10G1coNRVArXAXyK','ed9bf239','',822,1.25),
-('2b7b3265681b41cd','24K Blush&#x2F;Mauve Dining Chairs','24K Blush&#x2F;Mauve Dining Chairs\n\n','uKmwctxAcAbRby8O','64055c31','',18,16.00),
-('2fa5af7ef8634bbd','Belmont Silver Dinner Knife','Belmont Silver Dinner Knife\n\n','10G1coNRVArXAXyK','82643a66','',124,1.60),
-('33bcd364a75849d4','Ballroom Gold Dinner Knife Pink Handle','Ballroom Gold Dinner Knife Pink Handle\n','10G1coNRVArXAXyK','72122b35','',288,1.50),
-('355ff236ed11412f','Zoie Gold Cake Tables','Zoie Gold Cake Tables\r\n                            ','1Zx6DYqPodqATCyF','510e5818','355ff236ed11412f.png',161,179.99),
-('364757c4373d4f19','Ballroom Gold Dinner Fork White Handle','Ballroom Gold Dinner Fork White Handle','10G1coNRVArXAXyK','d90458ba','',789,1.25),
-('371a40153bca4687','Actwan Coffee Table Gold','Gold and Glass Actwan Coffee Table. Give your set a elegant accent with this beautiful coffee table. 50&quot;L X 26&quot;W X 18&quot;H','1Zx6DYqPodqATCyF','791c630b','',17,85.00),
-('3ce99bbafa2d4764','24K Peacock Dining Chairs','24K Peacock Dining Chairs','uKmwctxAcAbRby8O','c34260ed','',96,16.00),
-('3ee29c2987074a7c','Wire Square Gold Cocktail Table','Wire Square Gold Cocktail Table','1Zx6DYqPodqATCyF','6786ba47','3ee29c2987074a7c.jpeg',287,90.00),
-('4360d05b0ae543c3','Agnus Mirror Dining Table','Agnus Mirror Dining Table Picture 4 tables will seat 16 guest.\n\n','1Zx6DYqPodqATCyF','8932ebd8','',54,400.00),
-('4482837eb9164a54','Anakin Chrome Silver Stainless Steel Barstool','Anakin Chrome Silver Stainless Steel Barstool\n\n','uKmwctxAcAbRby8O','4403443c','',98,30.00),
-('4b379d2bc0354e64','24K Black Tie Dining Chairs','24K Black Tie Dining Chairs Because classics never go out of style! Have a seat at the table in style with our ultra-chic Dining Chairs.','uKmwctxAcAbRby8O','1e5402d3','',21,16.09),
-('4cb102e7becc466a','9 Inch Gold Serving Tongs Gold Serving Utensils Salad Tongs Buffet Tongs','9 Inch Gold Serving Tongs Gold Serving Utensils Salad Tongs Buffet Tongs','10G1coNRVArXAXyK','0d70b1f4','',789,3.00),
-('4fd7b66124584929','24K Purple Dining Chairs','24K Purple Dining Chairs Because classics never go out of style! Have a seat at the table in style with our ultra-chic Dining Chairs.','uKmwctxAcAbRby8O','358a7d44','',14,16.00),
-('50b095e236324107','Christmas Garland Gold Napkin Rings','Christmas Garland Gold Napkin Rings\n\n\n\n\n','10G1coNRVArXAXyK','1b6c99b0','',104,0.85),
-('51f58aa06dcb4836','Ceramic White Spoon Rest 4.8 Inches Spoon Holder','Ceramic White Spoon Rest 4.8 Inches Spoon Holder\n\n\n\n','10G1coNRVArXAXyK','3c7d1339','',209,3.00),
-('676cf130c34a4e17','Ballroom Gold Dinner Fork with Red Handler','Ballroom Gold Dinner Fork with Red Handler','10G1coNRVArXAXyK','8b8140c9','',584,1.25),
-('725e3a7b82c04e92','Elegant Demitasse Spoon','Elegant Demitasse Spoon\n','10G1coNRVArXAXyK','fea9d63e','',145,0.60),
-('7f01185169634b63','Ballroom Gold Dinner Fork Blue Handle','Ballroom Gold Dinner Fork Blue Handle When renting dinnerware, glassware, silverware, trays, bowls, serving pieces, etc. we require that return them in the crates, racks, and packaging in which they are delivered and remove any excess debris by scraping or rinsing off the equipment prior to returning. All silverware and dinnerware need to be rinse of food or drink before, they need to package for transportation in the same condition they was delivery. any damage on the items because customer don\'t wrapped and package the items in the same way at delivery time will not be cover by DW fee, $150.00 will be charge for any quantity of silverware or dinnerware return with food or drink on (items return not rinse)','10G1coNRVArXAXyK','0783836a','',546,1.25),
-('8557d107352b4a4b','Elegant Gold Dessert&#x2F;Salad Fork','Elegant Gold Dessert&#x2F;Salad Fork','10G1coNRVArXAXyK','0504bbf9','',214,1.10),
-('8a50d48bb27440d8','Ballroom Gold Dessert Fork with Red Handler','Ballroom Gold Dessert Fork with Red Handler','10G1coNRVArXAXyK','d1e0e6e8','',985,1.15),
-('8b9bd163e4884e19','24K Emerald Dining Chairs','24K Emerald Dining Chairs Because classics never go out of style! Have a seat at the table in style with our ultra-chic Dining Chairs.\n\n','uKmwctxAcAbRby8O','bfaf8190','',36,16.00),
-('8cdd771046234df8','24K Light Blue Dining Chairs','24K Light Blue Dining Chairs Because classics never go out of style! Have a seat at the table in style with our ultra-chic Dining Chairs.','uKmwctxAcAbRby8O','db6c543a','',32,16.00),
-('8d96bd27a96a4767','Ballroom Gold Dessert Spoon White Handle','Ballroom Gold Dessert Spoon White Handle','10G1coNRVArXAXyK','77d78908','',65,1.10),
-('90894bf8c1ad4171','24K Navy Blue Dining Chairs','24K Navy Blue Dining Chairs Because classics never go out of style! Have a seat at the table in style with our ultra-chic Dining Chairs.','uKmwctxAcAbRby8O','7ed164b0','',69,16.00),
-('93353f376133459e','  24K Lavender Dining Chairs','24K Lavender Dining Chairs Because classics never go out of style! Have a seat at the table in style with our ultra-chic Dining Chairs.','uKmwctxAcAbRby8O','59bc625f','',44,16.00),
-('9b036120f5db4c9d','Amber Gold Barstool Chair with White Cushion','Amber Gold Barstool Chair with White Cushion','uKmwctxAcAbRby8O','e2ed277a','',78,30.00),
-('a0a6c066f30443d9','Addison Dining Table','Addison Dining Table\n','1Zx6DYqPodqATCyF','876ed2cf','',45,99.00),
-('ac07b1bd3a7840c1','Ballroom Gold Dinner Knife with Red Handler','Ballroom Gold Dinner Knife with Red Handler\n\n','10G1coNRVArXAXyK','b4a40ec9','',547,1.25),
-('b8637f2b3c0343cc','  Ballroom Gold Dessert Fork White Handle','Ballroom Gold Dessert Fork White Handle','10G1coNRVArXAXyK','a48a2ad8','',985,1.15),
-('c18c87b9e83e4be5','Wire Round White Cocktail Table','Wire Round White Cocktail Table\r\n                            ','1Zx6DYqPodqATCyF','9671a672','c18c87b9e83e4be5.jpeg',401,90.00),
-('c84d41752c9e4a92','Christmas Tree Silver Napkin Rings','Christmas Tree Silver Napkin Rings','10G1coNRVArXAXyK','226355d1','',103,0.85),
-('ce15469f0ac8445d','Elegant Gold Dessert Spoon','Elegant Gold Dessert Spoon\n','10G1coNRVArXAXyK','9cb58877','',148,0.90),
-('ce80343574de49ec','Elegant Gold Butter Knife','Elegant Gold Butter Knife\n','10G1coNRVArXAXyK','08fbb48d','',148,0.60),
-('ceace314cca3487a','Ballroom Gold Dessert Fork Blue Handle','Ballroom Gold Dessert Fork Blue Handle\n','10G1coNRVArXAXyK','09d950cb','',96,1.15),
-('d5371d76b7774a6f','24K Lady In Pink Dining Chairs','24K Lady In Pink Dining Chairs Because classics never go out of style! Have a seat at the table in style with our ultra-chic Dining Chairs.','uKmwctxAcAbRby8O','556b37fa','',48,19.56),
-('dbf60340050941b2','Wire Round Black Cocktail Table','                                Wire Round Black Cocktail Table\r\n                            ','1Zx6DYqPodqATCyF','5fd27105','dbf60340050941b2.jpeg',131,90.00),
-('dcca86a81966418e','Aileen Luxe Dining Chair','Aileen Luxe Dining Chair','uKmwctxAcAbRby8O','044c6f39','',98,19.99),
-('e05aa238f8ab435f','Belmont Silver Salad Fork','Belmont Silver Salad Fork\n\n\n','10G1coNRVArXAXyK','e8d247b3','',197,1.40),
-('e9f4eb8e5ad84024','Amber Black Chair','Amber Black Chair','uKmwctxAcAbRby8O','a6d4f1e6','',45,99.00),
-('ea505ffcb9b8467b','Belmont Silver Dinner Fork','Belmont Silver Dinner Fork','10G1coNRVArXAXyK','6ede2b71','',427,1.60),
-('eb0ac7dd00bf4dc7','24K Red Carpet Dining Chairs','24K Red Carpet Dining Chairs','uKmwctxAcAbRby8O','8ab09465','',56,16.00),
-('ebca6d9f86bc4d30','24K Winter Dining Chairs','24K Winter Dining Chairs Because classics never go out of style! Have a seat at the table in style with our ultra-chic Dining Chairs.','uKmwctxAcAbRby8O','3ba5ae26','',87,16.00),
-('f32d653bd6754382','Amber Gold Chair with White Cushion','Amber Gold Chair with White Cushion\n\n','uKmwctxAcAbRby8O','376aadb0','',78,20.00),
-('fadec2f863804104','Ballroom Gold Dinner Knife Blue Handle','Ballroom Gold Dinner Knife Blue Handle When renting dinnerware, glassware, silverware, trays, bowls, serving pieces, etc. we require that return them in the crates, racks, and packaging in which they are delivered and remove any excess debris by scraping or rinsing off the equipment prior to returning. All silverware and dinnerware need to be rinse of food or drink before, they need to package for transportation in the same condition they was delivery. any damage on the items because customer don&#x27;t wrapped and package the items in the same way at delivery time will not be cover by DW fee, $150.00 will be charge for any quantity of silverware or dinnerware return with food or drink on (items return not rinse)\n\n','10G1coNRVArXAXyK','67e6214b','',47,1.50),
-('fdbf62e61f3047f6','Ballroom Gold Dinner Spoon with White Handler','Ballroom Gold Dinner Spoon with White Handler','10G1coNRVArXAXyK','a30b65f4','',175,1.25);
+  ('02ed0fead3294912','Cake Knife and Server Set Silver 3 Crystals Embedded on the Handles','Cake Knife and Server Set Silver 3 Crystals Embedded on the Handles\n\n\n','10G1coNRVArXAXyK','b5cd4c14','',87,20.00,'2024-11-16 03:24:51','2024-11-16 03:24:51');
+INSERT INTO `category_items` VALUES
+  ('16052f8c91f449d3','Wood Folding Table serpentine','Wood Folding Table serpentine\r\n                            \r\n                            ','1Zx6DYqPodqATCyF','43f681e0','16052f8c91f449d3.jpeg',168,10.00,'2024-11-16 03:24:51','2024-11-16 03:24:51');
+INSERT INTO `category_items` VALUES
+  ('166f62f5e8f646d0','Ballroom Gold Dinner Spoon Blue Handle','Ballroom Gold Dinner Spoon Blue Handle When renting dinnerware, glassware, silverware, trays, bowls, serving pieces, etc. we require that return them in the crates, racks, and packaging in which they are delivered and remove any excess debris by scraping or rinsing off the equipment prior to returning. All silverware and dinnerware need to be rinse of food or drink before, they need to package for transportation in the same condition they was delivery. any damage on the items because customer don&#x27;t wrapped and package the items in the same way at delivery time will not be cover by DW fee, $150.00 will be charge for any quantity of silverware or dinnerware return with food or drink on (items return not rinse)','10G1coNRVArXAXyK','3fa42004','',47,1.25,'2024-11-16 03:24:51','2024-11-16 03:24:51');
+INSERT INTO `category_items` VALUES
+  ('22316275b8b74264','Ballroom Gold Dinner Knife White Handle','Ballroom Gold Dinner Knife White Handle\n\n','10G1coNRVArXAXyK','ed9bf239','',822,1.25,'2024-11-16 03:24:51','2024-11-16 03:24:51');
+INSERT INTO `category_items` VALUES
+  ('2b7b3265681b41cd','24K Blush&#x2F;Mauve Dining Chairs','24K Blush&#x2F;Mauve Dining Chairs\n\n','uKmwctxAcAbRby8O','64055c31','',18,16.00,'2024-11-16 03:24:51','2024-11-16 03:24:51');
+INSERT INTO `category_items` VALUES
+  ('2fa5af7ef8634bbd','Belmont Silver Dinner Knife','Belmont Silver Dinner Knife\n\n','10G1coNRVArXAXyK','82643a66','',124,1.60,'2024-11-16 03:24:51','2024-11-16 03:24:51');
+INSERT INTO `category_items` VALUES
+  ('33bcd364a75849d4','Ballroom Gold Dinner Knife Pink Handle','Ballroom Gold Dinner Knife Pink Handle\n','10G1coNRVArXAXyK','72122b35','',288,1.50,'2024-11-16 03:24:51','2024-11-16 03:24:51');
+INSERT INTO `category_items` VALUES
+  ('355ff236ed11412f','Zoie Gold Cake Tables','Zoie Gold Cake Tables\r\n                            ','1Zx6DYqPodqATCyF','510e5818','355ff236ed11412f.png',161,179.99,'2024-11-16 03:24:51','2024-11-16 03:24:51');
+INSERT INTO `category_items` VALUES
+  ('364757c4373d4f19','Ballroom Gold Dinner Fork White Handle','Ballroom Gold Dinner Fork White Handle','10G1coNRVArXAXyK','d90458ba','',789,1.25,'2024-11-16 03:24:51','2024-11-16 03:24:51');
+INSERT INTO `category_items` VALUES
+  ('371a40153bca4687','Actwan Coffee Table Gold','Gold and Glass Actwan Coffee Table. Give your set a elegant accent with this beautiful coffee table. 50&quot;L X 26&quot;W X 18&quot;H','1Zx6DYqPodqATCyF','791c630b','',17,85.00,'2024-11-16 03:24:51','2024-11-16 03:24:51');
+INSERT INTO `category_items` VALUES
+  ('3ce99bbafa2d4764','24K Peacock Dining Chairs','24K Peacock Dining Chairs','uKmwctxAcAbRby8O','c34260ed','',96,16.00,'2024-11-16 03:24:51','2024-11-16 03:24:51');
+INSERT INTO `category_items` VALUES
+  ('3ee29c2987074a7c','Wire Square Gold Cocktail Table','Wire Square Gold Cocktail Table','1Zx6DYqPodqATCyF','6786ba47','3ee29c2987074a7c.jpeg',287,90.00,'2024-11-16 03:24:51','2024-11-16 03:24:51');
+INSERT INTO `category_items` VALUES
+  ('4360d05b0ae543c3','Agnus Mirror Dining Table','Agnus Mirror Dining Table Picture 4 tables will seat 16 guest.\n\n','1Zx6DYqPodqATCyF','8932ebd8','',54,400.00,'2024-11-16 03:24:51','2024-11-16 03:24:51');
+INSERT INTO `category_items` VALUES
+  ('4482837eb9164a54','Anakin Chrome Silver Stainless Steel Barstool','Anakin Chrome Silver Stainless Steel Barstool\n\n','uKmwctxAcAbRby8O','4403443c','',98,30.00,'2024-11-16 03:24:51','2024-11-16 03:24:51');
+INSERT INTO `category_items` VALUES
+  ('4b379d2bc0354e64','24K Black Tie Dining Chairs','24K Black Tie Dining Chairs Because classics never go out of style! Have a seat at the table in style with our ultra-chic Dining Chairs.','uKmwctxAcAbRby8O','1e5402d3','',21,16.09,'2024-11-16 03:24:51','2024-11-16 03:24:51');
+INSERT INTO `category_items` VALUES
+  ('4cb102e7becc466a','9 Inch Gold Serving Tongs Gold Serving Utensils Salad Tongs Buffet Tongs','9 Inch Gold Serving Tongs Gold Serving Utensils Salad Tongs Buffet Tongs','10G1coNRVArXAXyK','0d70b1f4','',789,3.00,'2024-11-16 03:24:51','2024-11-16 03:24:51');
+INSERT INTO `category_items` VALUES
+  ('4fd7b66124584929','24K Purple Dining Chairs','24K Purple Dining Chairs Because classics never go out of style! Have a seat at the table in style with our ultra-chic Dining Chairs.','uKmwctxAcAbRby8O','358a7d44','',14,16.00,'2024-11-16 03:24:51','2024-11-16 03:24:51');
+INSERT INTO `category_items` VALUES
+  ('50b095e236324107','Christmas Garland Gold Napkin Rings','Christmas Garland Gold Napkin Rings\n\n\n\n\n','10G1coNRVArXAXyK','1b6c99b0','',104,0.85,'2024-11-16 03:24:51','2024-11-16 03:24:51');
+INSERT INTO `category_items` VALUES
+  ('51f58aa06dcb4836','Ceramic White Spoon Rest 4.8 Inches Spoon Holder','Ceramic White Spoon Rest 4.8 Inches Spoon Holder\n\n\n\n','10G1coNRVArXAXyK','3c7d1339','',209,3.00,'2024-11-16 03:24:51','2024-11-16 03:24:51');
+INSERT INTO `category_items` VALUES
+  ('676cf130c34a4e17','Ballroom Gold Dinner Fork with Red Handler','Ballroom Gold Dinner Fork with Red Handler','10G1coNRVArXAXyK','8b8140c9','',584,1.25,'2024-11-16 03:24:51','2024-11-16 03:24:51');
+INSERT INTO `category_items` VALUES
+  ('725e3a7b82c04e92','Elegant Demitasse Spoon','Elegant Demitasse Spoon\n','10G1coNRVArXAXyK','fea9d63e','',145,0.60,'2024-11-16 03:24:51','2024-11-16 03:24:51');
+INSERT INTO `category_items` VALUES
+  ('7f01185169634b63','Ballroom Gold Dinner Fork Blue Handle','Ballroom Gold Dinner Fork Blue Handle When renting dinnerware, glassware, silverware, trays, bowls, serving pieces, etc. we require that return them in the crates, racks, and packaging in which they are delivered and remove any excess debris by scraping or rinsing off the equipment prior to returning. All silverware and dinnerware need to be rinse of food or drink before, they need to package for transportation in the same condition they was delivery. any damage on the items because customer don\'t wrapped and package the items in the same way at delivery time will not be cover by DW fee, $150.00 will be charge for any quantity of silverware or dinnerware return with food or drink on (items return not rinse)','10G1coNRVArXAXyK','0783836a','',546,1.25,'2024-11-16 03:24:51','2024-11-16 03:24:51');
+INSERT INTO `category_items` VALUES
+  ('8557d107352b4a4b','Elegant Gold Dessert&#x2F;Salad Fork','Elegant Gold Dessert&#x2F;Salad Fork','10G1coNRVArXAXyK','0504bbf9','',214,1.10,'2024-11-16 03:24:51','2024-11-16 03:24:51');
+INSERT INTO `category_items` VALUES
+  ('8a50d48bb27440d8','Ballroom Gold Dessert Fork with Red Handler','Ballroom Gold Dessert Fork with Red Handler','10G1coNRVArXAXyK','d1e0e6e8','',985,1.15,'2024-11-16 03:24:51','2024-11-16 03:24:51');
+INSERT INTO `category_items` VALUES
+  ('8b9bd163e4884e19','24K Emerald Dining Chairs','24K Emerald Dining Chairs Because classics never go out of style! Have a seat at the table in style with our ultra-chic Dining Chairs.\n\n','uKmwctxAcAbRby8O','bfaf8190','',36,16.00,'2024-11-16 03:24:51','2024-11-16 03:24:51');
+INSERT INTO `category_items` VALUES
+  ('8cdd771046234df8','24K Light Blue Dining Chairs','24K Light Blue Dining Chairs Because classics never go out of style! Have a seat at the table in style with our ultra-chic Dining Chairs.','uKmwctxAcAbRby8O','db6c543a','',32,16.00,'2024-11-16 03:24:51','2024-11-16 03:24:51');
+INSERT INTO `category_items` VALUES
+  ('8d96bd27a96a4767','Ballroom Gold Dessert Spoon White Handle','Ballroom Gold Dessert Spoon White Handle','10G1coNRVArXAXyK','77d78908','',65,1.10,'2024-11-16 03:24:51','2024-11-16 03:24:51');
+INSERT INTO `category_items` VALUES
+  ('90894bf8c1ad4171','24K Navy Blue Dining Chairs','24K Navy Blue Dining Chairs Because classics never go out of style! Have a seat at the table in style with our ultra-chic Dining Chairs.','uKmwctxAcAbRby8O','7ed164b0','',69,16.00,'2024-11-16 03:24:51','2024-11-16 03:24:51');
+INSERT INTO `category_items` VALUES
+  ('93353f376133459e','24K Lavender Dining Chairs','24K Lavender Dining Chairs Because classics never go out of style! Have a seat at the table in style with our ultra-chic Dining Chairs.','uKmwctxAcAbRby8O','59bc625f','',44,16.00,'2024-11-16 03:24:51','2024-11-16 03:24:51');
+INSERT INTO `category_items` VALUES
+  ('9b036120f5db4c9d','Amber Gold Barstool Chair with White Cushion','Amber Gold Barstool Chair with White Cushion','uKmwctxAcAbRby8O','e2ed277a','',78,30.00,'2024-11-16 03:24:51','2024-11-16 03:24:51');
+INSERT INTO `category_items` VALUES
+  ('a0a6c066f30443d9','Addison Dining Table','Addison Dining Table\n','1Zx6DYqPodqATCyF','876ed2cf','',45,99.00,'2024-11-16 03:24:51','2024-11-16 03:24:51');
+INSERT INTO `category_items` VALUES
+  ('ac07b1bd3a7840c1','Ballroom Gold Dinner Knife with Red Handler','Ballroom Gold Dinner Knife with Red Handler\n\n','10G1coNRVArXAXyK','b4a40ec9','',547,1.25,'2024-11-16 03:24:51','2024-11-16 03:24:51');
+INSERT INTO `category_items` VALUES
+  ('b8637f2b3c0343cc','Ballroom Gold Dessert Fork White Handle','Ballroom Gold Dessert Fork White Handle','10G1coNRVArXAXyK','a48a2ad8','',985,1.15,'2024-11-16 03:24:51','2024-11-16 03:24:51');
+INSERT INTO `category_items` VALUES
+  ('c18c87b9e83e4be5','Wire Round White Cocktail Table','Wire Round White Cocktail Table\r\n                            ','1Zx6DYqPodqATCyF','9671a672','c18c87b9e83e4be5.jpeg',401,90.00,'2024-11-16 03:24:51','2024-11-16 03:24:51');
+INSERT INTO `category_items` VALUES
+  ('c84d41752c9e4a92','Christmas Tree Silver Napkin Rings','Christmas Tree Silver Napkin Rings','10G1coNRVArXAXyK','226355d1','',103,0.85,'2024-11-16 03:24:51','2024-11-16 03:24:51');
+INSERT INTO `category_items` VALUES
+  ('ce15469f0ac8445d','Elegant Gold Dessert Spoon','Elegant Gold Dessert Spoon\n','10G1coNRVArXAXyK','9cb58877','',148,0.90,'2024-11-16 03:24:51','2024-11-16 03:24:51');
+INSERT INTO `category_items` VALUES
+  ('ce80343574de49ec','Elegant Gold Butter Knife','Elegant Gold Butter Knife\n','10G1coNRVArXAXyK','08fbb48d','',148,0.60,'2024-11-16 03:24:51','2024-11-16 03:24:51');
+INSERT INTO `category_items` VALUES
+  ('ceace314cca3487a','Ballroom Gold Dessert Fork Blue Handle','Ballroom Gold Dessert Fork Blue Handle\n','10G1coNRVArXAXyK','09d950cb','',96,1.15,'2024-11-16 03:24:51','2024-11-16 03:24:51');
+INSERT INTO `category_items` VALUES
+  ('d5371d76b7774a6f','24K Lady In Pink Dining Chairs','24K Lady In Pink Dining Chairs Because classics never go out of style! Have a seat at the table in style with our ultra-chic Dining Chairs.','uKmwctxAcAbRby8O','556b37fa','',48,19.56,'2024-11-16 03:24:51','2024-11-16 03:24:51');
+INSERT INTO `category_items` VALUES
+  ('dbf60340050941b2','Wire Round Black Cocktail Table','Wire Round Black Cocktail Table\r\n                            ','1Zx6DYqPodqATCyF','5fd27105','dbf60340050941b2.jpeg',131,90.00,'2024-11-16 03:24:51','2024-11-16 03:24:51');
+INSERT INTO `category_items` VALUES
+  ('dcca86a81966418e','Aileen Luxe Dining Chair','Aileen Luxe Dining Chair','uKmwctxAcAbRby8O','044c6f39','',98,19.99,'2024-11-16 03:24:51','2024-11-16 03:24:51');
+INSERT INTO `category_items` VALUES
+  ('e05aa238f8ab435f','Belmont Silver Salad Fork','Belmont Silver Salad Fork\n\n\n','10G1coNRVArXAXyK','e8d247b3','',197,1.40,'2024-11-16 03:24:51','2024-11-16 03:24:51');
+INSERT INTO `category_items` VALUES
+  ('e9f4eb8e5ad84024','Amber Black Chair','Amber Black Chair','uKmwctxAcAbRby8O','a6d4f1e6','',45,99.00,'2024-11-16 03:24:51','2024-11-16 03:24:51');
+INSERT INTO `category_items` VALUES
+  ('ea505ffcb9b8467b','Belmont Silver Dinner Fork','Belmont Silver Dinner Fork','10G1coNRVArXAXyK','6ede2b71','',427,1.60,'2024-11-16 03:24:51','2024-11-16 03:24:51');
+INSERT INTO `category_items` VALUES
+  ('eb0ac7dd00bf4dc7','24K Red Carpet Dining Chairs','24K Red Carpet Dining Chairs','uKmwctxAcAbRby8O','8ab09465','',56,16.00,'2024-11-16 03:24:51','2024-11-16 03:24:51');
+INSERT INTO `category_items` VALUES
+  ('ebca6d9f86bc4d30','24K Winter Dining Chairs','24K Winter Dining Chairs Because classics never go out of style! Have a seat at the table in style with our ultra-chic Dining Chairs.','uKmwctxAcAbRby8O','3ba5ae26','',87,16.00,'2024-11-16 03:24:51','2024-11-16 03:24:51');
+INSERT INTO `category_items` VALUES
+  ('f32d653bd6754382','Amber Gold Chair with White Cushion','Amber Gold Chair with White Cushion\n\n','uKmwctxAcAbRby8O','376aadb0','',78,20.00,'2024-11-16 03:24:51','2024-11-16 03:24:51');
+INSERT INTO `category_items` VALUES
+  ('fadec2f863804104','Ballroom Gold Dinner Knife Blue Handle','Ballroom Gold Dinner Knife Blue Handle When renting dinnerware, glassware, silverware, trays, bowls, serving pieces, etc. we require that return them in the crates, racks, and packaging in which they are delivered and remove any excess debris by scraping or rinsing off the equipment prior to returning. All silverware and dinnerware need to be rinse of food or drink before, they need to package for transportation in the same condition they was delivery. any damage on the items because customer don&#x27;t wrapped and package the items in the same way at delivery time will not be cover by DW fee, $150.00 will be charge for any quantity of silverware or dinnerware return with food or drink on (items return not rinse)\n\n','10G1coNRVArXAXyK','67e6214b','',47,1.50,'2024-11-16 03:24:51','2024-11-16 03:24:51');
+INSERT INTO `category_items` VALUES
+  ('fdbf62e61f3047f6','Ballroom Gold Dinner Spoon with White Handler','Ballroom Gold Dinner Spoon with White Handler','10G1coNRVArXAXyK','a30b65f4','',175,1.25,'2024-11-16 03:24:51','2024-11-16 03:24:51');
+/*!40000 ALTER TABLE `category_items` ENABLE KEYS */;
+UNLOCK TABLES;
 
 
 INSERT INTO `users` VALUES
-('90ad544413be0ba8ee6c6cae','franklin','franklin@email.bashballoonsrentals.com','*EA194597C5AC17C91AC312B60493D835C56698FC',NULL,NULL,'2024-04-09 22:23:46',0,'master_admin','active'),
-('ba719890e6e762564eef1a','franklin.nkokam.ngongang','franklin.nkokam.ngongang@gmail.com','*EA194597C5AC17C91AC312B60493D835C56698FC',NULL,'2024-04-09 22:22:52','2024-04-06 18:01:09',0,'standard_admin','active'),
-('fe76c21a8aaaa283','Asong Nic','asong_nic@email.bashballoonsrentals.com','*2921B94DC19B5D28EC1046B803187CADAC23F939',NULL,NULL,'2024-04-09 22:29:48',0,'standard_admin','active'),
-('q6qSVIlN84+2621uokE1','ntuifranklin','ntuifranklin2005@gmail.com','*EA194597C5AC17C91AC312B60493D835C56698FC',NULL,NULL,'2024-02-12 19:40:09',0,'standard_admin','active'),
-('uMWMmhFMA1nmvZIpsXiOfjL4YQ8=','order','order@box.bashballoonsrentals.com','*EA194597C5AC17C91AC312B60493D835C56698FC','2024-02-29 02:29:02','2024-02-29 03:06:33','2024-02-29 02:29:02',0,'master_admin','active');
+('90ad544413be0ba8ee6c6cae', 'franklin', 'franklin@email.bashballoonsrentals.com', '*BFD6E9378C183AB46C29B33A062E27AAFC611080',NULL,NULL,'2024-04-09 22:23:46',0,'master_admin', 'active'),
+('ba719890e6e762564eef1a', 'franklin.nkokam.ngongang', 'franklin.nkokam.ngongang@gmail.com', '*BFD6E9378C183AB46C29B33A062E27AAFC611080',NULL,'2024-04-09 22:22:52', '2024-04-06 18:01:09',0,'standard_admin', 'active'),
+('fe76c21a8aaaa283', 'Asong Nic', 'asong_nic@email.bashballoonsrentals.com', '*2921B94DC19B5D28EC1046B803187CADAC23F939',NULL,NULL,'2024-04-09 22:29:48',0,'standard_admin', 'active'),
+('q6qSVIlN84+2621uokE1', 'ntuifranklin', 'ntuifranklin2005@gmail.com', '*BFD6E9378C183AB46C29B33A062E27AAFC611080',NULL,NULL,'2024-02-12 19:40:09',0,'standard_admin', 'active'),
+('uMWMmhFMA1nmvZIpsXiOfjL4YQ8=', 'order', 'order@box.bashballoonsrentals.com', '*BFD6E9378C183AB46C29B33A062E27AAFC611080', '2024-02-29 02:29:02', '2024-02-29 03:06:33', '2024-02-29 02:29:02',0,'master_admin', 'active');
+

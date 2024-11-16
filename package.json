@@ -5,14 +5,17 @@
   "main": "appclustering.js",
   "engines": {
     "npm": ">=8.0.0",
-    "node": ">=16.0.0"
+    "node": ">=16.0.0",
+    "windows-shell": "pwsh",
+    "unix-shell": "bash",
+    "darwin-shell": "zsh"
   },
   "scripts": {
     "prestart": "echo 'Running source .env to select the environment.' && source .env",
     "test": "mocha --timeout 200000 --recursive --exit",
     "start": "node appclustering.js",
     "prof": "node --prof appclustering.js",
-    "dev": "nodemon -e js,ejs,html -w . -w public -w views -w routes -w database appclustering.js"
+    "dev": "nodemon  --trace-warnings -e js,ejs,html -w . -w static_template -w views -w routes -w database appclustering.js"
   },
   "author": "Franklin Nkokam Ngongang",
   "license": "ISC",
@@ -33,7 +36,7 @@
     "dotenv": "^16.3.1",
     "ejs": "^3.1.8",
     "express": "^4.18.2",
-    "express-fileupload": "^1.5.0",
+    "express-fileupload": "^1.5.1",
     "express-mysql-session": "^3.0.0",
     "express-rate-limit": "^7.1.5",
     "express-session": "^1.18.1",
