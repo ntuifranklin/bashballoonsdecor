@@ -1,7 +1,7 @@
 # Bash Balloons Decor Rentals & LLC
 Bash Balloons Decor an ecommerce project for 
 [Bash Balloons Decor Rentals Website](https://bashballoonsrentals.com).  
-This guide provides detailed instructions for deploying the Hockshi application on a remote Ubuntu server using NGINX as the web server and PM2 as the process manager. The documentation is divided into two main sections: installation and configuration, and testing of the deployed application.
+This guide provides detailed instructions for deploying the BashBalloons application on a remote Ubuntu server using NGINX as the web server and PM2 as the process manager. The documentation is divided into two main sections: installation and configuration, and testing of the deployed application.
 
 # Deployment Guide on a Ubuntu Server with Nginx and PM2
 ## Requirements
