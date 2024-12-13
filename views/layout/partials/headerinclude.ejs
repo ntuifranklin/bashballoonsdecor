@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zxx">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,8 +19,68 @@
    <link rel="stylesheet" href="/assets/css/responsive.css">
    <!-- color -->
    <link rel="stylesheet" href="/assets/css/color.css">
+   
+	<% /* including stripe payment for processing */ %>
+   	<% if ( typeof originalUrl != "undefined" &&  (originalUrl == `/${CHECKOUT_ROUTE}` || originalUrl == `/${SUCCESS_PAYMENT_ROUTE}`) )  { %>
+	<script src="https://js.stripe.com/v3/"></script>
+	<script src="/assets/js/process_checkout.js"></script>
+	<% } %>
+	<meta property="og:determiner" content="The" />
+	<meta property="og:locale" content="en_US" />
+	<meta name="author" content="<%= companyBusinessName %>">
+	<meta property="og:site_name" content="<%= companyBusinessName %>" />
+	<meta name="robots" content="index, follow">
+	<meta property="og:url" content="<%= seoSiteLink %>">
+	<link rel="canonical" href="<%= seoSiteLink %>">
+
    <% if ( typeof csrfToken !== 'undefined'  ) { %>
    	<meta name="csrf-token" content="<%= csrfToken %>">
+   <% } %>
+
+   <% 
+   //trimming should be to 155 characters maximum 
+   function trimSeoDesc(name="",size=155) {
+	const n = new String(name);
+	if (n.length >= size )
+		return n.slice(0,(size-4)) + " ..." ;
+	return n ;
+
+    }
+ 
+   %>
+   <% //check product-details page in routes folder for more details about seo %>
+   <% if ( typeof seoObject != "undefined") { %>
+	<% if ("description" in seoObject) { %>
+		<% const truncatedDescription = trimSeoDesc(seoObject["description"]);  %>
+		<meta name="description" content="<%= truncatedDescription %>"/>
+		<meta property="og:description" content="<%= truncatedDescription %>.">
+		<meta property="twitter:description" content="<%= truncatedDescription %>.">
+		
+	<% } %>
+	
+	<% if ("title" in seoObject) { %>
+		<% const truncatedTitle = trimSeoDesc(seoObject["title"]);  %>
+		<meta name="title" content="<%= truncatedTitle %>"/>
+		<meta property="og:title" content="<%= truncatedTitle %>"/>
+		<meta property="twitter:title" content="<%= truncatedTitle %>"/>
+		<meta name="keywords" content="<%= truncatedTitle %>, party supplies, Bash Balloons Decor and Rentals, <%= companyBusinessName %>">
+	<% } %>
+
+	<% if("itemImageUrl" in seoObject) { %>
+		<% const itemImageUrl = seoObject["itemImageUrl"];  %>
+		<meta property="og:image" content="<%=  BASE_SERVER_URL + IMG_DIR_FOR_WEB %><%= itemImageUrl %>">
+		<meta property="twitter:image" content="<%= BASE_SERVER_URL + IMG_DIR_FOR_WEB %><%= itemImageUrl %>">
+		<meta property="og:type" content="product">
+		<meta name="twitter:card" content="summary_large_image">
+	<% } %>
+	
+	<% if ("type" in seoObject) { %>
+		<% const pageSeoType = trimSeoDesc(seoObject["type"]);  %>
+		<meta property="og:type" content="<%= pageSeoType %>">
+	<% } else { %>
+		<meta property="og:type" content="website">
+	<% } %>
+
    <% } %>
  </head>
 <body>
@@ -33,7 +93,7 @@
 	  <div class="center-ber">
 		<div class="logo">
 		  <a href="/">
-			<img alt="logo" src="assets/img/logo.png">
+			<img alt="logo" src="/assets/img/logo.png">
 		  </a>
 		</div>
 		
@@ -45,121 +105,121 @@
 			<li><a href="<%= mediumLink %>"><i class="fa-brands fa-medium"></i></a></li>
 	   
 		  </ul>
+		<!-- 
 		<form>
 		  <input type="text" name="Search" placeholder="Search Our Bloon Selection">
 		  <button><i class="fa-solid fa-magnifying-glass"></i></button>
 		</form>
+		-->
 		
+
 		<div class="login-bar d-flex">
+			<% if (user && user.email ) { %>
+				
+				<div>
+					<a class="d-flex">
+						<i class="bi bi-person"></i>
+						<%= user.email %>
+					</a>
+					<a class="d-flex" href="/<%= ADMIN_ROUTE %>">Admin Dashboard</a>
+					<a class="d-flex" href="/<%= LOGOUT_ROUTE %>">Logout</a>
+				</div>
+
+			<%  } else { %>
+				
+				<div>
+					<a class="d-flex"  href="/<%= LOGIN_ROUTE %>">Login</a>
+				</div>
+			<% } %>
 		 
-		  <div class="donation">
-				  
-				  <a href="JavaScript:void(0)" class="pr-cart">
-					Cart
-					<svg enable-background="new 0 0 512 512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><g><path d="m452 120h-60.946c-7.945-67.478-65.477-120-135.054-120s-127.109 52.522-135.054 120h-60.946c-11.046 0-20 8.954-20 20v352c0 11.046 8.954 20 20 20h392c11.046 0 20-8.954 20-20v-352c0-11.046-8.954-20-20-20zm-196-80c47.484 0 87.019 34.655 94.659 80h-189.318c7.64-45.345 47.175-80 94.659-80zm176 432h-352v-312h40v60c0 11.046 8.954 20 20 20s20-8.954 20-20v-60h192v60c0 11.046 8.954 20 20 20s20-8.954 20-20v-60h40z"></path></g></svg>
-				  </a>
-				 
-				  <div class="cart-popup">
-  
-					<% //console.log(`user cart is ${userCart}`); %>
-					<% var grandTotal = 0 ; %>
-					<% var totalItems = 0 ; %>
-					<% if (Object.keys(userCart).length > 0 ) { %>
-						<ul>
-							<%  if ( "IndividualItems" in userCart)  { %>
-
-								<% for (var itemKey in userCart["IndividualItems"] ) { %>
-									<% //console.log(`userCart["IndividualItems"] : ${JSON.stringify(userCart["IndividualItems"], null, 4)}`); %>
-                                    <% var individualItem = JSON.parse(JSON.stringify(userCart["IndividualItems"][itemKey])) ;%>
-                                    <% var itemDetails = JSON.parse(JSON.stringify(individualItem["individualItemDetails"])) ; %>
+			<div class="donation">
+					
+					<a href="JavaScript:void(0)" class="pr-cart">
+						Wish List
+						<svg enable-background="new 0 0 512 512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><g><path d="m452 120h-60.946c-7.945-67.478-65.477-120-135.054-120s-127.109 52.522-135.054 120h-60.946c-11.046 0-20 8.954-20 20v352c0 11.046 8.954 20 20 20h392c11.046 0 20-8.954 20-20v-352c0-11.046-8.954-20-20-20zm-196-80c47.484 0 87.019 34.655 94.659 80h-189.318c7.64-45.345 47.175-80 94.659-80zm176 432h-352v-312h40v60c0 11.046 8.954 20 20 20s20-8.954 20-20v-60h192v60c0 11.046 8.954 20 20 20s20-8.954 20-20v-60h40z"></path></g></svg>
+					</a>
+					
+					<div class="cart-popup">
+						<% var grandTotal = 0 ; %>
+						<% var totalItems = 0 ; %>
+						<% var keysList = [...Object.keys(userCart)]; %>
+						<% //console.log(`usercart in headerinclude ${JSON.stringify(userCart)}`); %>
+						<% var noKeys = keysList; %>
+						<% if (userCart != null && noKeys.length > 0 ) { %>
+							<ul>
+								<% for (var itemKey in userCart ) { %>
+									<% var item = JSON.parse(JSON.stringify(userCart[itemKey])) ;%>
+									<% //console.log(`ITEMS_DETAILS_NAME in usercart in headerinclude ${JSON.stringify(ITEMS_DETAILS_NAME)}`); %>
+									<% var itemDetails = JSON.parse(JSON.stringify(item[ITEMS_DETAILS_NAME])) ; %>
+									
+									<% //console.log(`itemDetails in usercart in headerinclude ${JSON.stringify(itemDetails)}`); %>
 									<li class="d-flex align-items-center position-relative">
+										
 		
 										<div class="p-img light-bg">
-				
-										<img alt="img" src="https://via.placeholder.com/75x75">
-				
+											
+											<% if (itemDetails.imageurl != "" ) {%>
+												<img src="<%= IMG_DIR_FOR_WEB + itemDetails.imageurl %>" width=75 height=75 />
+											<% } else { %>
+												<img src="<%= IMG_DIR_FOR_WEB %>75x75.png" width=75 height=75 />
+												<!-- <img src="https://via.placeholder.com/75x75" /> -->
+											<% } %>
 										</div>
 				
 										<div class="p-data">
 				
-										<h3 class="font-semi-bold"><%= itemDetails["individItemTitle"] %></h3>
+										<h3 class="font-semi-bold"><%= decode(itemDetails["item_name"]) %></h3>
 				
-										<p class="theme-clr font-semi-bold"><%= individualItem["quantity"] %> x $<%= itemDetails["individItemUnitCost"] %></p>
-										<% grandTotal = grandTotal + (individualItem["quantity"] * itemDetails["individItemUnitCost"]) ; %>
+										<p class="theme-clr font-semi-bold">
+											<%= item["quantity"] %> 
+											x 
+											$
+											<%= itemDetails["unitPrice"] %>
+										</p>
+										<% grandTotal = grandTotal + (item["quantity"] * itemDetails["unitPrice"]) ; %>
 										</div>
 				
 										<a href="JavaScript:void(0)" id="crosss"></a>
 				
 									</li>
 								<% } %>
-							<% } %>
 							
-							<% if ("package" in userCart ) { %>
-								<% //console.log(`userCart["package"] : ${JSON.stringify(userCart["package"], null, 4)}`); %>
-								<% for (var packageKey in userCart["package"] ) { %>
-									<% //console.log(`userCart["package"] : ${JSON.stringify(userCart["package"])}`); %>
-                                    <% var package = JSON.parse(JSON.stringify(userCart["package"][packageKey])); %>
-                                    <% var packageDetails = JSON.parse(JSON.stringify(package["packageDetails"])) ; %>
-									<li class="d-flex align-items-center position-relative">
-		
-										<div class="p-img light-bg">
-				
-										<img alt="img" src="https://via.placeholder.com/75x75">
-				
-										</div>
-				
-										<div class="p-data">
-				
-										<h3 class="font-semi-bold"><%= packageDetails["packagedesc"] %></h3>
-										<% grandTotal = grandTotal + (JSON.parse(JSON.stringify(package["quantity"])) * JSON.parse(JSON.stringify(packageDetails["packagecost"]))) ; %>
+							</ul>
+	
+							<div class="cart-total d-flex align-items-center justify-content-between">
 
-										<p class="theme-clr font-semi-bold"><%= JSON.parse(JSON.stringify(package["quantity"])) %> x $<%=  JSON.parse(JSON.stringify(packageDetails["packagecost"])) %></p>
-				
-										</div>
-				
-										<a href="JavaScript:void(0)" id="crosss"></a>
-				
-									</li>
-								<% } %>
-									
-									
-							<% } %>
+							<span class="font-semi-bold">Total:</span>
+
+							<span class="font-semi-bold">$<%= parseFloat(grandTotal).toFixed(2) %></span>
+
+							</div>
+
+							<div class="cart-btns d-flex align-items-center justify-content-between">
+
+							<a class="font-bold" href="/<%= CART_ROUTE %>">View Wish List</a>
+
+							<a class="font-bold theme-bg-clr text-white checkout" href="/<%= CHECKOUT_ROUTE %>">Send Your Wish List</a>
+
+							</div>
+
+						<% } else { %>
+							<ul>
+								<li>
+									<div class="alert alert-dark" role="alert">
+										<hr>
+										<h4 class="alert-heading">Sorry. Your Wish List is Empty!</h4>
+										<hr>
+										<p class="mb-0">Please add some items to your wish.</p>
+										<hr>
+									</div>
+								</li>
+							</ul>
+								
+						<% } %>
 						
-						</ul>
-  
-						<div class="cart-total d-flex align-items-center justify-content-between">
-
-						<span class="font-semi-bold">Total:</span>
-
-						<span class="font-semi-bold">$<%= grandTotal %></span>
-
-						</div>
-
-						<div class="cart-btns d-flex align-items-center justify-content-between">
-
-						<a class="font-bold" href="/cart">View Cart</a>
-
-						<a class="font-bold theme-bg-clr text-white checkout" href="/checkout">Checkout</a>
-
-						</div>
-
-					<% } else { %>
-						<ul>
-							<li>
-								<div class="alert alert-dark" role="alert">
-									<hr>
-									<h4 class="alert-heading">Sorry. Your Cart is Empty!</h4>
-									<hr>
-									<p class="mb-0">Please add some items to your cart.</p>
-									<hr>
-								</div>
-							</li>
-						</ul>
-							
-					<% } %>
-				  </div>
-  
-		  </div>
+					</div>
+	
+			</div>
 		</div>
 		<div class="bar-menu">
 			<i class="fa-solid fa-bars"></i>
@@ -170,38 +230,43 @@
 	  <div class="container">
 		<nav class="navbar">
 		  <ul class="navbar-links">
-					  <li class="navbar-dropdown menu-item-children">
-						<a href="/">
-							<i>
-						  		<img alt="home" src="assets/img/home.png">
-							</i>Home
-						</a>
-					  </li>
-					  <li class="navbar-dropdown menu-item-children">
+					<li>
+					<a href="/">
+						<i>
+							<img alt="home" src="/assets/img/home.png">
+						</i>Home
+					</a>
+					</li>
 
-						<a href="javascript:void(0)">Our Party Rental Inventory</a>
+					<li class="navbar-dropdown menu-item-children">
+
+						<a href="javascript:void(0)">Rental Inventory</a>
 						<div class="dropdown">
 							<% for (var k=0 ; k < categories.length; k++ ) { %>
 								
 								<% var category = JSON.parse(JSON.stringify(categories[k])) ; %>
 								<% var category_name = category.category_name.toLowerCase();  %>
-								<a href="/<%= category_name %>"><%= category_name %></a>
+								<% var category_weburl = category.category_weburl;  %>
+								
+								
+								<a href="/<%= category_weburl %>"><%= decode(category_name) %></a>
 							<% } %>
 						</div>
-					  </li>
-					  
-					  <li class="navbar-dropdown">
-						<a href="/cart">Your Shopping Cart</a>
-					  </li>					  
+					</li>
+					
+					<li class="navbar-dropdown">
+					<a  href="/<%= CART_ROUTE %>">Your Wish List</a>
+					</li>					  
 
-					  <li class="navbar-dropdown">
-						<a href="/checkout">Cart Checkout</a>
-					  </li>
-					 
-					  <li class="navbar-dropdown">
-						<a href="/contact">Contact</a>
-					  </li>
+					<li class="navbar-dropdown">
+					<a  href="/<%= CHECKOUT_ROUTE %>">Send Wish List</a>
+					</li>
+					
+					<li class="navbar-dropdown">
+					<a  href="/<%= CONTACT_ROUTE %>">Contact Us</a>
+					</li>
 		  </ul>
+		  
 		  
 			<a class="phone" href="callto:<%= customerServiceNumber %>">
 				<i>
@@ -213,22 +278,9 @@
 						</g>
 					</svg>
 			  	</i>
-				<%= customerServiceNumber %> 
+				<%= customerBusinessNumber%> 
 			</a>
-			<br/>
 			
-			<a class="phone" href="callto:<%= customerServiceNumberExtra %>">
-				<i>
-					<svg height="112" viewBox="0 0 24 24" width="112" xmlns="http://www.w3.org/2000/svg">
-						<g clip-rule="evenodd" fill="rgb(255255,255)" fill-rule="evenodd">
-							<path d="m7 2.75c-.41421 0-.75.33579-.75.75v17c0 .4142.33579.75.75.75h10c.4142 0 .75-.3358.75-.75v-17c0-.41421-.3358-.75-.75-.75zm-2.25.75c0-1.24264 1.00736-2.25 2.25-2.25h10c1.2426 0 2.25 1.00736 2.25 2.25v17c0 1.2426-1.0074 2.25-2.25 2.25h-10c-1.24264 0-2.25-1.0074-2.25-2.25z"></path>
-							<path d="m10.25 5c0-.41421.3358-.75.75-.75h2c.4142 0 .75.33579.75.75s-.3358.75-.75.75h-2c-.4142 0-.75-.33579-.75-.75z"></path>
-							<path d="m9.25 19c0-.4142.33579-.75.75-.75h4c.4142 0 .75.3358.75.75s-.3358.75-.75.75h-4c-.41421 0-.75-.3358-.75-.75z"></path>
-						</g>
-				</svg>
-				</i>
-				<%= customerServiceNumberExtra %> 
-			</a>
 			
 		</nav>
 	  </div>
@@ -236,32 +288,49 @@
 	<div class="mobile-nav hmburger-menu" id="mobile-nav" style="display:block;">
 		<div class="res-log">
 		  <a href="/">
-			<img src="assets/img/logo-b.png" alt="Responsive Logo">
+			<img src="/assets/img/logo-b.png" alt="Responsive Logo">
 		  </a>
 		</div>
 		  <ul>
 
-			<li class="menu-item-has-children"><a href="/">Home</a>
-			
+			<li>
+				<a href="/">Home</a>
 			</li>
 
-			<li class="menu-item-has-children"><a href="JavaScript:void(0)">Our Party Rental Inventory</a>
+			
+			<% if (user && user.email ) { %>
+			<li class="menu-item-children">
+				<ul class="sub-menu">
+					<li><a class="d-flex"><i class="bi bi-person"></i><%= user.email %></a></li>
+					<li><a class="d-flex" href="/<%= ADMIN_ROUTE %>">Admin Dashboard</a></li>
+					<li><a class="d-flex" href="/<%= LOGOUT_ROUTE %>">Logout</a></li>
+				</ul>
+			</li>
+			<%  } else { %>
+			<li>
+				<a class="d-flex" href="/<%= LOGIN_ROUTE %>">Login</a>
+			</li>
+			<% } %>
+
+
+			<li class="menu-item-has-children"><a href="JavaScript:void(0)">Rental Inventory</a>
 			  <ul class="sub-menu">
 				
 						<% for (var j=0 ; j < categories.length; j++ ) { %>
 							
-							<% var category2 = JSON.parse(JSON.stringify(categories[j])) ; %>
+							<% var category2 = JSON.parse(JSON.stringify((categories[j]))) ; %>
 							<% var category_name2 = category2.category_name.toLowerCase();  %>
-							<li><a href="/<%= category_name2 %>"><%= category_name2 %></a></li>
+							<% //console.log(`encoded : ${encode(category_name2, {mode: 'nonAsciiPrintable'})}`);%>
+							<li><a href="/<%= category_name2 %>"><%= decode(category_name2) %></a></li>
 						<% } %>
 				
 			  </ul>
 			</li>
 			
-			<li><a href="/cart">Shopping Cart</a></li>
-			<li><a href="/checkout">Cart Checkout</a></li>
+			<li><a  href="/<%= CART_ROUTE %>">Your Wish List</a></li>
+			<li><a  href="/<%= CHECKOUT_ROUTE %>">Send Your Wish List</a></li>
   
-			<li><a href="/contact">Contact</a></li>
+			<li><a  href="/<%= CONTACT_ROUTE %>">Contact</a></li>
   
 			</ul>
   

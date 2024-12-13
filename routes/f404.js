@@ -1,17 +1,16 @@
 const express = require('express');
 const router = express.Router();
 
+var csrf = require('csurf');
+// csrf protection
+var csrfProtection = csrf({ cookie: true });
+
+const {f404Page} = require('../controllers/indexController');
+
+
 module.exports = () => { 
     
-    router.get('/*', (request, response) => { 
-        var categories = request.locals.categories;
-        response.render('layout', { 
-            pageTitle: 'Sorry We Could Not Find What You Are Looking For',
-             template: 'f404',
-            csrfToken: request.csrfToken(),
-            categories: categories,
-            });
-    });
+    router.get('/', csrfProtection, f404Page);
      
 
 

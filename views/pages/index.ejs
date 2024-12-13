@@ -1,12 +1,26 @@
 
 
 <% var c = JSON.parse(JSON.stringify(categories)) ;%>
-<% var cat_items = JSON.parse(JSON.stringify(category_items)) ;%>
+<% var all_items_array = JSON.parse(JSON.stringify(items_array)) ;%>
 <% //console.log(`On index page received categories : ${c}`) ;%>
-<% //console.log(`On index page received category_items : ${cat_items}`) ;%>
+<% //console.log(`On index page received category_items : ${all_items_array}`) ;%>
 
+<% const imgItemWidth=360 ; %>
+<% const imgItemHeight=360 ; %>
+<%
+	
+	function trimItemName(name="",size=20) {
+		const n = new String(name);
+		if (n.length >= size )
+			return n.slice(0,(size-4)) + " ..." ;
+		
+		return n ;
+
+	}
+	
+%>
 <section class="slider-home-1 owl-carousel owl-theme">
-	<div class="hero-section item" style="background-image: url(https://via.placeholder.com/1920x640);">
+	<div class="hero-section item" style='background-image:url("<%= IMG_DIR_FOR_WEB %>1920x640.png")'>
 	  <div class="container">
 		<div class="row">
 		  <div class="col-lg-6">
@@ -20,7 +34,7 @@
 		</div>
 	  </div>
 	</div>
-	<div class="hero-section item" style="background-image: url(https://via.placeholder.com/1920x640);">
+	<div class="hero-section item" style='background-image:url("<%= IMG_DIR_FOR_WEB %>1920x640.png")'>
 	  <div class="container">
 		<div class="row">
 		  <div class="col-lg-6">
@@ -38,7 +52,7 @@
 <section class="gap">
 	<div class="container">
 		<div class="heading">
-			<img alt="heading" src="assets/img/heading.png">
+			<img  loading="lazy"  alt="heading" src="/assets/img/heading.png">
 			<h2>Shop By Rentals Categories </h2>
 			<p>Different Items based on your budget!</p>
 		</div>
@@ -47,12 +61,12 @@
 				<% var category = JSON.parse(JSON.stringify(c[counter])); %>
 				<div class="item">
 					<div class="balloon-shap">
-					<img alt="balloon" src="https://via.placeholder.com/169x160">
-					<a href="/<%= category.category_name %>"><h5><%= category.category_name %>...</h5></a>
+						<img  loading="lazy" src="<%= IMG_DIR_FOR_WEB %>169x160.png" width=169 height=160 />
+						<!-- <img  loading="lazy"  alt="balloon" src="https://via.placeholder.com/169x160"> -->
+						<a href="/<%= category.category_name %>"><h5><%= category.category_name %>...</h5></a>
 					</div>
 				</div>
 			<% } %>
-			
 			
 		</div>
 	</div>
@@ -66,20 +80,20 @@
 			<p>Find all your Wine Glasses, Chapagne Glasses, Glass Charger Plates, Fancy chairs, and Chaffing Dishes.
 				We can deliver as fast as same day!</p>
 			<ul>
-				<% var cit2 = shuffleArray(cat_items);  %>
+				<% var cit2 = shuffleArray(all_items_array);  %>
 				<% //console.log(`Shuffled category items : ${JSON.stringify(cit2)}`) ;%>
 				<% var M =  (cit2.length > 10 ) ? 10 : cit2.length ; %>
 				<% for(var counter=0; counter<M; counter++) { %>
 					<% var item = JSON.parse(JSON.stringify(cit2[counter])); %>
-					<li><img alt="chak" src="assets/img/chak.png"><%= item.item_name%></li>
+					<li><img loading="lazy"   alt="chak" src="/assets/img/chak.png"><%= item.item_name%></li>
 				<% } %>
 			</ul>
 			<div class="call-us">
-			<img alt="call" src="assets/img/call.png">
+			<img  loading="lazy"  alt="call" src="/assets/img/call.png">
 			<div>
 				<span>Have Questions? Call Us</span>
 				<a href="callto:<%= customerServiceNumber %>">
-					<%= customerServiceNumber %>
+					<%= customerBusinessNumber %>
 				</a>
 				<p>Open monday to Friday 9:30 AM to 6:00 PM</p>
 			</div>
@@ -88,8 +102,10 @@
 		</div>
 		<div class="col-xl-6">
 		<div class="party-balloon-img">
-			<img alt="party-balloon" class="p-balloon" src="https://via.placeholder.com/360x360">
-			<img alt="party-balloon" src="https://via.placeholder.com/546x546">
+			<img  loading="lazy"  alt="party-balloon" class="p-balloon" src="<%= IMG_DIR_FOR_WEB %>360x360.png" width=360 height=360 />
+			<!-- <img  loading="lazy"  alt="party-balloon" class="p-balloon" src="https://via.placeholder.com/360x360"> -->
+			<img  loading="lazy"  alt="party-balloon" src="<%= IMG_DIR_FOR_WEB %>546x546.png" width=546 height=546 />
+			<!-- <img  loading="lazy"  alt="party-balloon" src="https://via.placeholder.com/546x546"> -->
 			<div class="b-shap"></div>
 		</div>
 		</div>
@@ -177,13 +193,13 @@
 	</div>
 </div>
 </section>
-<section class="gap" style="background-image: url(https://via.placeholder.com/1920x904)">
+<section class="gap" style='background-image:url("<%= IMG_DIR_FOR_WEB %>1920x640.png")'>
 <div class="container">
 	<div class="heading">
-	<img alt="heading" src="assets/img/heading.png">
+	<img  loading="lazy"  alt="heading" src="/assets/img/heading.png">
 	<h2>Recent Products</h2>
 	
-	<% var cit3 = shuffleArray(cat_items);  %>
+	<% var cit3 = shuffleArray(all_items_array);  %>
 	<% //console.log(`Shuffled category items : ${JSON.stringify(cit2)}`) ;%>
 	<% var N =  (cit3.length > 3 ) ? 3 : cit3.length ; %>
 	<% for(var n=0; n<N; n++) { %>
@@ -199,26 +215,35 @@
 		</div>
 	</div>
 	<div class="product-slider owl-carousel owl-theme">
-		<% list_of_items = shuffleArray(cat_items); %>
+		<% list_of_items = shuffleArray(all_items_array); %>
 		<% for (var i = 0; i < list_of_items.length; i++) { %>
                 
 			<% var individual_item = list_of_items[i] %>
 			<div class="item">
 				<div class="product-style">
-				<img alt="img" src="https://via.placeholder.com/195x210">
-				<a href="/product-details#">
-					<h5><%= individual_item.item_name %></h5>
-				</a>
-				<h6>$<%= individual_item.unitPrice %></h6>
-				<span>In stock, <%= individual_item.quantityAvailable %> units</span>
-				<div class="add-to-cart">
+					<!-- <img  loading="lazy"  alt="img" src="https://via.placeholder.com/195x210"> -->
+					<% if (individual_item.imageurl != "" ) {%>
+						<!-- width x height = 195 x 210 , scaled down by 0.7 -->
+						<img  loading="lazy"  src="<%= IMG_DIR_FOR_WEB + individual_item.imageurl %>" width="117" height="89" />
+					<% } else { %>
+						<img  loading="lazy"  src="<%= IMG_DIR_FOR_WEB %>117x89.png" width=117 height=89 />
+						<!-- <img  loading="lazy"  src="https://via.placeholder.com/117x89" /> -->
+						<!-- https://via.placeholder.com/195x210 -->
+					<% } %>
 
-				<% var htmlID = new String(individual_item.category_webid) + "1";  %>
-				<a id="<%= htmlID %>" class="btn" onclick='updateCart("<%= individual_item.item_id %>","category_items", source="#", htmlID="<%= htmlID %>")'><span>Add to Cart</span></a>
-				<a href="#" class="heart-wishlist">
-					<i class="fa-regular fa-heart"></i>
-				</a>
-				</div>
+					<a href="/product-details/<%= individual_item.category_webid %>">
+						<h5><%= trimItemName(name=individual_item.item_name)  %></h5>
+					</a>
+					<h6>$<%= individual_item.unitPrice %></h6>
+					<span>In stock, <%= individual_item.quantityAvailable %> units</span>
+					<div class="add-to-cart">
+
+						<% var htmlID = new String(individual_item.category_webid) + "1";  %>
+						<a id="<%= htmlID %>" class="btn" onclick='updateCart("<%= individual_item.item_id %>", source="#", htmlID="<%= htmlID %>")'><span>Add to Cart</span></a>
+						<a href="#" class="heart-wishlist">
+							<i class="fa-regular fa-heart"></i>
+						</a>
+					</div>
 				</div>
 			</div>
 		<% } %>
@@ -229,7 +254,7 @@
 <div class="container">
 	<div class="row align-items-center">
 		
-		<% var allpackages = [package3000, package3800, package4900] ; %>
+		
          
         <% for (var j = 0; j < categories.length; j++) { %>
 
@@ -237,7 +262,8 @@
 			<div class="col-lg-4">
 				
 				<div class="holiday">
-					<img alt="holiday" src="https://via.placeholder.com/416x264">
+					<img  loading="lazy"  alt="holiday" src="<%= IMG_DIR_FOR_WEB %>416x264.png" width=416 height=264 />
+					<!-- <img  loading="lazy"  alt="holiday" src="https://via.placeholder.com/416x264"> -->
 					<div class="holiday-text">
 						<a href="/<%= category.category_name %>"><h3><%= category.category_name %></h3></a>
 						<span>See Our Selection</span>
@@ -270,24 +296,31 @@
 		<div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
 			<div class="row">
 				
-				<% list_of_items = shuffleArray(category_items); %>
+				<% list_of_items = shuffleArray(list_of_items); %>
 				<% for (var i = 0; i < list_of_items.length; i++) { %>
 		
 				<% var individual_item = list_of_items[i] %>
 				<div class="col-lg-6">
 					<div class="product-style two">
 						<div>
-						<img alt="img" src="https://via.placeholder.com/140x165">
+							<% if (individual_item.imageurl != "" ) {%>
+								<img  loading="lazy"  src="<%= IMG_DIR_FOR_WEB + individual_item.imageurl %>" width="<%= imgItemWidth %>" height="<%= imgItemHeight %>"/>
+							<% } else { %>
+								<% const altImage = trimItemName(name=individual_item.item_name) ; %>
+								<img  loading="lazy"  alt="<%= altImage %>" src="<%= IMG_DIR_FOR_WEB %><%= imgItemWidth %>x<%= imgItemHeight %>.png" width="<%= imgItemWidth %>" height="<%= imgItemHeight %>" />
+								<!-- <img  loading="lazy"  src="https://via.placeholder.com/70x70" /> -->
+								<!-- https://via.placeholder.com/70x70 -->
+							<% } %>
 						</div>
 						<div>
-						<a href="/product-details#">
-							<h5><%= individual_item.item_name %></h5>
+						<a href="/product-details/<%= individual_item.category_webid %>">
+							<h5><%= trimItemName(name=individual_item.item_name) %></h5>
 						</a>
 						<h6>$<%= individual_item.unitPrice %></h6>
 						<span>In stock, <%= individual_item.quantityAvailable %> units</span>
 						<div class="add-to-cart">
 							<% var htmlID2 = new String(individual_item.item_id) + "2";  %>
-							<a id="<%= htmlID2 %>" class="btn" onclick='updateCart("<%= individual_item.item_id %>","category_items", source="#", htmlID="<%= htmlID2 %>", alertIndex="cartResultIndex")'><span>Add to Cart</span></a>
+							<a id="<%= htmlID2 %>" class="btn" onclick='updateCart("<%= individual_item.item_id %>",source="#", htmlID="<%= htmlID2 %>", alertIndex="cartResultIndex")'><span>Add to Cart</span></a>
 							<a href="#" class="heart-wishlist">
 							<i class="fa-regular fa-heart"></i>
 							</a>
@@ -301,24 +334,38 @@
 		</div>
 		<div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
 			<div class="row">
-				<% list_of_items = shuffleArray(category_items); %>
+				<% list_of_items = shuffleArray(list_of_items); %>
 				<% for (var i = list_of_items.length - 1; i >= 0; i--) { %>
 		
 				<% var individual_item = list_of_items[i] %>
 				<div class="col-lg-6">
 					<div class="product-style two">
 						<div>
-							<img alt="img" src="https://via.placeholder.com/140x165">
+							
+							
+							<% if (individual_item.imageurl != "" ) {%>
+								<img  loading="lazy"  src="<%= IMG_DIR_FOR_WEB + individual_item.imageurl %>" width="<%= imgItemWidth %>" height="<%= imgItemHeight %>" />
+							<% } else { %>
+								<% const altImage = trimItemName(name=individual_item.item_name) ; %>
+								<img  loading="lazy"  alt="<%= altImage %>" src="<%= IMG_DIR_FOR_WEB %><%= imgItemWidth %>x<%= imgItemHeight %>.png" width="<%= imgItemWidth %>" height="<%= imgItemHeight %>" />
+								<!-- <img  loading="lazy"  src="https://via.placeholder.com/70x70" /> -->
+								<!-- https://via.placeholder.com/70x70 -->
+							<% } %>
+
+							
 						</div>
 						<div>
-							<a href="#">
-								<h5><%= individual_item.item_name %></h5>
+							
+							<a href="/product-details/<%= individual_item.category_webid %>">
+								<h5><%= trimItemName(name=individual_item.item_name) %></h5>
 							</a>
+
+
 							<h6>$<%= individual_item.unitPrice %></h6>
 							<span>In stock, <%= individual_item.quantityAvailable %> units</span>
 							<div class="add-to-cart">
 								<% var htmlID3 = new String(individual_item.item_id) + "3";  %>
-								<a id="<%= htmlID3 %>" class="btn" onclick='updateCart("<%= individual_item.item_id %>","category_items", source="#", htmlID="<%= htmlID3 %>")'><span>Add to Cart</span></a>
+								<a id="<%= htmlID3 %>" class="btn" onclick='updateCart("<%= individual_item.item_id %>", source="#", htmlID="<%= htmlID3 %>")'><span>Add to Cart</span></a>
 								<!-- <a href="#" class="btn"><span>Add to Cart</span></a> -->
 								<a href="#" class="heart-wishlist">
 								<i class="fa-regular fa-heart"></i>
@@ -332,25 +379,34 @@
 		</div>
 		<div class="tab-pane fade" id="v-pills-coffee" role="tabpanel" aria-labelledby="v-pills-coffee-tab">
 			<div class="row">
-				<% list_of_items = shuffleArray(category_items); %>
+				<% list_of_items = shuffleArray(list_of_items); %>
 				<% for (var i = 0; i < list_of_items.length; i++) { %>
 			
 				<% var individual_item = list_of_items[i] %>
 				<div class="col-lg-6">
 				<div class="product-style two mb-lg-0">
 					<div>
-					<img alt="img" src="https://via.placeholder.com/140x165">
+						
+						<% if (individual_item.imageurl != "" ) {%>
+							<img  loading="lazy"  src="<%= IMG_DIR_FOR_WEB + individual_item.imageurl %>" width="<%= imgItemWidth %>" height="<%= imgItemHeight %>" />
+						<% } else { %>
+							<% const altImage = trimItemName(name=individual_item.item_name) ; %>
+							<img  loading="lazy"  alt="<%= altImage %>" src="<%= IMG_DIR_FOR_WEB %><%= imgItemWidth %>x<%= imgItemHeight %>.png" width="<%= imgItemWidth %>" height="<%= imgItemHeight %>" />
+							<!-- <img  loading="lazy"  src="https://via.placeholder.com/70x70" /> -->
+							<!-- https://via.placeholder.com/70x70 -->
+						<% } %>
+						
 					</div>
 					<div>
-					<a href="#">
-						<h5><%= individual_item.item_name %></h5>
+					<a href="/product-details/<%= individual_item.category_webid %>">
+						<h5><%= trimItemName(name=individual_item.item_name) %></h5>
 					</a>
 					<h6>$<%= individual_item.unitPrice %></h6>
 					<span>In stock, <%= individual_item.individItemQtyAvailable %> units</span>
 					<div class="add-to-cart">
 
 						<% var htmlID4 = new String(individual_item.item_id) + "4";  %>
-						<a id="<%= htmlID4 %>" class="btn" onclick='updateCart("<%= individual_item.item_id %>","categories_items", source="#", htmlID="<%= htmlID4 %>")'><span>Add to Cart</span></a>
+						<a id="<%= htmlID4 %>" class="btn" onclick='updateCart("<%= individual_item.item_id %>", source="#", htmlID="<%= htmlID4 %>")'><span>Add to Cart</span></a>
 						<!-- <a href="#" class="btn"><span>Add to Cart</span></a> -->
 						<a href="#" class="heart-wishlist">
 						<i class="fa-regular fa-heart"></i>
@@ -366,25 +422,33 @@
 		</div>
 		<div class="tab-pane fade" id="v-pills-pizza" role="tabpanel" aria-labelledby="v-pills-pizza-tab">
 			<div class="row">
-				<% list_of_items = shuffleArray(category_items); %>
+				<% list_of_items = shuffleArray(list_of_items); %>
 				<% for (var p = list_of_items.length-1; p >= 0 ; p--) { %>
 				
 				<% var individual_item = list_of_items[p] %>
 				<div class="col-lg-6">
 				<div class="product-style two">
 					<div>
-					<img alt="img" src="https://via.placeholder.com/140x165">
+						
+						<% if (individual_item.imageurl != "" ) {%>
+							<img  loading="lazy"  src="<%= IMG_DIR_FOR_WEB + individual_item.imageurl %>" width="<%= imgItemWidth %>" height="<%= imgItemHeight %>" />
+						<% } else { %>
+							<% const altImage = trimItemName(name=individual_item.item_name) ; %>
+							<img  loading="lazy"  alt="<%= altImage %>" src="<%= IMG_DIR_FOR_WEB %><%= imgItemWidth %>x<%= imgItemHeight %>.png" width="<%= imgItemWidth %>" height="<%= imgItemHeight %>" />
+							<!-- <img  loading="lazy"  src="https://via.placeholder.com/70x70" /> -->
+							<!-- https://via.placeholder.com/70x70 -->
+						<% } %>
 					</div>
 					<div>
-					<a href="#">
-						<h5><%= individual_item.item_name %></h5>
+					<a href="/product-details/<%= individual_item.category_webid %>">
+						<h5><%= trimItemName(name=individual_item.item_name) %></h5>
 					</a>
 					<h6>$<%= individual_item.unitPrice %></h6>
 					<span>In stock, <%= individual_item.quantityAvailable %> units</span>
 					<div class="add-to-cart">
 						
 						<% var htmlID5 = new String(individual_item.item_id) + "5";  %>
-						<a id="<%= htmlID5 %>" class="btn" onclick='updateCart("<%= individual_item.item_id %>","category_items", source="#", htmlID="<%= htmlID5 %>")'><span>Add to Cart</span></a>
+						<a id="<%= htmlID5 %>" class="btn" onclick='updateCart("<%= individual_item.item_id %>", source="#", htmlID="<%= htmlID5 %>")'><span>Add to Cart</span></a>
 						<!-- <a href="#" class="btn"><span>Add to Cart</span></a> -->
 						<a href="#" class="heart-wishlist">
 						<i class="fa-regular fa-heart"></i>
@@ -400,24 +464,33 @@
 		</div>
 		<div class="tab-pane fade" id="v-pills-burger" role="tabpanel" aria-labelledby="v-pills-burger-tab">
 			<div class="row">
-				<% list_of_items = shuffleArray(category_items); %>
+				<% list_of_items = shuffleArray(list_of_items); %>
 				<% for (var i = 0; i < list_of_items.length; i++) { %>
 					
 				<% var individual_item = list_of_items[i] %>
 				<div class="col-lg-6">
-				<div class="product-style two">
+					<div class="product-style two">
+						<div>
+
+							<% if (individual_item.imageurl != "" ) {%>
+								<img  loading="lazy"  src="<%= IMG_DIR_FOR_WEB + individual_item.imageurl %>" width="<%= imgItemWidth %>" height="<%= imgItemHeight %>" />
+							<% } else { %>
+								<% const altImage = trimItemName(name=individual_item.item_name) ; %>
+								<img  loading="lazy"  alt="<%= altImage %>" src="<%= IMG_DIR_FOR_WEB %><%= imgItemWidth %>x<%= imgItemHeight %>.png" width="<%= imgItemWidth %>" height="<%= imgItemHeight %>" />
+								<!-- <img  loading="lazy"  src="https://via.placeholder.com/70x70" /> -->
+								<!-- https://via.placeholder.com/70x70 -->
+							<% } %>
+
+						</div>
 					<div>
-					<img alt="img" src="https://via.placeholder.com/140x165">
-					</div>
-					<div>
-					<a href="#">
-						<h5><%= individual_item.item_name %></h5>
+					<a href="/product-details/<%= individual_item.category_webid %>">
+						<h5><%= trimItemName(name=individual_item.item_name) %></h5>
 					</a>
 					<h6>$<%= individual_item.unitPrice %></h6>
 					<span>In stock, <%= individual_item.individItemQtyAvailable %> units</span>
 					<div class="add-to-cart">
 						<% var htmlID6 = new String(individual_item.item_id) + "6";  %>
-						<a id="<%= htmlID6 %>" class="btn" onclick='updateCart("<%= individual_item.item_id %>","category_items", source="#", htmlID="<%= htmlID6 %>")'><span>Add to Cart</span></a>
+						<a id="<%= htmlID6 %>" class="btn" onclick='updateCart("<%= individual_item.item_id %>", source="#", htmlID="<%= htmlID6 %>")'><span>Add to Cart</span></a>
 						<!-- <a href="#" class="btn"><span>Add to Cart</span></a> -->
 						<a href="#" class="heart-wishlist">
 						<i class="fa-regular fa-heart"></i>
@@ -446,7 +519,7 @@
 <section class="gap popular-occasion">
 <div class="container">
 	<div class="heading">
-	<img alt="heading" src="assets/img/heading.png">
+	<img  loading="lazy"  alt="heading" src="/assets/img/heading.png">
 	<h2>Popular Occasion Themes</h2>
 	<p>Whats trending with our party themes</p>
 	</div>
@@ -530,7 +603,8 @@
 			<div class="row align-items-center">
 				<div class="col-lg-6">
 				<div class="theme-img">
-					<img alt="theme-img" src="https://via.placeholder.com/440x466">
+					<img  loading="lazy"  alt="theme-img" src="<%= IMG_DIR_FOR_WEB %>440x466.png" width=440 height=466 />
+					<!-- <img  loading="lazy"  alt="theme-img" src="https://via.placeholder.com/440x466"> -->
 				</div>
 				</div>
 				<div class="col-lg-6">
@@ -539,19 +613,19 @@
 					<h3>surprise baby shower completely elegant theme</h3>
 					<ul>
 									
-						<% list_of_items = shuffleArray(category_items); %>
+						<% list_of_items = shuffleArray(list_of_items); %>
 						<% var themeTotal = 0.0 %>
 						<% for (var i = 0; i < list_of_items.length/2; i++) { %>
 						<% var individual_item = list_of_items[i] %>
 						
 						<% themeTotal += parseFloat(individual_item.unitPrice); %>
-						<li><img alt="chak" src="assets/img/chak.png"><%= individual_item.item_name %></li>
+						<li><img  loading="lazy"  alt="chak" src="/assets/img/chak.png"><%= individual_item.item_name %></li>
 						<% } %>
 					</ul>
 					<div class="d-flex align-items-center justify-content-between">
 						<div class="d-flex align-items-center">
 							<span>Starting From:</span>
-							<h3>$<%= themeTotal %></h3>
+							<h3>$<%= themeTotal.toFixed(2) %></h3>
 						</div>
 						<div class="star">
 							<i class="fa-solid fa-star"></i>
@@ -571,7 +645,9 @@
 			<div class="row align-items-center">
 				<div class="col-lg-6">
 				<div class="theme-img">
-					<img alt="theme-img" src="https://via.placeholder.com/440x466">
+					
+					<img  loading="lazy"  alt="theme-img" src="<%= IMG_DIR_FOR_WEB %>440x466.png" width=440 height=466 />
+					<!-- <img  loading="lazy"  alt="theme-img" src="https://via.placeholder.com/440x466"> -->
 				</div>
 				</div>
 				<div class="col-lg-6">
@@ -580,18 +656,18 @@
 					<h3>Birthday surprise completely elegant theme</h3>
 					<ul>
 					
-					<% list_of_items = shuffleArray(category_items); %>
+					<% list_of_items = shuffleArray(list_of_items); %>
 					<% var themeTotal = 0.0 %>
 					<% for (var i = 0; i < list_of_items.length/2; i++) { %>
 					<% var individual_item = list_of_items[i] ;  %>
 					<% themeTotal += parseFloat(individual_item.unitPrice); %>
-					<li><img alt="chak" src="assets/img/chak.png"><%= individual_item.item_name %></li>
+					<li><img  loading="lazy"  alt="chak" src="/assets/img/chak.png"><%= individual_item.item_name %></li>
 					<% } %>
 					</ul>
 					<div class="d-flex align-items-center justify-content-between">
 					<div class="d-flex align-items-center">
 						<span>Starting From:</span>
-						<h3>$<%= themeTotal %></h3>
+						<h3>$<%= themeTotal.toFixed(2) %></h3>
 					</div>
 					<div class="star">
 						<i class="fa-solid fa-star"></i>
@@ -611,7 +687,9 @@
 			<div class="row align-items-center">
 				<div class="col-lg-6">
 				<div class="theme-img">
-					<img alt="theme-img" src="https://via.placeholder.com/440x466">
+					
+					<img  loading="lazy"  alt="theme-img" src="<%= IMG_DIR_FOR_WEB %>440x466.png" width=440 height=466 />
+					<!-- <img  loading="lazy"  alt="theme-img" src="https://via.placeholder.com/440x466"> -->
 				</div>
 				</div>
 				<div class="col-lg-6">
@@ -619,18 +697,18 @@
 					<h6>Ready Time <span>– 2 to 2.5 Hours</span></h6>
 					<h3>Gender surprise completely elegant theme</h3>
 					<ul>
-						<% list_of_items = shuffleArray(category_items); %>
+						<% list_of_items = shuffleArray(list_of_items); %>
 						<% themeTotal = 0.0 ; %>
 						<% for (var i = 0; i < list_of_items.length/2; i++) { %>
 							<% var individual_item = list_of_items[i] ;  %>
 							<% themeTotal += parseFloat(individual_item.unitPrice) ; %>
-							<li><img alt="chak" src="assets/img/chak.png"><%= individual_item.item_name %></li>
+							<li><img  loading="lazy"  alt="chak" src="/assets/img/chak.png"><%= individual_item.item_name %></li>
 						<% } %>
 					</ul>
 					<div class="d-flex align-items-center justify-content-between">
 					<div class="d-flex align-items-center">
 						<span>Starting From:</span>
-						<h3>$<%= themeTotal %></h3>
+						<h3>$<%= themeTotal.toFixed(2) %></h3>
 					</div>
 					<div class="star">
 						<i class="fa-solid fa-star"></i>
@@ -650,7 +728,9 @@
 			<div class="row align-items-center">
 				<div class="col-lg-6">
 				<div class="theme-img">
-					<img alt="theme-img" src="https://via.placeholder.com/440x466">
+					
+					<img  loading="lazy"  alt="theme-img" src="<%= IMG_DIR_FOR_WEB %>440x466.png" width=440 height=466 />
+					<!-- <img  loading="lazy"  alt="theme-img" src="https://via.placeholder.com/440x466"> -->
 				</div>
 				</div>
 				<div class="col-lg-6">
@@ -663,13 +743,13 @@
 						<% for (var i = 0; i < list_of_items.length/2; i++) { %>
 							<% var individual_item = list_of_items[i] ;  %>
 							<% themeTotal += parseFloat(individual_item.unitPrice) ; %>
-							<li><img alt="chak" src="assets/img/chak.png"><%= individual_item.item_name %></li>
+							<li><img  loading="lazy"  alt="chak" src="/assets/img/chak.png"><%= individual_item.item_name %></li>
 						<% } %>
 					</ul>
 					<div class="d-flex align-items-center justify-content-between">
 					<div class="d-flex align-items-center">
 						<span>Starting From:</span>
-						<h3>$<%= themeTotal %></h3>
+						<h3>$<%= themeTotal.toFixed(2) %></h3>
 					</div>
 					<div class="star">
 						<i class="fa-solid fa-star"></i>
@@ -701,7 +781,7 @@
 			<% var customer_feedback = JSON.parse(JSON.stringify( customers_feedback[j] )) ; %>
 			<div class="col-lg-12 item">
 				<div class="customer-feedback">
-					<i><img class="quote" alt="quote" src="assets/img/quote.png"></i>
+					<i><img  loading="lazy"  class="quote" alt="quote" src="/assets/img/quote.png"></i>
 					<p><%= customer_feedback["comments"] %></p>
 					<h4><%= customer_feedback["fullname"] %></h4>
 					<span><%= customer_feedback["date"] %></span>

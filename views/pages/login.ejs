@@ -17,7 +17,7 @@
               
               <form class="box login" id="otpverifyform" method="POST" action="/verifyotp">
                 <h3>Verify Your One Time Password (OTP)</h3>
-                <input type="user_email" name="user_email" placeholder="email address">
+                <input type="email" name="user_email" placeholder="email address">
                 <input type="hidden" name="_csrf2" value="<%= csrfToken %>">
                 <input name="otp" id="otp" value="" placeholder="Enter your one time password">
                 <button type="submit" class="btn two"><span>Verify OTP</span></button>
@@ -25,7 +25,13 @@
           </div>
 
         </div>
-        
+        <div class="row">
+          <div class="col-sm-12">
+            <div id="loadingspinner" class="spinner-border" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
+          </div>
+        </div>
         <div class="row">
           <div class="col-sm-12">
             <div class="box register">
@@ -42,8 +48,8 @@
                     If they put it in, then we log them in.
                 */
                 %>
-                <input type="email" name="email" placeholder="enter your email address">
-                <input type="password" name="password" placeholder="enter your password">
+                <input type="email" name="email" placeholder="Enter your email address">
+                <input type="password" name="password" placeholder="Enter your password">
                 <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                 <button type="submit" class="btn two"><span>Log In</span></button>
               </form>

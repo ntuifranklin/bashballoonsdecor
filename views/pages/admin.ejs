@@ -1,4 +1,4 @@
-<section class="banner" style="background-image:url(https://via.placeholder.com/1920x300)" >
+<section class="banner" style='background-image:url("https://imagedelivery.net/FsZO54BRtMf2GCnVBBnkWg/dca1b174-74eb-4487-4bf7-ca7f9e9fd400/1920x300")'>
     <div class="container">
       <ol class="breadcrumb">
         <li class="breadcrumb-item">
@@ -19,11 +19,12 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-4">
-                <div class="box register">
-                    <div class="parallax" style="background-image: url(/assets/img/patron.jpg)"></div>
+            <div class="col-md-5">
+                <div class="box login">
+                    <!-- style="background-image: url(/assets/img/patron.jpg)" -->
+                    <!-- <div class="parallax"></div> -->
                     <h3>Add Rental Item</h3>
-                    <form id="addItemForm" class="contact-form">
+                    <form id="addItemForm" class="contact-form" enctype="multipart/form-data" method="POST">
                                     
                         <div class="input-group sm-12">
                             <div class="input-group-append">
@@ -31,6 +32,7 @@
                             </div>
                             <select class="nice-select" name="category_id" id="category_id" >
                                 <!-- loop through categories and list them as option -->
+                                <option value="">Select Category</option>
                                 <% var categories = JSON.parse(JSON.stringify(categories)); %>
                                 <% categories.forEach(function(category) { %>
                                     <option value="<%= category.category_id %>"><%= category.category_name %></option>
@@ -62,18 +64,21 @@
                             <!--  <label for="unitPrice">Unit Price:</label>  -->
                             <input type="number" id="unitPrice" name="unitPrice" step="0.01" placeholder="Price for one unit" value="0.01" required>
                         </div>
-    
+                        
+                        <div class="form-group">
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+                        </div>
+                        <div class="form-group">
+                            <label for="itemimgurl">Item Image</label>
+                            <input type="file" name="itemimgurl" id="itemimgurl" name="MAX_FILE_SIZE" value="1000000" required>
+                        </div>    
                         <button type="submit" class="btn two" id="addItemCategory"><span>Add Item</span></button>
                     </form>
                   </div>
 
-
-
-
-
-
             </div>
-            <div class="col-md-8">
+            <div class="col-md-7">
                 <div class="table-responsive">
                     
                     <table class="table table-striped table-hover table-responsive">
@@ -81,7 +86,7 @@
                             <tr>
                                 <th colspan="4">
                                     <!-- Table to display existing items -->
-                                    <h2 class="text-center" id="selectedCategoryTitle">Selected Category</h2>
+                                    <h2 class="text-center" id="selectedCategoryTitle">Selected Rental Category On Left </h2>
                                 </th>
                             </tr>
                             <tr>

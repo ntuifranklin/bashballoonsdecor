@@ -1,0 +1,250 @@
+[
+    {
+        "Id": "68c29b06185cce3ac5276ec3afef32c02df69eff2470065c30f0c701577cb830",
+        "Created": "2024-11-10T13:14:11.964944142Z",
+        "Path": "docker-entrypoint.sh",
+        "Args": [
+            "mariadbd"
+        ],
+        "State": {
+            "Status": "running",
+            "Running": true,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 2771,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2024-11-10T13:14:12.482960848Z",
+            "FinishedAt": "0001-01-01T00:00:00Z"
+        },
+        "Image": "sha256:4b8711c6c639fa9166e6a617c421e2fc43296c8add9a846fe8237b8ac9184d51",
+        "ResolvConfPath": "/var/lib/docker/containers/68c29b06185cce3ac5276ec3afef32c02df69eff2470065c30f0c701577cb830/resolv.conf",
+        "HostnamePath": "/var/lib/docker/containers/68c29b06185cce3ac5276ec3afef32c02df69eff2470065c30f0c701577cb830/hostname",
+        "HostsPath": "/var/lib/docker/containers/68c29b06185cce3ac5276ec3afef32c02df69eff2470065c30f0c701577cb830/hosts",
+        "LogPath": "/var/lib/docker/containers/68c29b06185cce3ac5276ec3afef32c02df69eff2470065c30f0c701577cb830/68c29b06185cce3ac5276ec3afef32c02df69eff2470065c30f0c701577cb830-json.log",
+        "Name": "/mariadbprod",
+        "RestartCount": 0,
+        "Driver": "overlay2",
+        "Platform": "linux",
+        "MountLabel": "",
+        "ProcessLabel": "",
+        "AppArmorProfile": "docker-default",
+        "ExecIDs": null,
+        "HostConfig": {
+            "Binds": null,
+            "ContainerIDFile": "",
+            "LogConfig": {
+                "Type": "json-file",
+                "Config": {}
+            },
+            "NetworkMode": "default",
+            "PortBindings": {
+                "3306/tcp": [
+                    {
+                        "HostIp": "",
+                        "HostPort": "3306"
+                    }
+                ]
+            },
+            "RestartPolicy": {
+                "Name": "no",
+                "MaximumRetryCount": 0
+            },
+            "AutoRemove": false,
+            "VolumeDriver": "",
+            "VolumesFrom": null,
+            "ConsoleSize": [
+                31,
+                124
+            ],
+            "CapAdd": null,
+            "CapDrop": null,
+            "CgroupnsMode": "private",
+            "Dns": [],
+            "DnsOptions": [],
+            "DnsSearch": [],
+            "ExtraHosts": null,
+            "GroupAdd": null,
+            "IpcMode": "private",
+            "Cgroup": "",
+            "Links": null,
+            "OomScoreAdj": 0,
+            "PidMode": "",
+            "Privileged": false,
+            "PublishAllPorts": false,
+            "ReadonlyRootfs": false,
+            "SecurityOpt": null,
+            "UTSMode": "",
+            "UsernsMode": "",
+            "ShmSize": 67108864,
+            "Runtime": "runc",
+            "Isolation": "",
+            "CpuShares": 0,
+            "Memory": 0,
+            "NanoCpus": 0,
+            "CgroupParent": "",
+            "BlkioWeight": 0,
+            "BlkioWeightDevice": [],
+            "BlkioDeviceReadBps": [],
+            "BlkioDeviceWriteBps": [],
+            "BlkioDeviceReadIOps": [],
+            "BlkioDeviceWriteIOps": [],
+            "CpuPeriod": 0,
+            "CpuQuota": 0,
+            "CpuRealtimePeriod": 0,
+            "CpuRealtimeRuntime": 0,
+            "CpusetCpus": "",
+            "CpusetMems": "",
+            "Devices": [],
+            "DeviceCgroupRules": null,
+            "DeviceRequests": null,
+            "MemoryReservation": 0,
+            "MemorySwap": 0,
+            "MemorySwappiness": null,
+            "OomKillDisable": null,
+            "PidsLimit": null,
+            "Ulimits": null,
+            "CpuCount": 0,
+            "CpuPercent": 0,
+            "IOMaximumIOps": 0,
+            "IOMaximumBandwidth": 0,
+            "MaskedPaths": [
+                "/proc/asound",
+                "/proc/acpi",
+                "/proc/kcore",
+                "/proc/keys",
+                "/proc/latency_stats",
+                "/proc/timer_list",
+                "/proc/timer_stats",
+                "/proc/sched_debug",
+                "/proc/scsi",
+                "/sys/firmware",
+                "/sys/devices/virtual/powercap"
+            ],
+            "ReadonlyPaths": [
+                "/proc/bus",
+                "/proc/fs",
+                "/proc/irq",
+                "/proc/sys",
+                "/proc/sysrq-trigger"
+            ]
+        },
+        "GraphDriver": {
+            "Data": {
+                "LowerDir": "/var/lib/docker/overlay2/b8ef48d157614a6b201f671ac8397633e194d6415afbb971a9d7c257f302a799-init/diff:/var/lib/docker/overlay2/fec679112bfa2ae3667da9e92d5a862c77c332883b3d4708103137afa93c132a/diff:/var/lib/docker/overlay2/f9e0b1ebfcd9f963c96b83e941762fe6a525677b55a0aa69050bb2950cd06e1f/diff:/var/lib/docker/overlay2/c1de4b0dfae4e27c35c7869955e8b3fc63ddf5cd24a745a8f3cf303b6bcdf286/diff:/var/lib/docker/overlay2/a8f682d6d0621dec28d4449bb7a409d20dfe74ab048a7b0a84953d0d2bc81300/diff:/var/lib/docker/overlay2/1eb57e32f36fa611c5e81a8d6c2233e372f90043c3374108cc72e8238de274bd/diff:/var/lib/docker/overlay2/afb977a457e7909e46f5f0f1330cfd8d2cd4a2b369f12e58ebec74b8acd410e8/diff:/var/lib/docker/overlay2/e5dfe0f1f48b4f85bc883b263f581d9e82b151efdecfb31802bbc216c3d62dc7/diff:/var/lib/docker/overlay2/dd60bba101f1418bc5b5201af8a78eba1dad4b68543b10d8b852b6f0b6b8bbca/diff",
+                "MergedDir": "/var/lib/docker/overlay2/b8ef48d157614a6b201f671ac8397633e194d6415afbb971a9d7c257f302a799/merged",
+                "UpperDir": "/var/lib/docker/overlay2/b8ef48d157614a6b201f671ac8397633e194d6415afbb971a9d7c257f302a799/diff",
+                "WorkDir": "/var/lib/docker/overlay2/b8ef48d157614a6b201f671ac8397633e194d6415afbb971a9d7c257f302a799/work"
+            },
+            "Name": "overlay2"
+        },
+        "Mounts": [
+            {
+                "Type": "volume",
+                "Name": "c4c9b8011cf38a57ec03eefa2f3fabb2d857c301af992854ebe5c92be4899acb",
+                "Source": "/var/lib/docker/volumes/c4c9b8011cf38a57ec03eefa2f3fabb2d857c301af992854ebe5c92be4899acb/_data",
+                "Destination": "/var/lib/mysql",
+                "Driver": "local",
+                "Mode": "",
+                "RW": true,
+                "Propagation": ""
+            }
+        ],
+        "Config": {
+            "Hostname": "68c29b06185c",
+            "Domainname": "",
+            "User": "",
+            "AttachStdin": false,
+            "AttachStdout": false,
+            "AttachStderr": false,
+            "ExposedPorts": {
+                "3306/tcp": {}
+            },
+            "Tty": false,
+            "OpenStdin": false,
+            "StdinOnce": false,
+            "Env": [
+                "MYSQL_DATABASE=bashrentaldbprodbbd",
+                "MARIADB_ROOT_PASSWORD=saY7rO2xvMyB/fneW57Fv7svT6Amn0jzmNdGZCcaNUw=",
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "GOSU_VERSION=1.17",
+                "LANG=C.UTF-8",
+                "MARIADB_VERSION=1:11.5.2+maria~ubu2404"
+            ],
+            "Cmd": [
+                "mariadbd"
+            ],
+            "Image": "mariadb",
+            "Volumes": {
+                "/var/lib/mysql": {}
+            },
+            "WorkingDir": "",
+            "Entrypoint": [
+                "docker-entrypoint.sh"
+            ],
+            "OnBuild": null,
+            "Labels": {
+                "org.opencontainers.image.authors": "MariaDB Community",
+                "org.opencontainers.image.base.name": "docker.io/library/ubuntu:noble",
+                "org.opencontainers.image.description": "MariaDB Database for relational SQL",
+                "org.opencontainers.image.documentation": "https://hub.docker.com/_/mariadb/",
+                "org.opencontainers.image.licenses": "GPL-2.0",
+                "org.opencontainers.image.ref.name": "ubuntu",
+                "org.opencontainers.image.source": "https://github.com/MariaDB/mariadb-docker",
+                "org.opencontainers.image.title": "MariaDB Database",
+                "org.opencontainers.image.url": "https://github.com/MariaDB/mariadb-docker",
+                "org.opencontainers.image.vendor": "MariaDB Community",
+                "org.opencontainers.image.version": "11.5.2"
+            }
+        },
+        "NetworkSettings": {
+            "Bridge": "",
+            "SandboxID": "6b97b9281357e518a0b9125901b2f252fd98e78f94bc6bd1002df95e00f8ad92",
+            "HairpinMode": false,
+            "LinkLocalIPv6Address": "",
+            "LinkLocalIPv6PrefixLen": 0,
+            "Ports": {
+                "3306/tcp": [
+                    {
+                        "HostIp": "0.0.0.0",
+                        "HostPort": "3306"
+                    },
+                    {
+                        "HostIp": "::",
+                        "HostPort": "3306"
+                    }
+                ]
+            },
+            "SandboxKey": "/var/run/docker/netns/6b97b9281357",
+            "SecondaryIPAddresses": null,
+            "SecondaryIPv6Addresses": null,
+            "EndpointID": "8535c868162f40901ae8ffeacf34915c25cee247cd4289d155f63e026d081aaf",
+            "Gateway": "172.17.0.1",
+            "GlobalIPv6Address": "",
+            "GlobalIPv6PrefixLen": 0,
+            "IPAddress": "172.17.0.2",
+            "IPPrefixLen": 16,
+            "IPv6Gateway": "",
+            "MacAddress": "02:42:ac:11:00:02",
+            "Networks": {
+                "bridge": {
+                    "IPAMConfig": null,
+                    "Links": null,
+                    "Aliases": null,
+                    "NetworkID": "5640d8f0c071306d2d4a9911b1b6bb2d6d00d21952bcbba251c718564f46f556",
+                    "EndpointID": "8535c868162f40901ae8ffeacf34915c25cee247cd4289d155f63e026d081aaf",
+                    "Gateway": "172.17.0.1",
+                    "IPAddress": "172.17.0.2",
+                    "IPPrefixLen": 16,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "MacAddress": "02:42:ac:11:00:02",
+                    "DriverOpts": null
+                }
+            }
+        }
+    }
+]

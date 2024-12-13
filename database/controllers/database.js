@@ -5,131 +5,7 @@ require('dotenv').config();
 const { v4: uuidv4 } = require('uuid');
 
 const {MySQLDBConnector} = require('../models/MySQLDBConnector');
-// open the database
-async function getPackageItems (packageid= '') {
 
-    return await new Promise(async(resolve, reject) => {
-                
-      var con = mysql.createConnection({
-        host: process.env.DATABASE_HOST,
-        user: process.env.DATABASE_USER,
-        password: process.env.DATABASE_PASSWORD,
-        database: process.env.DATABASE_NAME
-      });
-
-       con.connect( function(err) {
-        if (err) reject(err);
-        
-        selectsql = `SELECT *
-                FROM package_contains_items pci
-                JOIN package p ON p.packageid = pci.packageid
-                JOIN packageitems pi on pci.packageitemid = pi.packageitemid
-                WHERE pci.packageid = '${packageid}'
-                ORDER BY pci.packageid, pci.packageitemid
-                `;
-        con.query(selectsql, function (err, result, fields) {
-          if (err) reject(err);
-          con.end();
-          resolve(result) ;
-          
-        });
-        //con.end();
-      });
-    });
-} ;
-
-exports.getPackageItems = getPackageItems ;
-
-async function getIndividualItems () {
-
-  return await new Promise(async(resolve, reject) => {
-              
-    var con = mysql.createConnection({
-      host: process.env.DATABASE_HOST,
-      user: process.env.DATABASE_USER,
-      password: process.env.DATABASE_PASSWORD,
-      database: process.env.DATABASE_NAME
-    });
-
-     con.connect(function(err) {
-      if (err) reject(err);
-      selectsql = `SELECT *
-                    FROM IndividualItems
-                  `;
-      con.query(selectsql, function (err, result, fields) {
-        if (err) reject(err);
-        con.end();
-        resolve(result) ;
-        
-      });
-      //con.end();
-    });
-
-    
-  });
-
-}
-
-exports.getIndividualItems = getIndividualItems
-
-
-async function getDatabaseObject (tableName='IndividualItems', keyFieldName='individItemID', keyFieldValue='') {
-/*
-MariaDB [bashballoonsdecor]> describe IndividualItems ;
-+-------------------------+-----------+------+-----+---------+-------+
-| Field                   | Type      | Null | Key | Default | Extra |
-+-------------------------+-----------+------+-----+---------+-------+
-| individItemID           | char(10)  | NO   | PRI | NULL    |       |
-| individItemTitle        | char(100) | NO   |     | NULL    |       |
-| individItemDescription  | char(100) | NO   |     | NULL    |       |
-| individItemUnitCost     | float     | NO   |     | NULL    |       |
-| individItemQtyAvailable | int(11)   | NO   |     | NULL    |       |
-+-------------------------+-----------+------+-----+---------+-------+
-5 rows in set (0.004 sec)
-
-MariaDB [bashballoonsdecor]> describe package
-    -> ;
-+-------------+-------------+------+-----+---------+-------+
-| Field       | Type        | Null | Key | Default | Extra |
-+-------------+-------------+------+-----+---------+-------+
-| packageid   | varchar(20) | NO   | PRI | NULL    |       |
-| packagedesc | varchar(22) | YES  |     | NULL    |       |
-| packagecost | smallint(6) | YES  |     | NULL    |       |
-+-------------+-------------+------+-----+---------+-------+
-3 rows in set (0.071 sec)
-
-*/
-  return await new Promise(async(resolve, reject) => {
-              
-    var con = mysql.createConnection({
-      host: process.env.DATABASE_HOST,
-      user: process.env.DATABASE_USER,
-      password: process.env.DATABASE_PASSWORD,
-      database: process.env.DATABASE_NAME
-    });
-
-     con.connect(function(err) {
-      if (err) reject(err);
-      selectsql = `
-                    SELECT *
-                    FROM ${tableName}
-                    WHERE ${keyFieldName} = '${keyFieldValue}'
-                  `;
-      //console.log(`Running sql in getDatabaseObject : ${selectsql}`);
-      con.query(selectsql, function (err, result, fields) {
-        if (err) reject(err);
-        con.end();
-        resolve(result) ;
-       
-      });
-      //con.end();
-    });
-    
-  });
-
-}
-
-exports.getDatabaseObject = getDatabaseObject ;
 
 /* 
 Takes an already made mysql connection table, and the field of the table, and 
@@ -159,7 +35,7 @@ async function countMatchingField(con=null, tableName='IndividualItems', keyFiel
 
 exports.countMatchingField = countMatchingField ;
 
-async function generateUniqueID(con=null, tableName='IndividualItems', keyFieldName='individItemID') { 
+async function generateUniqueID(con=null, tableName='IndividualItems', keyFieldName='individItemID', size=16) { 
   
   if (con === null) 
     return await new Promise(async function(resolve,reject) {
@@ -169,7 +45,8 @@ async function generateUniqueID(con=null, tableName='IndividualItems', keyFieldN
   
   return await new Promise(async function(resolve,reject) {
 
-    var id = uuidv4().split('-').join('') ;;
+    var id = uuidv4().split('-').join('') ;
+    id = id.substring(0, size);
     var count = await countMatchingField(con, tableName, keyFieldName, id) ;
     while (count > 0) {
       id = uuidv4().split('-').join('') ;
@@ -185,14 +62,14 @@ exports.generateUniqueID = generateUniqueID ;
 
 
 
-async function getCategories (con=null,tableName='categories') {
+var getCategories = async function (con=null,tableName='categories') {
     var tableName = tableName;
     return await new Promise(async(resolve, reject) => {
       
         try {            
             selectsql = `
             SELECT * 
-            FROM categories
+            FROM ${tableName} ORDER BY category_name ASC
           `;
           var result = await MySQLDBConnector.execute(selectsql, []) 
             
@@ -204,10 +81,29 @@ async function getCategories (con=null,tableName='categories') {
   
   }
   
-  exports.getCategories = getCategories ;
+exports.getCategories = getCategories ;
 
-  
-async function getCategoriesItems (tableName='category_items', category_id='') {
+async function getCategoriesWebUrl(con=null,tableName='categories') {
+  var tableName = tableName;
+  return await new Promise(async(resolve, reject) => {
+    
+      try {            
+          selectsql = `
+          SELECT category_name,category_weburl 
+          FROM categories
+        `;
+        var result = await MySQLDBConnector.execute(selectsql, []) 
+          
+        resolve(result) ;
+      } catch( err ){
+        reject(err);
+      } ;
+  });
+
+} ;
+
+exports.getCategoriesWebUrl = getCategoriesWebUrl ;
+var getCategoriesItems = async(tableName='category_items', category_id='') => {
   
     var tableName = new String(tableName);
     var category_id = new String(category_id);
@@ -215,8 +111,8 @@ async function getCategoriesItems (tableName='category_items', category_id='') {
     return await new Promise(async(resolve, reject) => {
       try {            
         selectsql = `
-                      SELECT * 
-                      FROM category_items
+                      SELECT *
+                      FROM ${tableName}
                     `;
         var params = [] ;
         if (category_id != '') {
@@ -235,6 +131,36 @@ async function getCategoriesItems (tableName='category_items', category_id='') {
 }
 
 exports.getCategoriesItems = getCategoriesItems ;
+
+var getUniqueCategoryItemByCategoryWebID =  async function (tableName='category_items', category_webid='') {
+  
+  var tableName = new String(tableName);
+  var category_webid = new String(category_webid);
+
+  return await new Promise(async(resolve, reject) => {
+    try {            
+      selectsql = `
+                    SELECT * 
+                    FROM ${tableName}
+                  `;
+      var params = [] ;
+      if (category_webid != '') {
+        params.push(category_webid) ;
+        selectsql += ` WHERE category_webid = ? `;
+      } ;
+      //console.log(`Running sql ${selectsql}`);
+      var result = await MySQLDBConnector.execute(selectsql, params)  ;
+      resolve(result) ;
+  } catch( err ){
+    console.log(`Error in ${__filename}.getUniqueCategoryItemByCategoryWebID: ${err}`);
+    reject(err);
+  } ;
+  }) ;
+
+
+}
+
+exports.getUniqueCategoryItemByCategoryWebID = getUniqueCategoryItemByCategoryWebID ;
 
 
 /* This function below takes a text and generates the mysql password for it */

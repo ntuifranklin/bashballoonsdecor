@@ -415,7 +415,7 @@ header {
     content: "";
     width: 25px;
     height: 25px;
-    background-image: url('../img/remove.svg');
+    background-image: url('/assets/img/remove.svg');
     background-repeat: no-repeat;
     position: absolute;
     top: -5px;
@@ -834,7 +834,7 @@ img.p-balloon {
 }
 .call-us a {
     color: #f6ff00;
-    font-size: 34px;
+    font-size: 18px;
 }
 .call-us p {
     color: white;
@@ -3633,7 +3633,7 @@ button.btn{
     padding-bottom: 0;
 }
 .call-us a {
-    padding-bottom: 10px;
+    padding-bottom: 5px;
     display: block;
 }
 /* 66. content-location */
@@ -4278,7 +4278,7 @@ li.menu-item-has-children.active {
     content: "";
     width: 35px;
     height: 35px;
-    background-image: url('../img/remove.svg');
+    background-image: url('/assets/img/remove.svg');
     background-repeat: no-repeat;
     position: absolute;
     top: 15px;

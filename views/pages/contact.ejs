@@ -1,4 +1,5 @@
-<section class="banner" style="background-image:url(https://via.placeholder.com/1920x300)" >
+
+<section class="banner" style='background-image:url("https://imagedelivery.net/FsZO54BRtMf2GCnVBBnkWg/dca1b174-74eb-4487-4bf7-ca7f9e9fd400/1920x300")' >
     <div class="container">
       <ol class="breadcrumb">
         <li class="breadcrumb-item">
@@ -13,13 +14,19 @@
 <section class="gap no-bottom">
     <div class="container">
       <div class="row">
+          <div class="col-xl-12" id="contactFormAlertIndex">
+
+          </div>
+
+      </div>
+      <div class="row">
         <div class="col-xl-6">
           <div class="heading two">
             <h2>Let's Chat. Tell me about your Occasion.</h2>
             <p>contact us and one of our delightful team will be be happy to help.</p>
           </div>
           <div class="inner-response"></div>
-          <form class="contact-form" role="form" id="contact-form" method="post">
+          <form class="contact-form" action="/contact" role="form" id="contact-form" method="POST">
            
             <div class="row">
               <div class="col-lg-6 ps-lg-0">
@@ -28,10 +35,11 @@
               <div class="col-lg-6 pe-lg-0">
                 <input type="text" name="email" placeholder="Email Address" required>
               </div>
-              <input type="text" name="hone" placeholder="Phone No" required>
+              <input type="text" name="phone" placeholder="Phone No" required>
+              <input type="hidden" name="_csrf" value='<%= csrfToken %>'>
               <textarea placeholder="Your Comment" name="comment" required></textarea>
-                <button class="btn">
-                  <span>Send Message</span>
+                <button id="contactFormSubmitButtonID" class="btn">
+                  <span id="contactFormSubmitButton">Send Message</span>
                 </button>
              </div>
            
@@ -40,16 +48,16 @@
         <div class="col-xl-6">
           <div class="contact-style-text">
               <div class="contact-style call-us">
-                <img alt="call" src="assets/img/call.png">
+                <img alt="call" src="/assets/img/call.png">
                 <div>
                   <span>Have Questions? Call Us</span>
                   
-                  <a class="phone" href="callto:<%= customerServiceNumber %>"><%= customerServiceNumber %> </a>
+                  <a class="phone" href="callto:<%= customerBusinessNumber %>"><%= customerBusinessNumber %> </a>
                   <p>Open monday to Friday 9:00 AM to 5:00 PM</p>
                 </div>
               </div>
-              <div class="contact-style call-us three">
-                <img alt="call" src="assets/img/mail.png">
+              <div class="contact-style call-us">
+                <img alt="call" src="/assets/img/mail.png">
                 <div>
                   <span>Email Address</span>
                   <a href="mailto:<%= customerServiceEmail %>"><%= customerServiceEmail %></a>
